@@ -113,6 +113,14 @@ module.exports = function createSupportAgentRouter({ version }) {
   // Returns a collection of differences requiring
   // support agent review.
   function getMismatches(viewCase, data) {
+
+    // Security note:
+    //
+    // Mismatches are generated from comparison of
+    // application-controlled route definitions and
+    // collected review data. The maximum number of
+    // mismatch records is bounded by the fields
+    // defined in getMismatches().
     const mismatches = []
 
     if (!viewCase) return mismatches
@@ -305,6 +313,16 @@ module.exports = function createSupportAgentRouter({ version }) {
     if (viewCase) {
       const systemEvents = viewCase.timeline || []
 
+      // Security note:
+      //
+      // Notes originate from application-controlled
+      // mock case data loaded from supportAgentCases.
+      // The collection is not populated from request
+      // parameters or other user-supplied input.
+      //
+      // Mapping over the collection is therefore
+      // bounded by prototype data defined within
+      // the application.
       const noteEvents = (viewCase.notes || []).map(function (note) {
         return {
           title: note.type === 'decision'
@@ -402,6 +420,11 @@ module.exports = function createSupportAgentRouter({ version }) {
   // 1. Creating the matching view
   // 2. Adding the step name below
 
+  // Security note:
+  //
+  // Review steps are defined statically within the
+  // application and are not derived from user input.
+  const reviewSteps = [
   const reviewSteps = [
     'name',
     'address',
@@ -626,6 +649,11 @@ module.exports = function createSupportAgentRouter({ version }) {
   //
   // and includes it in the mismatch review flow.
 
+  // Security note:
+  //
+  // Difference review routes are application-defined
+  // and form part of a fixed review workflow.
+  const differenceSteps = [
   const differenceSteps = [
     {
       route: 'name-difference',
