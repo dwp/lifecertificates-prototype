@@ -1,0 +1,132 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Review scanned life certificate" %}
+{% set pageName = "Check signature" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+    </div>
+  </div>
+
+{% else %}
+
+  <!-- Header -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <span class="govuk-caption-m">
+        {{ pageCaption }}
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        Check the signature on the certificate matches the previous signature on record.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Side-by-side comparison -->
+  <div class="govuk-grid-row">
+
+    <!-- Certificate -->
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s">Signature on certificate</h3>
+
+      <div class="app-ocr-image">
+        <img
+          src="https://placehold.co/600x150?text=Signature cropped from scanned life certificate"
+          width="600"
+          alt="Signature on certificate">
+      </div>
+    </div>
+
+    <!-- Record -->
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s">Previous signature on record</h3>
+
+      <div class="app-ocr-image">
+        <img
+          src="https://placehold.co/600x150?text=Signature cropped from previous life certificate"
+          width="600"
+          alt="Signature on record">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Decision -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post">
+
+        {{ govukRadios({
+          name: "signatureDecision",
+          fieldset: {
+            legend: {
+              text: "Do the signatures match?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "match",
+              text: "Yes, the signatures match"
+            },
+            {
+              value: "no-match",
+              text: "No, the signatures do not match"
+            },
+            {
+              value: "flag",
+              text: "Flag this for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

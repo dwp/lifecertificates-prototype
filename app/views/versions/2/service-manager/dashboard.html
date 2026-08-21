@@ -1,0 +1,5 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}Service overview – version v2{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds"><span class="govuk-caption-xl">Service manager – version v2</span><h1 class="govuk-heading-xl">Service overview</h1><p class="govuk-body">Use this page to monitor workload and identify issues.</p>{{ govukSummaryList({ rows: [{ key: { text: "Open cases" }, value: { text: "42" } }, { key: { text: "Cases waiting more than 5 days" }, value: { text: "8" } }, { key: { text: "Cases needing manager review" }, value: { text: "3" } }] }) }}</div></div>
+{% endblock %}

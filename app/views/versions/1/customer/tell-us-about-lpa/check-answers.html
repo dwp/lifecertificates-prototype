@@ -1,0 +1,457 @@
+{% extends "layouts/main.html" %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Check your answers" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">{{ pageName }}</h1>
+
+            <h2 class="govuk-heading-m">Identity document</h2>
+
+            {{ govukSummaryList({
+                rows: [
+                {
+                    key: {
+                        text: "Document"
+                    },
+                    value: {
+                        text: "Driver license"
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "document-front-scan",
+                            text: "Change",
+                            visuallyHiddenText: "or rescan ID document"
+                            }
+                        ]
+                    }
+                }
+                ]
+            }) }}
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                    text: "From your driver license"
+                    }
+                },
+                classes: "govuk-summary-list--no-border",
+                rows: [
+                {
+                    key: {
+                        text: "Name"
+                    },
+                    value: {
+                        text: "Maria Fernandez"
+                    },
+                    classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                    key: {
+                        text: "Date of birth"
+                    },
+                    value: {
+                        text: "5 January 1978"
+                    },
+                    classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                    key: {
+                        text: "Address"
+                    },
+                    value: {
+                        html: "Calle Mayor 45<br>Madrid<br>28013<br>Spain"
+                    }
+                }
+                ]
+            }) }}
+
+            <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
+
+            {% if data['medicalExemption'] or data['doctorLetter'] or data['doctorFullName'] %}
+
+            <h2 class="govuk-heading-m">Identity verification by a doctor</h2>
+    
+                {% set doctorName %}
+                    {% if data["doctorFullName"] %}
+                        {{ data["doctorFullName"] }}
+                        {% else %}Dr Watson
+                    {% endif %}
+                {% endset %}
+
+                {% set doctorAddress %}
+                    {% if data["addressPractice"] %}
+                        {{ data["addressPractice"] }}<br>
+                        {% else %}Doctors Inc.<br>
+                    {% endif %}
+                    {% if data["addressLine1"] %}
+                        {{ data["addressLine1"] }}<br>
+                        {% else %}999 Letsby Avenue<br>
+                    {% endif %}
+                    {% if data["addressLine2"] %}
+                        {{ data["addressLine2"] }}<br>
+                        {% else %}Suburbia<br>
+                    {% endif %}
+                    {% if data["addressTown"] %}
+                        {{ data["addressTown"] }}<br>
+                        {% else %}City of Town<br>
+                    {% endif %}
+                    {% if data["addressCounty"] %}
+                        {{ data["addressCounty"] }}<br>
+                        {% else %}Countyshireford<br>
+                    {% endif %}
+                    {% if data["addressPostcode"] %}
+                        {{ data["addressPostcode"] }}<br>
+                        {% else %}PO57 3DE<br>
+                    {% endif %}
+                    {% if data["addressCountry"] %}
+                        {{ data["addressCountry"] }}<br>
+                        {% else %}United Kingdom<br>
+                    {% endif %}
+                {% endset %}
+
+                {% set doctorLetter %}
+                    <ul class="govuk-list">
+                        <li>
+                            <a class="govuk-link" href="#">letter-from-doctor.pdf</a>
+                        </li>
+                    </ul>
+                {% endset %}
+
+                {% set doctorContact %}
+                    <p class="govuk-body">
+                    {% if data["doctorEmailAddress"] %}
+                        {{ data["doctorEmailAddress"] }}
+                        {% else %}dr.watson@medicalpractice.com
+                    {% endif %}
+                    </p>
+
+                    <p class="govuk-body">
+                    {% if data["doctor-country-code"] and data["doctor-national-number"] %}
+                        +{{ data["doctor-country-code"] }} {{ data["doctor-national-number"] }}
+                    {% else %}
+                        +353 7900 123900
+                    {% endif %}
+                    </p>
+                {% endset %}
+
+                {{ govukSummaryList({
+                    classes: "govuk-!-margin-bottom-9",
+                    rows: [
+                    {
+                        key: {
+                            text: "Doctor"
+                        },
+                        value: {
+                            text: doctorName
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "doctor",
+                                text: "Change",
+                                visuallyHiddenText: "doctor's name"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Address"
+                        },
+                        value: {
+                            html: doctorAddress
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "doctor",
+                                text: "Change",
+                                visuallyHiddenText: "doctor's address"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Doctor's letter"
+                        },
+                        value: {
+                            html: doctorLetter
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "doctor",
+                                text: "Change",
+                                visuallyHiddenText: "doctor's letter"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Contact details"
+                        },
+                        value: {
+                            html: doctorContact
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "doctor",
+                                text: "Change",
+                                visuallyHiddenText: "doctor's contact details"
+                                }
+                            ]
+                        }
+                    }
+                    ]
+                }) }}
+
+            {% endif %}
+
+{% if not (
+    data['medicalExemption'] == 'Yes'
+    or data['doctorLetter']
+    or data['doctorFullName']
+) %}
+
+            <h2 class="govuk-heading-m">Payment details</h2>
+
+            {% set paymentDetails %}
+                {% if data["nameOnTheAccount"] %}
+                    <p class="govuk-body">{{ data["nameOnTheAccount"] }}</p>
+                    {% else %}<p class="govuk-body">Mrs Maria Fernandez</p>
+                {% endif %}
+                {% if data["sortCode"] %}
+                    <p class="govuk-body">{{ data["sortCode"] }}</p>
+                    {% else %}<p class="govuk-body">Sort code: 11-22-33</p>
+                {% endif %}
+                {% if data["accountNumber"] %}
+                    <p class="govuk-body">{{ data["accountNumber"] }}</p>
+                    {% else %}<p class="govuk-body">Account number: 12345678</p>
+                {% endif %}
+<!--                {% if data["rollNumber"] %}
+                    <p class="govuk-body">{{ data["rollNumber"] }}</p>
+                    {% else %}<p class="govuk-body">A1B2C3D4</p>
+                {% endif %}-->
+            {% endset %}
+
+            {% if data["hasLPA"] == "Yes" %}
+
+                {% set LPAHtml %}
+                    Jan Attornisson
+                {% endset %}
+
+                {% elseif data['hasLPA'] == 'No' or (not data['medicalExemption']) %}
+                {% set LPAHtml %}
+                    You have not registered any lasting power of attorney
+                {% endset %}
+
+            {% endif %}
+
+
+            {{ govukSummaryList({
+                classes: "govuk-!-margin-bottom-9",
+                rows: [
+                    {
+                        key: {
+                            text: "Bank or building society account"
+                        },
+                        value: {
+                            html: paymentDetails
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "review-bank-details",
+                                text: "Change",
+                                visuallyHiddenText: "bank or building society account details"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Lasting power of attorney"
+                        },
+                        value: {
+                            html: LPAHtml
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "review-lpa",
+                                text: "Change",
+                                visuallyHiddenText: "lasting power of attorney"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }) }}
+
+            <h2 class="govuk-heading-m">Contact details</h2>
+
+            {% set customerAddress %}
+                {% if data["addressLine1"] %}
+                    {{ data["addressLine1"] }}<br>
+                    {% else %}999 Letsby Avenue<br>
+                {% endif %}
+                {% if data["addressLine2"] %}
+                    {{ data["addressLine2"] }}<br>
+                    {% else %}Suburbia<br>
+                {% endif %}
+                {% if data["addressTown"] %}
+                    {{ data["addressTown"] }}<br>
+                    {% else %}City of Town<br>
+                {% endif %}
+                {% if data["addressCounty"] %}
+                    {{ data["addressCounty"] }}<br>
+                    {% else %}Countyshireford<br>
+                {% endif %}
+                {% if data["addressPostcode"] %}
+                    {{ data["addressPostcode"] }}<br>
+                    {% else %}PO57 3DE<br>
+                {% endif %}
+                {% if data["addressCountry"] %}
+                    {{ data["addressCountry"] }}<br>
+                    {% else %}United Kingdom<br>
+                {% endif %}
+            {% endset %}
+
+            {% set customerEmailAddress %}
+                {% if data["emailAddress"] %}
+                    {{ data["emailAddress"] }}
+                {% else %}
+                    name@domain.com
+                {% endif %}
+            {% endset %}
+
+
+            {% set customerPhoneNumber %}
+                {% if data["mobile-national-number"] %}
+                    +{{ data["mobile-country-code"] }} {{ data["mobile-national-number"] }}
+                {% else %}
+                    +353 7900 900123
+                {% endif %}
+            {% endset %}
+
+            {% set contactPreference %}
+                {% if data["contactPreference"] %}
+                    {{ data["contactPreference"] }}
+                {% else %}
+                    Post
+                {% endif %}
+            {% endset %}
+
+            {{ govukSummaryList({
+                classes: "govuk-!-margin-bottom-9",
+                rows: [
+                    {
+                        key: {
+                            text: "Address"
+                        },
+                        value: {
+                            html: customerAddress
+                        },
+                        actions: {
+                            items: [
+                                {
+                                href: "review-address",
+                                text: "Change",
+                                visuallyHiddenText: "doctor's address"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                    key: {
+                        text: "Email address"
+                    },
+                    value: {
+                        text: customerEmailAddress
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-email",
+                            text: "Change",
+                            visuallyHiddenText: "email address"
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: {
+                        text: "Phone number"
+                    },
+                    value: {
+                        text: customerPhoneNumber
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-phone",
+                            text: "Change",
+                            visuallyHiddenText: "mobile number"
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: {
+                        text: "Preferred contact method"
+                    },
+                    value: {
+                        text: contactPreference
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-phone",
+                            text: "Change",
+                            visuallyHiddenText: "preferred contact method"
+                            }
+                        ]
+                    }
+                }
+                ]
+            }) }}
+
+            {% endif %}
+
+            <h2 class="govuk-heading-m">Now send your proof of life</h2>
+
+            <p class="govuk-body">By sending this proof of life you agree that the information you have given is complete and correct. If you deliberately give the wrong or incomplete information, or you do not report any changes, you may:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>be prosecuted</li>
+                <li>need to pay a financial penalty</li>
+                <li>need to pay back any money you are overpaid if you are asked to</li>
+            </ul>
+
+            <form action="/form-handler" method="post" novalidate>
+
+                <input type="hidden" name="answers-checked" value="true">
+
+                {{ govukButton({
+                    text: "Accept and send",
+                    href: "confirmation"
+                }) }}
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

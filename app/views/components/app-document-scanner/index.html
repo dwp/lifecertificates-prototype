@@ -1,0 +1,433 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/app-document-scanner/macro.njk" import appDocumentScanner %}
+
+{% set pageName = "Document scanner" %}
+{% set serviceName = "Component guidance" %}
+
+{% block pageTitle %}
+  {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+    <span class="govuk-caption-xl">Components and patterns</span>
+    <h1 class="govuk-heading-xl">Document scanner</h1>
+
+    <p class="govuk-body-l">
+      Capture an image of a document using a device camera.
+    </p>
+
+    <p class="govuk-body">
+      The document scanner is a reusable component used within a page-level pattern. The component handles the camera preview, document guide, image capture, cropping behaviour and hidden input.
+    </p>
+
+    <p class="govuk-body">
+      The page pattern should handle the heading, error summary, form, fallback route and journey content.
+    </p>
+
+    <h2 class="govuk-heading-l">When to use this</h2>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>capturing identity documents</li>
+      <li>capturing passports, driving licences or residence permits</li>
+      <li>capturing evidence documents using a device camera</li>
+      <li>guiding users to position documents consistently</li>
+    </ul>
+
+    <h2 class="govuk-heading-l">When not to use this</h2>
+
+    <p class="govuk-body">
+      Do not use this as the only way for users to provide a document.
+    </p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>when users need to upload an existing file</li>
+      <li>when camera access is optional</li>
+      <li>when a standard file upload is more appropriate</li>
+      <li>when users may not have access to a working camera</li>
+    </ul>
+
+    {{ govukInsetText({
+      text: "Always provide an alternative document upload route if camera access is unavailable."
+    }) }}
+
+    <h2 class="govuk-heading-l">Using the document scanner pattern</h2>
+
+    <p class="govuk-body">
+      The recommended pattern is to render the error summary before the page heading, render the form in the page, and pass the form ID and error summary ID into the document scanner.
+    </p>
+
+    <p class="govuk-body">
+      This keeps the GOV.UK page structure correct while allowing the component JavaScript to update the error summary if camera access fails.
+    </p>
+
+    <div class="app-example govuk-!-margin-bottom-6">
+      <pre class="govuk-body"><code>{% raw %}{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/app-document-scanner/macro.njk" import appDocumentScanner %}
+
+&lt;div class="govuk-grid-row"&gt;
+  &lt;div class="govuk-grid-column-full"&gt;
+
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [
+        {
+          text: "There is a problem with the camera.",
+          href: "#app-document-scanner-identity-document-front"
+        }
+      ],
+      attributes: {
+        id: "documentScannerErrorSummary",
+        hidden: "hidden",
+        tabindex: "-1"
+      }
+    }) }}
+
+    &lt;h1 class="govuk-heading-l"&gt;{{ pageName }}&lt;/h1&gt;
+
+    {% set displayUntilCameraReady %}
+      {{ govukWarningText({
+        text: "We need to use your camera. Choose Allow to continue."
+      }) }}
+    {% endset %}
+
+    &lt;form
+      id="documentScan"
+      action="document-front-check"
+      method="post"
+      class="form app-document-scanning app-document-scanning--front"&gt;
+
+      {% call appDocumentScanner({
+        id: "identity-document-front",
+        name: "scannedDocumentFront",
+        side: "front",
+        formId: "documentScan",
+        errorSummaryId: "documentScannerErrorSummary",
+        displayUntilCameraReady: displayUntilCameraReady,
+        classes: "app-document-scanner-wrapper--identity-document",
+        scannerClasses: "app-document-scanner--front"
+      }) %}
+
+        {{ govukButton({
+          id: "captureButton",
+          text: "Take photo and continue",
+          classes: "app-document-scanning__button"
+        }) }}
+
+      {% endcall %}
+
+    &lt;/form&gt;
+
+    &lt;p class="govuk-body"&gt;
+      &lt;a class="govuk-link" href="upload-document"&gt;
+        Upload a photo instead
+      &lt;/a&gt;
+    &lt;/p&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;{% endraw %}</code></pre>
+    </div>
+
+    <h2 class="govuk-heading-l">Component example</h2>
+
+    <p class="govuk-body">
+      This example shows the reusable document scanner component on its own. Use the full page pattern above for service pages.
+    </p>
+
+    {% set exampleDisplayUntilCameraReady %}
+      {{ govukWarningText({
+        text: "We need to use your camera. Choose Allow to continue."
+      }) }}
+    {% endset %}
+
+    {% call appDocumentScanner({
+      id: "example-document-front",
+      name: "exampleDocumentFront",
+      side: "front",
+      displayUntilCameraReady: exampleDisplayUntilCameraReady,
+      classes: "app-document-scanner-wrapper--identity-document",
+      scannerClasses: "app-document-scanner--front",
+      form: {
+        id: "exampleDocumentScan",
+        action: "#",
+        method: "post",
+        classes: "form app-document-scanning app-document-scanning--front"
+      }
+    }) %}
+
+      {{ govukButton({
+        text: "Take photo and continue"
+      }) }}
+
+    {% endcall %}
+
+    <h3 class="govuk-heading-m">Nunjucks</h3>
+
+    <div class="app-example govuk-!-margin-bottom-6">
+      <pre class="govuk-body"><code>{% raw %}{% set displayUntilCameraReady %}
+  {{ govukWarningText({
+    text: "We need to use your camera. Choose Allow to continue."
+  }) }}
+{% endset %}
+
+{% call appDocumentScanner({
+  id: "example-document-front",
+  name: "exampleDocumentFront",
+  side: "front",
+  displayUntilCameraReady: displayUntilCameraReady,
+  classes: "app-document-scanner-wrapper--identity-document",
+  scannerClasses: "app-document-scanner--front",
+  form: {
+    id: "exampleDocumentScan",
+    action: "#",
+    method: "post",
+    classes: "form app-document-scanning app-document-scanning--front"
+  }
+}) %}
+
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+
+{% endcall %}{% endraw %}</code></pre>
+    </div>
+
+    <h2 class="govuk-heading-l">Component reference</h2>
+
+    <p class="govuk-body">
+      The following sections describe the reusable component API.
+    </p>
+
+    <h3 class="govuk-heading-m">Options</h3>
+
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "id" },
+          value: { text: "Unique identifier for the document scanner instance." }
+        },
+        {
+          key: { text: "name" },
+          value: { text: "Name of the hidden input used to store the captured base64 JPEG image. Defaults to documentFront or documentBack depending on the side." }
+        },
+        {
+          key: { text: "side" },
+          value: { text: "Document side. Use front or back. Defaults to front." }
+        },
+        {
+          key: { text: "displayUntilCameraReady" },
+          value: { text: "HTML shown before the camera is available." }
+        },
+        {
+          key: { text: "errorSummaryId" },
+          value: { text: "ID of an external GOV.UK Error Summary to update when a camera error occurs." }
+        },
+        {
+          key: { text: "formId" },
+          value: { text: "ID of an external form if the form is rendered outside the component. This is the recommended approach for service pages." }
+        },
+        {
+          key: { text: "form" },
+          value: { text: "Optional convenience object. If provided, the component renders the form. Recommended for examples and simple prototypes only." }
+        },
+        {
+          key: { text: "classes" },
+          value: { text: "Classes to add to the wrapper." }
+        },
+        {
+          key: { text: "scannerClasses" },
+          value: { text: "Classes to add to the camera preview container." }
+        },
+        {
+          key: { text: "hintText" },
+          value: { text: "Text shown below the document scanner." }
+        },
+        {
+          key: { text: "cardRatio" },
+          value: { text: "Aspect ratio used for the document guide. Defaults to 1.586." }
+        },
+        {
+          key: { text: "guideMaxWidth" },
+          value: { text: "Maximum guide width as a proportion of the camera container width. Defaults to 0.8." }
+        },
+        {
+          key: { text: "guideMaxHeight" },
+          value: { text: "Maximum guide height as a proportion of the camera container height. Defaults to 0.5." }
+        },
+        {
+          key: { text: "captureOnSubmit" },
+          value: { text: "Whether to capture the image when the form is submitted. Defaults to true." }
+        },
+        {
+          key: { text: "revealFormOnCameraReady" },
+          value: { text: "Whether to reveal the form when camera access is available. Defaults to true." }
+        },
+        {
+          key: { text: "includeAssets" },
+          value: { text: "Whether to include the component JavaScript from the macro. Defaults to true. Component styles should be compiled through Sass if they are no longer included inline." }
+        }
+      ]
+    }) }}
+
+    <h3 class="govuk-heading-m">Form convenience option</h3>
+
+    <p class="govuk-body">
+      For simple prototypes, the component can render its own form using the <code>form</code> option. For service pages, render the form in the page and pass <code>formId</code> into the component instead.
+    </p>
+
+    <pre class="govuk-body"><code>{% raw %}{% call appDocumentScanner({
+  id: "example-document-front",
+  name: "exampleDocumentFront",
+  side: "front",
+  form: {
+    id: "exampleDocumentScan",
+    action: "#",
+    method: "post"
+  }
+}) %}
+
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+
+{% endcall %}{% endraw %}</code></pre>
+
+    <h3 class="govuk-heading-m">Front and back document capture</h3>
+
+    <p class="govuk-body">
+      Use separate scanner instances for multi-sided documents. Give each scanner a unique <code>id</code> and <code>name</code>.
+    </p>
+
+    <pre class="govuk-body"><code>{% raw %}{% call appDocumentScanner({
+  id: "identity-document-front",
+  name: "scannedDocumentFront",
+  side: "front",
+  formId: "documentScan"
+}) %}
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+{% endcall %}
+
+{% call appDocumentScanner({
+  id: "identity-document-back",
+  name: "scannedDocumentBack",
+  side: "back",
+  formId: "documentScan"
+}) %}
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+{% endcall %}{% endraw %}</code></pre>
+
+    <h3 class="govuk-heading-m">JavaScript API</h3>
+
+    <p class="govuk-body">
+      Each document scanner instance is registered on <code>window.documentScanners</code>.
+    </p>
+
+    <pre class="govuk-body"><code>var scanner =
+  window.documentScanners['identity-document-front']</code></pre>
+
+    <h4 class="govuk-heading-s">Capture an image</h4>
+
+    <pre class="govuk-body"><code>scanner.capture()</code></pre>
+
+    <h4 class="govuk-heading-s">Get the current image</h4>
+
+    <pre class="govuk-body"><code>scanner.getImage()</code></pre>
+
+    <h4 class="govuk-heading-s">Clear the image</h4>
+
+    <pre class="govuk-body"><code>scanner.clear()</code></pre>
+
+    <h4 class="govuk-heading-s">Update detection state</h4>
+
+    <pre class="govuk-body"><code>scanner.setDetected(true)</code></pre>
+
+    <h3 class="govuk-heading-m">Events</h3>
+
+    <h4 class="govuk-heading-s">document-scanner:capture</h4>
+
+    <p class="govuk-body">
+      Fired after an image is captured.
+    </p>
+
+    <pre class="govuk-body"><code>document.addEventListener(
+  'document-scanner:capture',
+  function (event) {
+    console.log(event.detail)
+  }
+)</code></pre>
+
+    <h4 class="govuk-heading-s">document-scanner:clear</h4>
+
+    <p class="govuk-body">
+      Fired when the stored image is cleared.
+    </p>
+
+    <pre class="govuk-body"><code>document.addEventListener(
+  'document-scanner:clear',
+  function (event) {
+    console.log(event.detail)
+  }
+)</code></pre>
+
+    <h4 class="govuk-heading-s">document-scanner:resize</h4>
+
+    <p class="govuk-body">
+      Fired when the document guide geometry changes.
+    </p>
+
+    <pre class="govuk-body"><code>document.addEventListener(
+  'document-scanner:resize',
+  function (event) {
+    console.log(event.detail.guide)
+  }
+)</code></pre>
+
+    <h3 class="govuk-heading-m">Accessibility</h3>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>uses a live region for status updates</li>
+      <li>supports keyboard form submission</li>
+      <li>can update an external GOV.UK Error Summary</li>
+      <li>does not rely only on the visual document frame to explain the task</li>
+      <li>supports configurable guidance before the camera is ready</li>
+    </ul>
+
+    <h3 class="govuk-heading-m">Error handling</h3>
+
+    <p class="govuk-body">
+      Camera errors are shown in the GOV.UK Error Summary when an <code>errorSummaryId</code> is supplied. If no external error summary is supplied, the component renders a fallback error summary inside the component.
+    </p>
+
+    {{ govukDetails({
+      summaryText: "Example error messages",
+      html: "
+        <ul class=\"govuk-list govuk-list--bullet\">
+          <li>Camera access was denied. Please allow camera access and try again.</li>
+          <li>No camera could be found on this device.</li>
+          <li>Your camera is currently being used by another application.</li>
+          <li>Your browser security settings are preventing access to the camera.</li>
+          <li>The camera is not ready yet. Try again in a moment.</li>
+        </ul>
+      "
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

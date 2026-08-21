@@ -1,0 +1,123 @@
+{% extends "layouts/main.html" %}
+
+{% set prototypeStatus = "InProgress" %}
+
+{% set prototypeVersion = "3.2" %}
+
+{% set pageName = "Version Notes" %}
+
+{% block pageTitle %}{{ pageName }} – version v{{ prototypeVersion }}{% endblock %}
+
+{% block content %}
+
+    {% include "_partials/status-banner.njk" %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <span class="govuk-caption-xl">Version v{{ prototypeVersion }} documentation</span>
+
+            <h1 class="govuk-heading-xl">{{ pageName }}</h1>
+
+            <p class="govuk-body">
+                This prototype represents the team's current understanding of how
+                overseas pension recipients can complete a proof of life process
+                digitally and provide evidence required to maintain their State Pension.
+            </p>
+
+            <p class="govuk-body">
+                The prototype explores how customers receive and respond to a Life
+                Certificate request, verify their identity, provide supporting
+                evidence and understand what happens next.
+            </p>
+
+            <h2 class="govuk-heading-m">Users and roles</h2>
+
+            <h3 class="govuk-heading-s">Primary users</h3>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Overseas pension recipients completing a proof of life journey.</li>
+                <li>Representatives acting on behalf of pension recipients.</li>
+            </ul>
+
+            <h3 class="govuk-heading-s">Supporting roles</h3>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Life Certificate operations teams.</li>
+                <li>Service support agents.</li>
+                <li>Researchers.</li>
+                <li>Designers.</li>
+                <li>Policy and subject matter experts.</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Current focus</h2>
+
+            <p class="govuk-body">
+                This version focuses on reducing uncertainty in areas that require
+                further validation before progressing the service design.
+            </p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Whether customers can complete a proof of life journey digitally.</li>
+                <li>Whether customers can verify their identity and provide supporting evidence.</li>
+                <li>Whether known customers can review and confirm existing information with confidence.</li>
+                <li>How representatives, attorneys and other third parties may interact with the service.</li>
+                <li>What support is needed for customers who cannot complete the journey independently.</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Measures of success</h2>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Customers understand what they need to do and why.</li>
+                <li>Customers can progress through the journey without unexpected blockers.</li>
+                <li>Customers can provide the information and evidence needed to complete proof of life.</li>
+                <li>Known customers can review and confirm existing information with confidence.</li>
+                <li>Customers understand confirmation and next-step messages.</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Known gaps</h2>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Placeholder interactions are used for document scanning and proof of life.</li>
+                <li>Providing a Cert de Vie is not yet represented.</li>
+                <li>Identity verification success is not communicated.</li>
+                <li>Error states and recovery journeys remain incomplete.</li>
+                <li>Notifications and reminders are not yet prototyped.</li>
+                <li>Support agent and service manager journeys are not fully represented.</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">What's changed in this version</h2>
+
+            <h3 class="govuk-heading-s">Added</h3>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Representative pathway because support for third-party journeys requires further exploration.</li>
+                <li>Additional guidance content because some stages of the journey required more support.</li>
+            </ul>
+
+            <h3 class="govuk-heading-s">Updated</h3>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Evidence guidance because customers needed clearer information about what they need to provide.</li>
+                <li>Identity verification content because customers were unsure why verification was required.</li>
+                <li>Confirmation messaging because customers needed clearer information about outcomes and next steps.</li>
+            </ul>
+
+            <h3 class="govuk-heading-s">Removed</h3>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Duplicate guidance content because it was no longer adding value to the journey.</li>
+            </ul>
+
+            <h2 class="govuk-heading-m">Related documentation</h2>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>/docs/research-and-evidence Research and evidence</li>
+                <li>/docs/design-decisions Design decisions</li>
+                <li>/docs/design-debt Design debt</li>
+            </ul>
+
+        </div>
+    </div>
+
+{% endblock %}

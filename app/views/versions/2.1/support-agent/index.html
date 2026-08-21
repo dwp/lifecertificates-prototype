@@ -1,0 +1,28 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Support agent journey – version {{ version }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-xl">Version {{ version }}</span>
+
+      <h1 class="govuk-heading-xl">Support agent journey</h1>
+
+      <p class="govuk-body-l">
+        This journey shows how a support agent finds and works a case.
+      </p>
+
+      {{ govukButton({
+        text: "View case dashboard",
+        href: baseUrl + "/dashboard"
+      }) }}
+
+    </div>
+  </div>
+
+{% endblock %}

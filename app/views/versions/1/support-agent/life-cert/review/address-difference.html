@@ -1,0 +1,191 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Resolve life certificate differences" %}
+{% set pageName = "Address does not match" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+
+      <p class="govuk-body">
+        There is no life certificate for this customer.
+      </p>
+
+      {{ govukButton({
+        text: "Back to life certificates",
+        href: baseUrl + "/life-certs",
+        classes: "govuk-button--secondary"
+      }) }}
+
+    </div>
+  </div>
+
+{% else %}
+
+  {# Pre-calculate differences (safe for Nunjucks) #}
+  {% set line1Diff = data.addressLine1 != viewCase.customer.address.line1 %}
+  {% set line2Diff = data.addressLine2 != viewCase.customer.address.line2 %}
+  {% set townDiff = data.addressTown != viewCase.customer.address.townOrCity %}
+  {% set postcodeDiff = data.addressPostcode != viewCase.customer.address.postcode %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">
+        {{ pageCaption }}
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        The address read from the certificate does not match the address on record.
+      </p>
+
+      <!-- =========================
+           Side-by-side comparison
+      ========================= -->
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Address on certificate</h3>
+
+          <p>
+            {% if line1Diff %}
+              <span class="app-highlight-difference">{{ data.addressLine1 }}</span><br>
+            {% else %}
+              {{ data.addressLine1 }}<br>
+            {% endif %}
+
+            {% if data.addressLine2 %}
+              {% if line2Diff %}
+                <span class="app-highlight-difference">{{ data.addressLine2 }}</span><br>
+              {% else %}
+                {{ data.addressLine2 }}<br>
+              {% endif %}
+            {% endif %}
+
+            {% if townDiff %}
+              <span class="app-highlight-difference">{{ data.addressTown }}</span><br>
+            {% else %}
+              {{ data.addressTown }}<br>
+            {% endif %}
+
+            {% if postcodeDiff %}
+              <span class="app-highlight-difference">{{ data.addressPostcode }}</span>
+            {% else %}
+              {{ data.addressPostcode }}
+            {% endif %}
+          </p>
+
+          {% if line1Diff or line2Diff or townDiff or postcodeDiff %}
+            <p class="govuk-hint">
+              Does not match address on record
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Address on record</h3>
+
+          <p>
+            {{ viewCase.customer.address.line1 }}<br>
+
+            {% if viewCase.customer.address.line2 %}
+              {{ viewCase.customer.address.line2 }}<br>
+            {% endif %}
+
+            {{ viewCase.customer.address.townOrCity }}<br>
+            {{ viewCase.customer.address.postcode }}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           Decision
+      ========================= -->
+      <form method="post">
+
+        {{ govukRadios({
+          name: "addressDecision",
+          fieldset: {
+            legend: {
+              text: "What do you want to do?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "use-certificate",
+              text: "Update the record with the address on the certificate",
+              conditional: {
+                html: govukTextarea({
+                  name: "note",
+                  label: {
+                    text: "Add a note (optional)"
+                  }
+                })
+              }
+            },
+            {
+              value: "keep-record",
+              text: "Keep the address on record"
+            },
+            {
+              value: "flag",
+              text: "Flag this mismatch for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this mismatch"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <!-- Actions -->
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Check form again",
+            classes: "govuk-button--secondary",
+            href: baseUrl + "/life-cert/review/address?nino=" + nino
+          }) }}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

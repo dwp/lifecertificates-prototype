@@ -1,0 +1,134 @@
+{% macro appPhoneInput(params) %}
+
+  {% set showCountryCode = true %}
+
+  {% if params.countryCode and params.countryCode.show == false %}
+
+    {% set showCountryCode = false %}
+
+  {% endif %}
+
+  <div class="govuk-form-group 
+    {% if params.errorMessage %}
+       govuk-form-group--error 
+    {% endif %}">
+    <fieldset class="govuk-fieldset" role="group" aria-describedby=" 
+      {% if params.hint %}
+         {{ params.id }}-hint 
+      {% endif %}
+  
+      {% if params.hint and params.errorMessage %}{% endif %}
+  
+      {% if params.errorMessage %}{{ params.id }}-error{% endif %}
+       ">
+
+      {% if params.fieldset and params.fieldset.legend %}
+
+        <legend class="govuk-fieldset__legend 
+          {% if params.fieldset.legend.classes %}{{ params.fieldset.legend.classes }}{% endif %}
+           ">
+
+          {% if params.fieldset.legend.isPageHeading %}
+
+            <h1 class="govuk-fieldset__heading">{{ params.fieldset.legend.text }}</h1>
+          {% else %}
+            {{ params.fieldset.legend.text }}
+
+          {% endif %}
+
+        </legend>
+
+      {% endif %}
+
+      {% if params.hint %}
+
+        <div id="{{ params.id }}-hint" class="govuk-hint">{{ params.hint.text }}</div>
+
+      {% endif %}
+
+      {% if params.errorMessage %}
+
+        <p id="{{ params.id }}-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          {{ params.errorMessage.text }}
+        </p>
+
+      {% endif %}
+
+      <div class="app-phone-input" id="{{ params.id }}">
+
+        {% if showCountryCode %}
+
+          <div class="app-phone-input-item">
+            <div class="govuk-form-group">
+              <label class="govuk-label app-phone-input-label"
+                     for="{{ params.id }}-country-code">
+
+                {% if params.countryCode and params.countryCode.label %}
+
+                  {{ params.countryCode.label.text }}
+                {% else %}
+                  Country code
+
+                {% endif %}
+
+              </label>
+              <div class="govuk-input__wrapper">
+                <div class="govuk-input__prefix app-phone-input-prefix"
+                     id="{{ params.id }}-prefix"
+                     aria-hidden="true">+</div>
+                <input class="govuk-input govuk-input--width-4 
+                  {% if params.countryCode and params.countryCode.error %}
+                     govuk-input--error 
+                  {% endif %}
+                   " id="{{ params.id }}-country-code" name=" 
+                  {% if params.namePrefix %}
+                     {{ params.namePrefix }}{% else %}{{ params.id }} 
+                  {% endif %}
+                   -country-code" type="text" inputmode="numeric" autocomplete="tel-country-code" maxlength="4" value=" 
+                  {% if params.countryCode and params.countryCode.value %}
+                    {{ params.countryCode.value }}
+                  {% endif %}
+                   " data-phone-country-code data-prefix-id="{{ params.id }}-prefix">
+                </div>
+              </div>
+            </div>
+
+          {% endif %}
+
+          <div class="app-phone-input-item">
+            <div class="govuk-form-group">
+              <label class="govuk-label app-phone-input-label"
+                     for="{{ params.id }}-national-number">
+
+                {% if params.nationalNumber and params.nationalNumber.label %}
+
+                  {{ params.nationalNumber.label.text }}
+                {% else %}
+                  Phone number
+
+                {% endif %}
+
+              </label>
+              <input class="govuk-input 
+                {% if params.nationalNumber and params.nationalNumber.classes %}
+                   {{ params.nationalNumber.classes }}{% else %}govuk-input--width-20 
+                {% endif %}
+  
+                {% if params.nationalNumber and params.nationalNumber.error %}govuk-input--error{% endif %}
+                 " id="{{ params.id }}-national-number" name=" 
+                {% if params.namePrefix %}
+                   {{ params.namePrefix }}{% else %}{{ params.id }} 
+                {% endif %}
+                 -national-number" type="text" inputmode="tel" autocomplete="tel-national" maxlength="20" value=" 
+                {% if params.nationalNumber and params.nationalNumber.value %}
+                   {{ params.nationalNumber.value }} 
+                {% endif %}
+                 ">
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+    {% endmacro %}

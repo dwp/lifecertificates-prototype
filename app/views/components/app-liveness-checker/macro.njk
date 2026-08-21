@@ -1,0 +1,123 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% macro appLivenessChecker(params) %}
+
+  {% set params = params or {} %}
+  {% set name = params.name | default('livenessPhoto') %}
+  {% set checkerId = params.id | default(name) %}
+  {% set wrapperClasses = params.classes | default('') %}
+  {% set checkerClasses = params.checkerClasses | default('') %}
+  {% set errorSummaryId = params.errorSummaryId | default('') %}
+  {% set formOptions = params.form | default(false) %}
+
+  {% if formOptions %}
+
+    {% set formId = formOptions.id | default(checkerId ~ '-form') %}
+    {% set formAction = formOptions.action | default('') %}
+    {% set formMethod = formOptions.method | default('post') %}
+    {% set formClasses = formOptions.classes | default('form app-liveness-checking') %}
+  {% else %}
+    {% set formId = params.formId | default('') %}
+
+  {% endif %}
+
+  {% set hintText = params.hintText | default('Position your face inside the oval.') %}
+  <div class="app-liveness-checker-wrapper {{ wrapperClasses }}"
+       data-module="app-liveness-checker"
+       data-scanner-id="{{ checkerId }}"
+       data-field-name="{{ name }}"
+       data-form-id="{{ formId }}"
+       data-error-summary-id="{{ errorSummaryId }}"
+       data-capture-on-submit="{{ params.captureOnSubmit | default("true") }}"
+       data-reveal-form-on-camera-ready="{{ params.revealFormOnCameraReady | default("true") }}">
+
+    {% if params.displayUntilCameraReady %}
+
+      <div class="app-liveness-checker__until-camera-permission">
+        {{ params.displayUntilCameraReady | safe }}
+      </div>
+
+    {% endif %}
+
+    {% if formOptions %}
+
+      <form id="{{ formId }}"
+            action="{{ formAction }}"
+            method="{{ formMethod }}"
+            class="{{ formClasses }}">
+
+      {% endif %}
+
+      {% if not errorSummaryId %}
+
+        {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: [
+                {
+                text: "There is a problem with the camera.",
+                href: "#app-liveness-checker-" ~ checkerId
+                }
+                ],
+                classes: "app-liveness-checker__permissions-warning",
+                attributes: {
+                hidden: "hidden",
+                tabindex: "-1",
+                "data-liveness-checker-error": "true"
+                }
+                }) }}
+
+      {% endif %}
+
+      <div id="app-liveness-checker-{{ checkerId }}"
+           class="app-liveness-checker {{ checkerClasses }}">
+        <video class="app-liveness-checker__video" autoplay muted playsinline>
+        </video>
+        <canvas class="app-liveness-checker__canvas" hidden>
+        </canvas>
+        <svg class="app-liveness-checker__overlay"
+             viewBox="0 0 100 100"
+             preserveAspectRatio="none"
+             aria-hidden="true"
+             focusable="false">
+          <path class="app-liveness-checker__overlay-path" fill="rgba(0, 0, 0, 0.55)" fill-rule="evenodd">
+          </path>
+          <path class="app-liveness-checker__guide-path app-liveness-checker__guide-path--top" fill="none" stroke="#ffdd00" stroke-width="6" stroke-linecap="round">
+          </path>
+          <path class="app-liveness-checker__guide-path app-liveness-checker__guide-path--right" fill="none" stroke="#ffdd00" stroke-width="6" stroke-linecap="round">
+          </path>
+          <path class="app-liveness-checker__guide-path app-liveness-checker__guide-path--bottom" fill="none" stroke="#ffdd00" stroke-width="6" stroke-linecap="round">
+          </path>
+          <path class="app-liveness-checker__guide-path app-liveness-checker__guide-path--left" fill="none" stroke="#ffdd00" stroke-width="6" stroke-linecap="round">
+          </path>
+        </svg>
+        <div class="app-liveness-checker__window"></div>
+      </div>
+      <p class="govuk-body app-liveness-checker__hint">{{ hintText }}</p>
+      <p class="govuk-visually-hidden app-liveness-checker__status"
+         aria-live="polite">Position your face inside the oval.</p>
+      <input type="hidden" name="{{ name }}" class="app-liveness-checker__input" 
+        {% if not formOptions and formId %}
+          form="{{ formId }}"
+        {% endif %}
+        >
+
+        {% if caller is defined %}
+
+          {{ caller() }}
+
+        {% endif %}
+
+        {% if formOptions %}
+
+        </form>
+
+      {% endif %}
+
+    </div>
+
+    {% if params.includeAssets | default(true) %}
+
+      <script>{% include "components/app-liveness-checker/liveness-checker.js" %}</script>
+
+    {% endif %}
+
+  {% endmacro %}

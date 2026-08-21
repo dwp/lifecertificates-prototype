@@ -1,5 +1,5 @@
 {
-  "serviceName": "Service name goes here",
+  "serviceName": "UK State Pension proof of life when living abroad (Life Certificates)",
   "useServiceNavigation": true,
   "plugins": {
     "govuk-frontend": {

@@ -1,0 +1,35 @@
+// app/assets/sass/components/app-phone-input.scss
+
+.app-phone-input {
+  font-size: 0;
+}
+
+.app-phone-input-item {
+  display: inline-block;
+  margin-right: govuk-spacing(4);
+  vertical-align: top;
+}
+
+.app-phone-input-label {
+  display: block;
+  margin-bottom: govuk-spacing(1);
+}
+
+.app-phone-input-prefix-wrapper .govuk-input {
+  padding-left: 26px;
+}
+
+.app-phone-input {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+  }
+  
+  .app-phone-input-item:first-child {
+    flex: 0 0 auto;
+  }
+  
+  .app-phone-input-item:last-child {
+    flex: 1;
+  }

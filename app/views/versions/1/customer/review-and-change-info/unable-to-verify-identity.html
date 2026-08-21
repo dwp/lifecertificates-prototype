@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Unable to verify your identity?" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <p>You may still be able to complete your live certificate online. You will need:</p>
+            
+            <ul class="govuk-list govuk-list--bullet">
+                <li>letter from a doctor who is registered in your country of residence</li>
+                <li>full name of the registered doctor</li>
+                <li>address of their registered practice</li>
+            </ul> 
+
+            <p><strong>Important:</strong> You will not be able to:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>see any information we already hold about you</li>
+                <li>tell us about any powers of attorney</li>
+            </ul> 
+
+            <p>You will still be able to:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>tell us your preferred contact details</li>
+            </ul> 
+
+            <form class="form" action="medical-verification" method="post">
+
+                <input type="hidden" name="medicalExemption" id="doctor-exemption" value="Yes">
+
+                {{ govukButton({
+                    "text": "Continue"
+                }) }}
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

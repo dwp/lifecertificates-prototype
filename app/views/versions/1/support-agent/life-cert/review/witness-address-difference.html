@@ -1,0 +1,168 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Resolve life certificate difference" %}
+{% set pageName = "Witness address does not match" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+    </div>
+  </div>
+
+{% else %}
+
+{% set orgDiff = (data.addressOrganisation or '') != (viewCase.witness.address.organisation or '') %}
+{% set line1Diff = data.addressLine1 != viewCase.witness.address.line1 %}
+{% set line2Diff = (data.addressLine2 or '') != (viewCase.witness.address.line2 or '') %}
+{% set townDiff = data.addressTown != viewCase.witness.address.townOrCity %}
+{% set countyDiff = (data.addressCounty or '') != (viewCase.witness.address.county or '') %}
+{% set postcodeDiff = data.addressPostcode != viewCase.witness.address.postcode %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">{{ pageCaption }}</span>
+
+      <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+      <p class="govuk-body">
+        The witness address read from the certificate does not match the address on record.
+      </p>
+
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Witness address on certificate</h3>
+
+          <p>
+            {% if data.addressOrganisation %}
+                {% if orgDiff %}
+                    <span class="app-highlight-difference">{{ data.addressOrganisation }}</span><br>
+                {% else %}
+                    {{ data.addressOrganisation }}<br>
+                {% endif %}
+            {% endif %}
+            {% if line1Diff %}
+              <span class="app-highlight-difference">{{ data.addressLine1 }}</span><br>
+            {% else %}{{ data.addressLine1 }}<br>{% endif %}
+
+            {% if data.addressLine2 %}
+                {% if line2Diff %}
+                    <span class="app-highlight-difference">{{ data.addressLine2 }}</span><br>
+                {% else %}
+                    {{ data.addressLine2 }}<br>
+                {% endif %}
+            {% endif %}
+
+            {% if townDiff %}
+              <span class="app-highlight-difference">{{ data.addressTown }}</span><br>
+            {% else %}{{ data.addressTown }}<br>{% endif %}
+
+            {% if data.addressCounty %}
+                {% if countyDiff %}
+                    <span class="app-highlight-difference">{{ data.addressCounty }}</span><br>
+                {% else %}
+                    {{ data.addressCounty }}<br>
+                {% endif %}
+            {% endif %}
+
+            {% if postcodeDiff %}
+              <span class="app-highlight-difference">{{ data.addressPostcode }}</span>
+            {% else %}{{ data.addressPostcode }}{% endif %}
+          </p>
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Witness address on record</h3>
+
+          <p>
+            {% if viewCase.witness.address.organisation %}
+                {{ viewCase.witness.address.organisation }}<br>
+            {% endif %}
+            {{ viewCase.witness.address.line1 }}<br>
+            {% if viewCase.witness.address.line2 %}
+                {{ viewCase.witness.address.line2 }}<br>
+            {% endif %}
+            {{ viewCase.witness.address.townOrCity }}<br>
+            {% if viewCase.witness.address.county %}
+                {{ viewCase.witness.address.county }}<br>
+            {% endif %}
+            {{ viewCase.witness.address.postcode }}
+          </p>
+        </div>
+
+      </div>
+
+      <form method="post">
+
+        {{ govukRadios({
+          name: "witnessAddressDecision",
+          fieldset: {
+            legend: {
+              text: "What do you want to do?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "use-certificate",
+              text: "Update record with the witness address on the certificate"
+            },
+            {
+              value: "keep-record",
+              text: "Keep the witness address on record"
+            },
+            {
+              value: "flag",
+              text: "Flag this mismatch for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this mismatch"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Check form again",
+            classes: "govuk-button--secondary",
+            href: baseUrl + "/life-cert/review/witness-address?nino=" + nino
+          }) }}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+             Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

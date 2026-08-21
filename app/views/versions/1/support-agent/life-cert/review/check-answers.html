@@ -1,0 +1,315 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageName = "Check your answers" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+
+      <p class="govuk-body">
+        There is no life certificate for this customer.
+      </p>
+
+      {{ govukButton({
+        text: "Back to life certificates",
+        href: baseUrl + "/life-certs",
+        classes: "govuk-button--secondary"
+      }) }}
+
+    </div>
+  </div>
+
+{% else %}
+
+  {# =========================
+     CUSTOMER ADDRESS
+  ========================= #}
+
+  {% set customerAddressLine1 = data.customerAddressLine1 or viewCase.scannedCustomer.address.line1 or "" %}
+  {% set customerAddressLine2 = data.customerAddressLine2 or viewCase.scannedCustomer.address.line2 or "" %}
+  {% set customerAddressTown = data.customerAddressTown or viewCase.scannedCustomer.address.townOrCity or "" %}
+  {% set customerAddressCounty = data.customerAddressCounty or viewCase.scannedCustomer.address.county or "" %}
+  {% set customerAddressPostcode = data.customerAddressPostcode or viewCase.scannedCustomer.address.postcode or "" %}
+
+  {% set customerAddressHtml = '<p class="govuk-body">' + customerAddressLine1 %}
+
+  {% if customerAddressLine2 %}
+    {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressLine2 %}
+  {% endif %}
+
+  {% if customerAddressTown %}
+    {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressTown %}
+  {% endif %}
+
+  {% if customerAddressCounty %}
+    {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressCounty %}
+  {% endif %}
+
+  {% if customerAddressPostcode %}
+    {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressPostcode %}
+  {% endif %}
+
+  {% set customerAddressHtml = customerAddressHtml + '</p>' %}
+
+  {# =========================
+     SIGNATURE CHECK
+  ========================= #}
+
+  {% if data.signatureDecision == "match" %}
+    {% set signatureHtml = '<p class="govuk-body">Signatures match</p>' %}
+  {% elif data.signatureDecision == "no-match" %}
+    {% set signatureHtml = '<p class="govuk-body">Signatures do not match</p>' %}
+  {% elif data.signatureDecision == "flag" %}
+    {% set signatureHtml = '<p class="govuk-body">Flagged for review</p>' %}
+  {% else %}
+    {% set signatureHtml = '<p class="govuk-body">Not checked</p>' %}
+  {% endif %}
+
+  {% if data.signatureNote %}
+    {% set signatureHtml = signatureHtml + '<p class="govuk-body"><span class="govuk-body-s">Note: ' + data.signatureNote + '</span></p>' %}
+  {% endif %}
+
+  {% set signatureHref = baseUrl + "/life-cert/review/signature?nino=" + nino + "&returnTo=check-answers" %}
+
+  {# =========================
+     WITNESS ADDRESS
+  ========================= #}
+
+  {% set witnessAddressOrganisation = data.witnessAddressOrganisation or viewCase.scannedWitness.address.organisation or "" %}
+  {% set witnessAddressLine1 = data.witnessAddressLine1 or viewCase.scannedWitness.address.line1 or "" %}
+  {% set witnessAddressLine2 = data.witnessAddressLine2 or viewCase.scannedWitness.address.line2 or "" %}
+  {% set witnessAddressTown = data.witnessAddressTown or viewCase.scannedWitness.address.townOrCity or "" %}
+  {% set witnessAddressCounty = data.witnessAddressCounty or viewCase.scannedWitness.address.county or "" %}
+  {% set witnessAddressPostcode = data.witnessAddressPostcode or viewCase.scannedWitness.address.postcode or "" %}
+
+  {% set witnessAddressHtml = '<p class="govuk-body">' %}
+
+  {% if witnessAddressOrganisation %}
+    {% set witnessAddressHtml = witnessAddressHtml + witnessAddressOrganisation + '<br>' %}
+  {% endif %}
+
+  {% set witnessAddressHtml = witnessAddressHtml + witnessAddressLine1 %}
+
+  {% if witnessAddressLine2 %}
+    {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressLine2 %}
+  {% endif %}
+
+  {% if witnessAddressTown %}
+    {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressTown %}
+  {% endif %}
+
+  {% if witnessAddressCounty %}
+    {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressCounty %}
+  {% endif %}
+
+  {% if witnessAddressPostcode %}
+    {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressPostcode %}
+  {% endif %}
+
+  {% set witnessAddressHtml = witnessAddressHtml + '</p>' %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">
+        Review scanned life certificate
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        Check the details from the certificate before reviewing any differences.
+      </p>
+
+      <h2 class="govuk-heading-m">Scanned customer details</h2>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Name"
+            },
+            value: {
+              html: '<p class="govuk-body">' + (data.enteredName or viewCase.scannedCustomer.name) + '</p>'
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/name?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "customer name"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Address"
+            },
+            value: {
+              html: customerAddressHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/address?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "customer address"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Telephone number"
+            },
+            value: {
+              html: '<p class="govuk-body">' + (data.telephone or viewCase.scannedCustomer.phone) + '</p>'
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/telephone?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "customer telephone number"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m">Signature check</h2>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Signature"
+            },
+            value: {
+              html: signatureHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: signatureHref,
+                  text: "Change",
+                  visuallyHiddenText: "signature decision"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m">Scanned witness details</h2>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Name"
+            },
+            value: {
+              html: '<p class="govuk-body">' + (data.witnessName or viewCase.scannedWitness.name) + '</p>'
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/witness-name?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "witness name"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Role"
+            },
+            value: {
+              html: '<p class="govuk-body">' + (data.witnessRole or viewCase.scannedWitness.jobTitle) + '</p>'
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/witness-role?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "witness role"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Address"
+            },
+            value: {
+              html: witnessAddressHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/witness-address?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "witness address"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Telephone number"
+            },
+            value: {
+              html: '<p class="govuk-body">' + (data.witnessTelephone or viewCase.scannedWitness.phone) + '</p>'
+            },
+            actions: {
+              items: [
+                {
+                  href: baseUrl + "/life-cert/review/witness-telephone?nino=" + nino + "&returnTo=check-answers",
+                  text: "Change",
+                  visuallyHiddenText: "witness telephone number"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      <form method="post">
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          <a class="govuk-link"
+            href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+            Cancel
+          </a>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

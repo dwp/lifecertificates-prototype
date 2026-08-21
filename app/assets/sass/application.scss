@@ -1,6 +1,89 @@
 //
 // For guidance on how to add CSS and SCSS see:
 // https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
-// 
+//
 
 // Add extra styles here
+
+@import "components/app-document-scanner";
+@import "components/app-liveness-checker";
+@import "components/app-phone-input";
+@import "components/app-subnav";
+
+// Guidance styles
+.app-example {
+    padding: 20px;
+    border: 1px solid #b1b4b6;
+    background: #f3f2f1;
+  }
+  
+  .app-example pre {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+// Other styles (Used on Agent screens)
+.app-table__cell--nowrap {
+  white-space: nowrap;
+}
+
+.app-highlight-difference {
+  background-color: #fff3bf; // soft yellow highlight
+  padding: 2px 4px 0px;
+  border-radius: 2px;
+  border-bottom: 2px solid #ffdd00;
+}
+
+.app-highlight-difference--critical {
+  background-color: #f3c3c3; // light red
+}
+
+.app-ocr-image {
+  margin-bottom: 20px;
+  border: 2px solid #b1b4b6;
+  padding: 8px;
+}
+
+.app-ocr-image img {
+  display: block;
+  max-width: 100%;
+}
+
+.app-no-border {
+  border: none;
+}
+/*
+.app-highlight-difference {
+  background-color: #ffdd00;   // GOV.UK yellow
+  box-shadow: 0 0 0 2px #ffdd00;
+}
+*/
+
+.app-list--letter {
+    padding-left: 20px;
+    list-style-type: lower-alpha;
+}
+
+// Probably unnecessary or redundant
+.app-document-review {
+    width: 100%;
+    clip-path: inset(0 0 0 0 round 15px);
+    @include govuk-responsive-margin(6, "bottom");
+}
+@media (min-width: 40.0625em) {
+    .app-document-scanner, .app-document-review {
+        max-width: 480px;
+    }
+    .app-liveness-preview {
+        max-height: 400px;
+    }
+
+}
+
+.app-tag--full {
+    max-width: none;
+}
+
+.govuk-summary-list__value .app-tag--full {
+    @include govuk-responsive-margin(1, "bottom");
+}

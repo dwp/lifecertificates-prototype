@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Register someone to collect your state pension" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+                <p class="govuk-body">
+                    When you’ve made your lasting power of attorney (LPA), you need to register it with the Office of the Public Guardian (OPG).
+                </p>
+                <p class="govuk-body">
+                    It takes 8 to 10 weeks to register an LPA if there are no mistakes in the application.
+                <p class="govuk-body">
+                    <a class="govuk-link" href="https://www.gov.uk/power-of-attorney/register">Make, register or end a lasting power of attorney</a>
+                </p>
+
+                <p class="govuk-body">
+                    Your attorney can also register it for you. You’ll be told if they do and you can object to the registration.
+                </p>
+
+                {{ govukButton({
+                    text: "Return",
+                    classes: "govuk-button--secondary",
+                    href: "review-lpa"
+                }) }}
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Resolve life certificate difference" %}
+{% set pageName = "Name does not match" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+
+      <p class="govuk-body">
+        There is no life certificate for this customer.
+      </p>
+
+      {{ govukButton({
+        text: "Back to life certificates",
+        href: baseUrl + "/life-certs",
+        classes: "govuk-button--secondary"
+      }) }}
+
+    </div>
+  </div>
+
+{% else %}
+
+  {% set nameDiff = data.enteredName != viewCase.customer.name %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">
+        {{ pageCaption }}
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        The name read from the certificate does not match the name on record.
+      </p>
+
+      <!-- =========================
+           Side-by-side comparison
+      ========================= -->
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Name on certificate</h3>
+
+          <p>
+            {% if nameDiff %}
+              <span class="app-highlight-difference">
+                {{ data.enteredName }}
+              </span>
+            {% else %}
+              {{ data.enteredName }}
+            {% endif %}
+          </p>
+
+          {% if nameDiff %}
+            <p class="govuk-hint">
+              Does not match name on record
+            </p>
+          {% endif %}
+        </div>
+        
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Name on record</h3>
+
+          <p>
+            {{ viewCase.customer.name }}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           Decision
+      ========================= -->
+      <form method="post">
+
+        {{ govukRadios({
+          name: "nameDecision",
+          fieldset: {
+            legend: {
+              text: "What do you want to do?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "use-certificate",
+              text: "Update the record with the name on the certificate",
+              conditional: {
+                html: govukTextarea({
+                  name: "note",
+                  label: {
+                    text: "Add a note (optional)"
+                  }
+                })
+              }
+            },
+            {
+              value: "keep-record",
+              text: "Keep the name on record"
+            },
+            {
+              value: "flag",
+              text: "Flag this mismatch for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this mismatch"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <!-- Actions -->
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Check form again",
+            classes: "govuk-button--secondary",
+            href: baseUrl + "/life-cert/review/name?nino=" + nino
+          }) }}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+             Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

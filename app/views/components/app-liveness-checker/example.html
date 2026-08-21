@@ -1,0 +1,49 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
+
+{{ govukErrorSummary({
+  titleText: "There is a problem",
+  errorList: [
+    {
+      text: "There is a problem with the camera.",
+      href: "#app-liveness-checker-liveness-check"
+    }
+  ],
+  attributes: {
+    id: "livenessErrorSummary",
+    hidden: "hidden",
+    tabindex: "-1"
+  }
+}) }}
+
+<h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+{% set displayUntilCameraReady %}
+  {{ govukWarningText({
+    text: "We need to use your camera. Choose Allow to continue."
+  }) }}
+{% endset %}
+
+  {% call appLivenessChecker({
+    id: "liveness-check",
+    name: "livenessImage",
+    formId: "livenessForm",
+    errorSummaryId: "livenessErrorSummary",
+    displayUntilCameraReady: displayUntilCameraReady
+  }) %}
+
+    {{ govukButton({
+      text: "Take photo and continue"
+    }) }}
+
+  {% endcall %}
+
+</form>
+
+<p class="govuk-body">
+  unable-to-verify-identity
+    Not able to verify your identity?
+  </a>
+</p>

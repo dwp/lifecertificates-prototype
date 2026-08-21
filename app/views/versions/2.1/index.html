@@ -1,0 +1,205 @@
+{% extends "layouts/main.html" %}
+
+{% set prototypeStatus = version.status %}
+
+{% block pageTitle %}
+    Version {{ version.number }} – {{ serviceName }}
+{% endblock %}
+
+{% block content %}
+
+    {% include "_partials/status-banner.njk" %}
+
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-two-thirds">
+
+            <span class="govuk-caption-xl">
+                Version {{ version.number }}
+            </span>
+            <h1 class="govuk-heading-xl">
+                {{ version.title }}
+            </h1>
+
+            {{ govukSummaryList({
+                "rows": [
+                    {
+                        "key": {
+                            "text": "Date"
+                        },
+                        "value": {
+                            "text": version.date
+                        }
+                    }
+                ]
+            }) }}
+
+            {% if version.about.length %}
+
+                <h2 class="govuk-heading-l">About this version</h2>
+
+                {% for paragraph in version.about %}
+                    <p class="govuk-body">
+                        {{ paragraph }}
+                    </p>
+                {% endfor %}
+
+            {% endif %}
+
+            {% if version.changes.added.length or version.changes.updated.length or version.changes.removed.length %}
+
+                <h2 class="govuk-heading-l">What's changed</h2>
+
+                {% if version.changes.added.length %}
+
+                    <h3 class="govuk-heading-m">Added</h3>
+
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for item in version.changes.added %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+
+                {% endif %}
+
+                {% if version.changes.updated.length %}
+
+                    <h3 class="govuk-heading-m">Updated</h3>
+
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for item in version.changes.updated %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+
+                {% endif %}
+
+                {% if version.changes.removed.length %}
+
+                    <h3 class="govuk-heading-m">Removed</h3>
+
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for item in version.changes.removed %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+
+                {% endif %}
+
+            {% endif %}
+
+            {% if version.users.length %}
+
+                <h2 class="govuk-heading-l">Roles and journeys</h2>
+
+                {% for group in version.users %}
+
+                    <div class="govuk-summary-card">
+
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h3 class="govuk-summary-card__title">
+                                {{ group.title }}
+                            </h3>
+                        </div>
+
+                        <div class="govuk-summary-card__content">
+
+                            {% if group.description %}
+                                <p class="govuk-body">
+                                    {{ group.description }}
+                                </p>
+                            {% endif %}
+
+                            <dl class="govuk-summary-list">
+
+                                {% for user in group.items %}
+
+                                    <div class="govuk-summary-list__row">
+
+                                        <dt class="govuk-summary-list__key">
+                                            {{ user.name }}
+                                        </dt>
+
+                                        <dd class="govuk-summary-list__value">
+
+                                            <p class="govuk-body">
+                                                {{ user.description }}
+                                            </p>
+
+                                            {% if user.journeys.length %}
+
+                                                <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-0">
+
+                                                    {% for journey in user.journeys %}
+
+                                                        <li>
+                                                            <a class="govuk-link" href="{{ version.number }}{{ journey.href }}">
+                                                                {{ journey.title }}
+                                                            </a>
+
+                                                            {% if journey.description %}
+                                                                <br>
+                                                                <span class="govuk-hint">
+                                                                    {{ journey.description }}
+                                                                </span>
+                                                            {% endif %}
+
+                                                        </li>
+
+                                                    {% endfor %}
+
+                                                </ul>
+
+                                            {% endif %}
+
+                                        </dd>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </dl>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+            {% if version.currentFocus.length %}
+
+                <h2 class="govuk-heading-l">Current focus</h2>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    {% for item in version.currentFocus %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+
+            {% endif %}
+
+            {% if version.knownGaps.length %}
+
+                <h2 class="govuk-heading-l">Known gaps</h2>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    {% for item in version.knownGaps %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+
+            {% endif %}
+
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+
+            {% include "_partials/version-links.njk" %}
+
+        </div>
+
+    </div>
+
+{% endblock %}

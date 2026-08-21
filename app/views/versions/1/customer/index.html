@@ -1,0 +1,385 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+    Customer journey – version {{ version }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <span class="govuk-caption-xl">
+                Version {{ version }}
+            </span>
+
+            <h1 class="govuk-heading-xl">Customer journey</h1>
+
+            <p class="govuk-body-l">How a customer starts and provides a life certificate.</p>
+
+
+            {% set variation1Path = baseUrl + "/zero-knowledge-proof-of-life/" %}
+            {% set variation1Journey %}
+            <p class="govuk-body">
+                No DWP-held information is shared with the customer.
+            </p>
+            <ol class="govuk-list govuk-list--number">
+                <li>
+                     <a class="govuk-link"
+                        href="{{ variation1Path }}start">Get ready to start</a>
+                </li>
+                <li>
+                    Provide a verifiable identity document</a>
+                    <ol class="govuk-list app-list--letter">
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}document-front-scan">Scan front of document</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}document-front-check">Check front of document</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}document-back-scan">Scan back of document</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}document-back-check">Check back of document</a>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <strong>Either</strong> verify identity/proof of life (preferred)</a>
+                    <ol class="govuk-list app-list--letter">
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}verify-identity">Verify identity</a>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    <strong>Or</strong> share life verification from a doctor</a>
+                    <ol class="govuk-list app-list--letter">
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}medical-verification">Enter doctor's details and upload letter</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}medical-contact-info">Enter doctor's contact information</a>
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    Provide contact details
+                    <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation1Path }}contact-email">Provide email address</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation1Path }}contact-phone">Provide mobile number</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation1Path }}check-phone">Verify mobile number</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation1Path }}contact-preference">Choose preferred contact method</a>
+                    </li>
+                    </ol>
+                <li>
+                    Check answers and send your life certificate</a>
+                    <ol class="govuk-list app-list--letter">
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}check-answers">Check your answers</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                            href="{{ variation1Path }}confirmation">Confirmation</a>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+
+{{ govukButton({
+    text: "Start variation 1",
+    href: variation1Path + "start",
+    isStartButton: true
+}) }}
+
+            {% endset %}
+
+            {% set variation2Path = baseUrl + "/review-and-change-info/" %}
+            {% set variation2Journey %}
+            <p class="govuk-body">
+                After proving their identity customers can review (and request changes to) information DWP holds about them.
+            </p>
+            <ol class="govuk-list govuk-list--number">
+                <li>
+                    <a class="govuk-link"
+                    href="{{ variation2Path }}start">Get ready to start</a>
+                </li>
+               <li>
+                Provide a verifiable identity document</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link app-link-plain"
+                           href="{{ variation2Path }}document-front-scan">Scan front of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation2Path }}document-front-check">Check front of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation2Path }}document-back-scan">Scan back of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation2Path }}document-back-check">Check back of document</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                <strong>Either</strong> verify identity/proof of life and then review and/or change known contact information (preferred)</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}verify-identity">Verify identity</a>
+                    </li>
+                </ol>
+                <p class="govuk-body">then</p>
+                <ol class="govuk-list app-list--letter" start="2">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}review-bank-details">Review pension payment bank details</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}review-email">Review email address</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}review-phone">Review mobile number</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}check-phone">Verify mobile number (if changed)</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}contact-preference">Review preferred contact method</a>
+                    </li>
+                </ol>
+               <p class="govuk-body">and then</p>
+                <ol class="govuk-list app-list--letter" start="6">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}verify-identity-again">Verify identity again</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                <strong>Or</strong> share life verification from a doctor and provide up to date contact details</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}medical-verification">Enter doctor's details and upload letter</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}medical-contact-info">Enter doctor's contact information</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                Check answers and send your life certificate</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}check-answers">Check your answers</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation2Path }}confirmation">Confirmation</a>
+                    </li>
+                </ol>
+                </li>
+            </ol>
+
+{{ govukButton({
+    text: "Start variation 2",
+    href: variation2Path + "start",
+    isStartButton: true
+}) }}
+
+            {% endset %}
+
+            {% set variation3Path = baseUrl + "/tell-us-about-lpa/" %}
+            {% set variation3Journey %}
+            <p class="govuk-body">
+                As variation 2 with the option to tell DWP about any granted power of attorney.
+            </p>
+            <ol class="govuk-list govuk-list--number">
+                <li>
+                     <a class="govuk-link"
+                        href="{{ variation3Path }}start">Get ready to start</a>
+                </li>
+                <li>
+                Provide a verifiable identity document</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation3Path }}document-front-scan">Scan front of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation3Path }}document-front-check">Check front of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation3Path }}document-back-scan">Scan back of document</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                           href="{{ variation3Path }}document-back-check">Check back of document</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                <strong>Either</strong> verify identity/proof of life and then review and/or change known contact information (preferred)</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}verify-identity">Verify identity</a>
+                    </li>
+                </ol>
+                <p class="govuk-body">then</p>
+                <ol class="govuk-list app-list--letter" start="2">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}review-bank-details">Review pension payment bank details</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}review-lpa">Review registered lasting power of attorney</a>
+                        <ol class="govuk-list govuk-list--number" type="a">
+                            <li>
+                                <a class="govuk-link"
+                                href="{{ variation3Path }}remove-lpa">Remove a registered lasting power of attorney</a> (optional)
+                            </li>
+                            <li>
+                                <a class="govuk-link"
+                                href="{{ variation3Path }}register-lpa">Register a power of attorney</a> (optional, signpost to LPA guidance)
+                            </li>
+                        </ol>
+                    </li>
+                <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}review-email">Review email address</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}review-phone">Review mobile number</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}check-phone">Verify mobile number (if changed)</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}contact-preference">Review preferred contact method</a>
+                    </li>
+                </ol>
+
+               <p class="govuk-body">and then</p>
+                <ol class="govuk-list app-list--letter" start="8">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}verify-identity-again">Verify identity again</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                <strong>Or</strong> share life verification from a doctor and provide up to date contact details</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}medical-verification">Enter a doctor's details and upload a letter from them</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}medical-contact-info">Enter a doctor's contact information</a>
+                    </li>
+                </ol>
+                </li>
+                <li>
+                Check answers and send your life certificate</a>
+                <ol class="govuk-list app-list--letter">
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}check-answers">Check your answers</a>
+                    </li>
+                    <li>
+                        <a class="govuk-link"
+                        href="{{ variation3Path }}confirmation">Confirmation</a>
+                    </li>
+                </ol>
+                </li>
+            </ol>
+
+{{ govukButton({
+    text: "Start variation 3",
+    href: variation3Path + "start",
+    isStartButton: true
+}) }}
+
+            {% endset %}
+
+
+            {{ govukAccordion({
+            id: "accordion-default",
+            items: [
+                {
+                heading: {
+                    text: "Variation 1: zero knowledge of the customer"
+                },
+                content: {
+                    html: variation1Journey
+                }
+                },
+                {
+                heading: {
+                    text: "Variation 2: review and change info if known customer"
+                },
+                content: {
+                    html: variation2Journey
+                }
+                },
+                {
+                heading: {
+                    text: "Variation 3: optionally tell us about power of attorney"
+                },
+                content: {
+                    html: variation3Journey
+                }
+                }
+                ]
+            }) }}
+
+            <h2 class="govuk-heading-m">Related documentation</h2>
+            <ul class="govuk-list">
+                <li><a class="govuk-link" href="/versions/{{ version }}/docs/service-overview">Service overview</a></li>
+            </ul>
+
+        </div>
+    </div>
+    
+{% endblock %}

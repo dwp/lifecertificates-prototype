@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "components/app-phone-input/macro.njk" import appPhoneInput %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
+{% set pageName = "Check your phone" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <p class="govuk-body">We’ve sent you a text message with a security code.</p>
+
+            {{ govukInput({
+            label: {
+                text: "Security code"
+            },
+            id: "security-code",
+            name: "securityCode",
+            type: "text",
+            autocomplete: "one-time-code",
+            classes: "govuk-input--width-4 govuk-input--extra-letter-spacing",
+            inputmode: "numeric"
+            }) }}
+
+            {{ govukButton({
+            text: "Continue",
+            href: "contact-preference"
+            }) }}
+
+            <p class="govuk-body"><a href="#" class="govuk-link">Not received a text message?</a></p>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+

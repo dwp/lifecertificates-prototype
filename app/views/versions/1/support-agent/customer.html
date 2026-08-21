@@ -1,0 +1,241 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "quick-reference/macro.njk" import dwpQuickReference %}
+{% from "side-navigation/macro.njk" import dwpSideNavigation %}
+
+{% if viewCase %}
+  {% set pageName = "Customer details" %}
+{% else %}
+  {% set pageName = "Case not found" %}
+{% endif %}
+
+{% block pageTitle %}
+    {% if viewCase %}
+        {{ viewCase.id }} - {{ pageName }}
+    {% else %}
+        {{ pageName }}
+    {% endif %}
+{% endblock %}
+
+{% block containerStart %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Cases",
+        href: baseUrl + "/dashboard"
+        }
+    ]
+    }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if not viewCase %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {% if caseId %}
+          <p class="govuk-body">
+            There is no case matching reference <strong>{{ caseId }}</strong>.
+          </p>
+        {% else %}
+          <p class="govuk-body">
+            No case reference was provided.
+          </p>
+        {% endif %}
+
+        <a class="govuk-button govuk-button--secondary" href="{{ baseUrl }}/dashboard">
+          Back to dashboard
+        </a>
+
+      </div>
+    </div>
+
+  {% else %}
+
+  <div class="govuk-grid-row">
+
+    <!-- LEFT COLUMN -->
+    <div class="govuk-grid-column-one-third">
+
+      {{ dwpQuickReference({
+        ariaLabel: "Case information",
+        classes: "dwp-quick-reference--reduced",
+        primaryReference: {
+          text: 'Name:',
+          value: viewCase.customer.name
+        },
+        secondaryReference: {
+          text: 'National Insurance number:',
+          textDisplay: true,
+          value: viewCase.customer.nino
+        },
+        status: {
+          text: 'Certificate status:',
+          value: viewCase.status,
+          textDisplay: true,
+          classes: viewCase.statusTagClass
+        }
+      }) }}
+
+      {{ dwpSideNavigation({
+        pageId: "case-navigation",
+        selectedItem: "#customer",
+        items: [
+          {
+            text: "Case overview",
+            href: baseUrl + "/case-overview?caseId=" + caseId
+          },
+          {
+            text: "Customer details",
+            href: baseUrl + "/customer?caseId=" + caseId
+          },
+          {
+            text: "Evidence",
+            href: baseUrl + "/evidence?caseId=" + caseId
+          },
+          {
+            text: "Timeline",
+            href: baseUrl + "/timeline?caseId=" + caseId
+          },
+          {
+            text: "Case notes",
+            href: baseUrl + "/case-notes?caseId=" + caseId
+          }
+        ]
+      }) }}
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+      <!-- NAME -->
+      <h2 class="govuk-heading-m">Name</h2>
+
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Recorded</h3>
+          <p>{{ viewCase.customer.name }}</p>
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Scanned</h3>
+          <p>
+            {% if not viewCase.checks.nameMatch %}
+              <span class="app-highlight-difference">
+                {{ viewCase.scannedCustomer.name }}
+              </span>
+              <br>
+              <span class="govuk-hint">Does not match recorded name</span>
+            {% else %}
+              {{ viewCase.scannedCustomer.name }}
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ADDRESS -->
+      <h2 class="govuk-heading-m">Address</h2>
+
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Recorded</h3>
+          <p>
+            {{ viewCase.customer.address.line1 }}<br>
+            {% if viewCase.customer.address.line2 %}
+              {{ viewCase.customer.address.line2 }}<br>
+            {% endif %}
+            {{ viewCase.customer.address.townOrCity }}<br>
+            {% if viewCase.customer.address.county %}
+              {{ viewCase.customer.address.county }}<br>
+            {% endif %}
+            {{ viewCase.customer.address.postcode }}<br>
+            {{ viewCase.customer.address.country }}
+          </p>
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Scanned</h3>
+          <p>
+            {% if not viewCase.checks.addressMatch %}
+              <span class="app-highlight-difference">
+            {% endif %}
+
+            {{ viewCase.scannedCustomer.address.line1 }}<br>
+            {% if viewCase.scannedCustomer.address.line2 %}
+              {{ viewCase.scannedCustomer.address.line2 }}<br>
+            {% endif %}
+            {{ viewCase.scannedCustomer.address.townOrCity }}<br>
+            {% if viewCase.scannedCustomer.address.county %}
+              {{ viewCase.scannedCustomer.address.county }}<br>
+            {% endif %}
+            {{ viewCase.scannedCustomer.address.postcode }}<br>
+            {{ viewCase.scannedCustomer.address.country }}
+
+            {% if not viewCase.checks.addressMatch %}
+              </span>
+              <br>
+              <span class="govuk-hint">Does not match recorded address</span>
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- PHONE -->
+      <h2 class="govuk-heading-m">Telephone number</h2>
+
+        <div class="govuk-grid-row">
+
+            <div class="govuk-grid-column-one-half">
+            <h3 class="govuk-heading-s">Recorded</h3>
+                <p>{{ viewCase.customer.phone }}</p>
+            </div>
+
+            <div class="govuk-grid-column-one-half">
+                <h3 class="govuk-heading-s">Scanned</h3>
+                <p>
+
+                {% if not viewCase.checks.phoneMatch %}
+                    <span class="app-highlight-difference">
+                    {{ viewCase.scannedCustomer.phone }}
+                    </span>
+                    <br>
+                    <span class="govuk-hint">
+                    Does not match recorded telephone number
+                    </span>
+                {% else %}
+                    {{ viewCase.scannedCustomer.phone }}
+                {% endif %}
+
+                </p>
+            </div>
+        </div>
+
+
+      <!-- FREE TEXT -->
+      {% if viewCase.scannedCustomer.freeText %}
+        <h2 class="govuk-heading-m">Customer provided notes</h2>
+
+        <div class="govuk-inset-text">
+          {{ viewCase.scannedCustomer.freeText }}
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+  {% endif %}
+
+{% endblock %}

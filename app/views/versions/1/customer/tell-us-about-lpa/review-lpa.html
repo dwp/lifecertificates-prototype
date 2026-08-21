@@ -1,0 +1,148 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+
+{% set pageName %}
+    {% if data["hasLPA"] == "Yes" %}
+        You have 1 lasting power of attorney
+    {% else %}
+        Nominate someone who can collect your state pension
+    {% endif %}
+{% endset %}
+
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+
+            <form class="form" action="review-lpa" method="post">
+
+            {% if data["hasLPA"] == "Yes" %}
+                <h1 class="govuk-heading-l">{{ pageName }}</h1>
+                <p class="govuk-body">They can collect, access and manage your UK State Pension on your behalf
+                {{ govukTable({
+                    caption: "Registered lasting power of attorney",
+                    captionClasses: "govuk-table__caption--m",
+                    firstCellIsHeader: true,
+                    head: [
+                        { text: "Representative" },
+                        { text: "Date registered" },
+                        { text: "" }
+                    ],
+                    rows: [
+                        [
+                            { text: "Jan Attornisson" },
+                            { text: "10 May 2022" },
+                            { html: "<a href=\"remove-lpa\" class=\"govuk-link\">Remove</a>" }
+                        ]
+                    ]
+                    }) }}
+            {% endif %}
+
+            {% set legendText %}
+                Do you need to register a{% if data["hasLPA"] == "Yes" %}nother{% endif %} lasting power of attorney?
+            {% endset %}
+            {% if data["hasLPA"] == "No" %}
+                {% set radiosIsPageHeading = true %}
+                {% set radiosClassses = "govuk-fieldset__legend--l" %}
+            {% else %}
+                {% set radiosIsPageHeading = false %}
+                {% set radiosClassses = "govuk-fieldset__legend--m" %}
+            {% endif %}
+
+
+
+                {% if data["hasLPA"] == "No" %}
+                    {% set radiosHint = {
+                        text: "To collect, access and manage your UK State Pension on your behalf"
+                    } %}
+                {% endif %}
+
+                {{ govukRadios({
+                    name: "registerLPA",
+                    classes: "govuk-radios--inline",
+                    fieldset: {
+                        legend: {
+                            text: legendText,
+                            isPageHeading: radiosIsPageHeading,
+                            classes: radiosClassses
+                        }
+                    },
+                    hint: radiosHint,
+                    items: [
+                        {
+                            value: "Yes",
+                            text: "Yes"
+                        },
+                        {
+                            value: "No",
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+                {{ govukRadios(radioOptions) }}
+
+                <div class="govuk-button-group">
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            {% if data["hasLPA"] == "Yes" %}
+                <input name="hasLPA" type="hidden" value="No">
+                {{ govukButton({
+                    text: "Page if customer has no LPA",
+                    classes: "govuk-button--secondary",
+                    href: "review-lpa?hasLPA=No"
+                }) }}
+            {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
+                <input name="hasLPA" type="hidden" value="Yes">
+                 {{ govukButton({
+                    text: "Page if customer has LPA",
+                    classes: "govuk-button--secondary",
+                     href: "review-lpa?hasLPA=Yes"
+                }) }}
+           {% endif %}
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block ContainerEnd %}
+    <script>
+        // Get the current URL
+        const currentUrl = window.location.href;
+
+        // Remove the parameter (replace "param" with your actual parameter name)
+        const strippedUrl = currentUrl
+        .replace(/([?&])hasLPA=[^&]*/, '$1')
+        .replace(/&$/, '')
+        .replace(/\?$/, '');
+
+        // If the URL changed, update it
+        if (strippedUrl !== currentUrl) {
+            // Use replace() to force the URL to update
+            window.location.replace(strippedUrl);
+        }
+    </script>
+{% endblock %}

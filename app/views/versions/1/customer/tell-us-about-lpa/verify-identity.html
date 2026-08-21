@@ -1,0 +1,58 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
+
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Get ready to move your head" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <div class="govuk-warning-text" id="permissionsWarning">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-visually-hidden">Warning</span>
+                    We need to use your camera. Choose Allow to continue.
+                </strong>
+            </div>
+
+            {% call appLivenessChecker({
+                id: "liveness-check",
+                name: "livenessImage",
+                displayUntilCameraReady: displayUntilCameraReady,
+                form: {
+                    id: "livenessForm",
+                    action: "review-bank-details",
+                    method: "post"
+                }
+                }) %}
+
+                {{ govukButton({
+                    text: "Take photo and continue"
+                }) }}
+
+                {% endcall %}
+
+                <p><a class="govuk-link" href="unable-to-verify-identity">Not able to verify your identity?</a></p>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

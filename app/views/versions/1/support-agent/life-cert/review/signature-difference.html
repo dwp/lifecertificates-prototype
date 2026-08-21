@@ -1,0 +1,128 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Resolve life certificate difference" %}
+{% set pageName = "Signature does not match" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+    </div>
+  </div>
+
+{% else %}
+
+  {% set diff = data.signature != viewCase.customer.signature %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">{{ pageCaption }}</span>
+
+      <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+      <p class="govuk-body">
+        The signature on the certificate does not match the signature on record.
+      </p>
+
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Signature on certificate</h3>
+
+          <p>
+            {% if diff %}
+              <span class="app-highlight-difference">{{ data.signature }}</span>
+            {% else %}
+              {{ data.signature }}
+            {% endif %}
+          </p>
+
+          {% if diff %}
+            <p class="govuk-hint">
+              Does not match signature on record
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Signature on record</h3>
+
+          <p>
+            {{ viewCase.customer.signature }}
+          </p>
+        </div>
+
+      </div>
+
+      <form method="post">
+
+        {{ govukRadios({
+          name: "signatureDecision",
+          fieldset: {
+            legend: {
+              text: "What do you want to do?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "use-certificate",
+              text: "Update record with the signature on the certificate"
+            },
+            {
+              value: "keep-record",
+              text: "Keep the signature on record"
+            },
+            {
+              value: "flag",
+              text: "Flag this mismatch for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this mismatch"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Check form again",
+            classes: "govuk-button--secondary",
+            href: baseUrl + "/life-cert/review/signature?nino=" + nino
+          }) }}
+
+          <a class="govuk-link" href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

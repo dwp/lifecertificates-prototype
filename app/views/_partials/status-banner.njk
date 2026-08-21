@@ -1,0 +1,44 @@
+{% if version.status == "Current" %}
+
+  {{ govukNotificationBanner({
+    "type": "success",
+    "titleText": "Current",
+    "html": "<p class=\"govuk-notification-banner__heading\">This is the current design.</p>"
+  }) }}
+
+{% elseif version.status == "Draft" %}
+
+  {{ govukNotificationBanner({
+    "titleText": "Draft",
+    "html": "<p class=\"govuk-notification-banner__heading\">This is a draft version. Use <a class=\"govuk-link\" href=\"/current\">/current</a> for the latest design.</p>"
+  }) }}
+
+{% elseif version.status == "InProgress" %}
+
+  {{ govukNotificationBanner({
+    "titleText": "Work in progress",
+    "html": "<p class=\"govuk-notification-banner__heading\">This version is still being designed.</p><p class=\"govuk-notification-banner__body\">Use <a class=\"govuk-link\" href=\"/current\">/current</a> for the latest version.</p>"
+  }) }}
+
+{% elseif version.status == "Previous" %}
+
+  {{ govukNotificationBanner({
+    "titleText": "Previous",
+    "html": "<p class=\"govuk-notification-banner__heading\">This is a previous version. Use <a class=\"govuk-link\" href=\"/current\">/current</a> for the latest design.</p>"
+  }) }}
+
+{% elseif version.status == "Archived" %}
+
+  {{ govukWarningText({
+    "text": "This version is archived. It is kept for context and should not be used as the current design.",
+    "iconFallbackText": "Warning"
+  }) }}
+
+{% elseif version.status == "Exploratory" %}
+
+  {{ govukWarningText({
+    "text": "This journey is exploratory and has not been agreed as part of the current service design.",
+    "iconFallbackText": "Warning"
+  }) }}
+
+{% endif %}

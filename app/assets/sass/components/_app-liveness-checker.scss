@@ -1,0 +1,84 @@
+.app-liveness-checker-wrapper {
+    width: 100%;
+    max-width: 420px;
+  }
+  
+  .app-liveness-checker {
+    position: relative;
+  
+    width: 100%;
+    aspect-ratio: 3 / 4;
+  
+    overflow: hidden;
+  
+    background: govuk-colour("black");
+  }
+  
+  .app-liveness-checker__video,
+  .app-liveness-checker__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  
+    width: 100%;
+    height: 100%;
+  
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  .app-liveness-checker__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  
+    display: block;
+  
+    width: 100%;
+    height: 100%;
+  
+    pointer-events: none;
+  }
+  
+  .app-liveness-checker__overlay-path {
+    fill: rgba(govuk-colour("white"), 0.6);
+    fill-rule: evenodd;
+  }
+  
+  .app-liveness-checker__guide-path {
+    fill: none;
+  
+    stroke: govuk-colour("yellow");
+    stroke-width: 6;
+    stroke-linecap: round;
+  
+    transition: stroke 0.2s ease;
+  }
+  
+  .app-liveness-checker-wrapper[data-state="searching"] .app-liveness-checker__guide-path {
+    stroke: govuk-colour("yellow");
+  }
+  
+  .app-liveness-checker-wrapper[data-state="detected"] .app-liveness-checker__guide-path {
+    stroke: govuk-colour("green");
+  }
+  
+  .app-liveness-checker-wrapper[data-state="error"] .app-liveness-checker__guide-path {
+    stroke: govuk-colour("red");
+  }
+  
+  .app-liveness-checker__window {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  
+    pointer-events: none;
+  }
+  
+  .app-liveness-checker__hint {
+    margin-top: govuk-spacing(3);
+  }
+  
+  .app-liveness-checker__permissions-warning {
+    margin-bottom: govuk-spacing(3);
+  }

@@ -1,0 +1,184 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "quick-reference/macro.njk" import dwpQuickReference %}
+{% from "side-navigation/macro.njk" import dwpSideNavigation %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% if viewCase %}
+  {% set pageName = "Life certificate" %}
+{% else %}
+  {% set pageName = "Case not found" %}
+{% endif %}
+
+{% block pageTitle %}
+    {% if viewCase %}
+        {{ viewCase.customer.name }} - {{ pageName }}
+    {% else %}
+        {{ pageName }}
+    {% endif %}
+{% endblock %}
+
+{% block containerStart %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Cases",
+        href: baseUrl + "/dashboard"
+        }
+    ]
+    }) }}
+{% endblock %}
+
+
+{% block content %}
+
+  {% if not viewCase %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {% if caseId %}
+            <p class="govuk-body">
+            There is no case matching reference <strong>{{ caseId }}</strong>.
+            </p>
+        {% else %}
+            <p class="govuk-body">
+            No case reference was provided.
+            </p>
+        {% endif %}
+
+        {{ govukButton({
+            text: "Back to dashboard",
+            href: baseUrl + "/dashboard",
+            classes: "govuk-button--secondary"
+        }) }}
+
+        </div>
+    </div>
+
+  {% else %}
+
+    <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+
+      {{ dwpQuickReference({
+              ariaLabel: "Case information",
+              classes: "dwp-quick-reference--reduced",
+              primaryReference: {
+                  text: 'Name:',
+                  value: viewCase.customer.name
+              },
+              secondaryReference: {
+                  text: 'National Insurance number:',
+                  textDisplay: true,
+                  value: viewCase.customer.nino
+              },
+              status: {
+                  text: 'Certificate status:',
+                  value: viewCase.status,
+                  textDisplay: true,
+                  classes: viewCase.statusTagClass
+              }
+          })
+      }}
+
+      {{ dwpSideNavigation({
+        pageId: "case-navigation",
+        selectedItem: "#case-overview",
+        items: [
+          {
+            text: "Case overview",
+            href: baseUrl + "/case-overview?caseId=" + caseId,
+            id: "case-overview-link"
+          },
+          {
+            text: "Customer details",
+            href: baseUrl + "/customer?caseId=" + caseId,
+            id: "customer-link"
+          },
+          {
+            text: "Evidence",
+            href: baseUrl + "/evidence?caseId=" + caseId,
+            id: "evidence-link"
+          },
+          {
+            text: "Timeline",
+            href: baseUrl + "/timeline?caseId=" + caseId,
+            id: "timeline-link"
+          },
+          {
+            text: "Case notes",
+                href: baseUrl + "/notes?caseId=" + caseId,
+            id: "notes-link"
+          }
+        ]
+      }) }}
+    
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+      {% if viewCase.evidence.needsReview %}
+        {% set evidenceStatusHtml = govukTag({
+          text: "Needs review",
+          classes: "govuk-tag--yellow"
+        }) %}
+      {% else %}
+        {% set evidenceStatusHtml = govukTag({
+          text: "Reviewed",
+          classes: "govuk-tag--green"
+        }) %}
+      {% endif %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: { text: "Customer" },
+            value: { text: viewCase.customer.name }
+          },
+          {
+            key: { text: "NINO" },
+            value: { text: viewCase.customer.nino }
+          },
+          {
+            key: { text: "Status" },
+            value: {
+              html: govukTag({
+                text: viewCase.status,
+                classes: viewCase.statusTagClass
+              })
+            }
+          },
+          {
+            key: { text: "Evidence status" },
+            value: {
+              html: evidenceStatusHtml
+            }
+          },
+          {
+            key: { text: "Case notes" },
+            value: { text: viewCase.notes.length + " notes" }
+          }
+        ]
+      }) }}
+
+    <h2 class="govuk-heading-m">Actions</h2>
+
+    <ul class="govuk-list">
+      <li><a href="{{ baseUrl }}/customer?caseId={{ caseId }}">Check customer details</a></li>
+      <li><a href="{{ baseUrl }}/evidence?caseId={{ caseId }}">Review evidence</a></li>
+      <li><a href="{{ baseUrl }}/timeline?caseId={{ caseId }}">View timeline</a></li>
+      <li><a href="{{ baseUrl }}/notes?caseId={{ caseId }}">View case notes</a></li>
+    </ul>
+
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Contacting you by email" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <p class="govuk-body">We may need to write to you by phone about your pension payments. Check your email address is correct and update it if it has changed.</p>
+
+            <form class="form" action="review-phone" method="post">
+
+                {{ govukInput({
+                    id: "email-address",
+                    name: "emailAddress",
+                    label: {
+                        text: "Is your email address correct?",
+                        isPageHeading: true,
+                        classes: "govuk-label--m"
+                    },
+                    hint: {
+                        text: "For example, name@domain.com"
+                    },
+                    value: data["emailAddress"]
+                }) }}
+
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

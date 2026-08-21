@@ -1,0 +1,106 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% if viewCase %}
+  {% set pageName = "Add case note" %}
+{% else %}
+  {% set pageName = "Case not found" %}
+{% endif %}
+
+{% block pageTitle %}
+    {% if viewCase %}
+        {{ viewCase.id }} - {{ pageName }}
+    {% else %}
+        {{ pageName }}
+    {% endif %}
+{% endblock %}
+
+{% block containerStart %}
+  {{ govukBackLink({
+    text: "Back",
+    href: baseUrl + "/notes?caseId=" + caseId
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if not viewCase %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {% if caseId %}
+            <p class="govuk-body">
+            There is no case matching reference <strong>{{ caseId }}</strong>.
+            </p>
+        {% else %}
+            <p class="govuk-body">
+            No case reference was provided.
+            </p>
+        {% endif %}
+
+        {{ govukButton({
+            text: "Back to dashboard",
+            href: baseUrl + "/dashboard",
+            classes: "govuk-button--secondary"
+        }) }}
+
+        </div>
+    </div>
+
+  {% else %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+
+        {{ dwpQuickReference({
+                ariaLabel: "Case information",
+                classes: "dwp-quick-reference--reduced",
+                primaryReference: {
+                    text: 'Name:',
+                    value: viewCase.customer.name
+                },
+                secondaryReference: {
+                    text: 'National Insurance number:',
+                    textDisplay: true,
+                    value: viewCase.customer.nino
+                },
+                status: {
+                    text: 'Certificate status:',
+                    value: viewCase.status,
+                    textDisplay: true,
+                    classes: viewCase.statusTagClass
+                }
+            })
+        }}
+        
+        </div>
+
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+                <form method="post">
+
+                    {{ govukTextarea({
+                        name: "note",
+                        label: {
+                        text: "Enter your note"
+                        }
+                    }) }}
+
+                    {{ govukButton({
+                        text: "Save note"
+                    }) }}
+
+                </form>
+                
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

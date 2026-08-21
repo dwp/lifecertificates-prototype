@@ -1,0 +1,184 @@
+<h2 class="govuk-heading-m">Confidence scoring</h2>
+
+{{ govukSummaryList({
+    rows: [
+        {
+            key: {
+                html: govukTag({
+                    text: "Low",
+                    classes: "govuk-tag--red app-tag--full"
+                })
+            },
+            value: {
+                text: "Based on assumptions, stakeholder discussions or limited evidence."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Medium",
+                    classes: "govuk-tag--orange app-tag--full"
+                })
+            },
+            value: {
+                text: "Supported by operational knowledge, analysis or limited research."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "High",
+                    classes: "govuk-tag--green app-tag--full"
+                })
+            },
+            value: {
+                text: "Consistently observed through research or supported by multiple evidence sources."
+            }
+        }
+    ]
+}) }}
+
+<h2 class="govuk-heading-m">Impact on user scoring</h2>
+
+{{ govukSummaryList({
+    rows: [
+        {
+            key: {
+                html: govukTag({
+                    text: "Low",
+                    classes: "govuk-tag--blue app-tag--full"
+                })
+            },
+            value: {
+                text: "Minor usability, content or comprehension issue."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Medium",
+                    classes: "govuk-tag--orange app-tag--full"
+                })
+            },
+            value: {
+                text: "Affects completion, confidence or understanding within part of a journey."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "High",
+                    classes: "govuk-tag--red app-tag--full"
+                })
+            },
+            value: {
+                text: "Prevents, delays or significantly impairs users from successfully completing a service need."
+            }
+        }
+    ]
+}) }}
+
+<h2 class="govuk-heading-m">Action types</h2>
+
+{{ govukSummaryList({
+    rows: [
+        {
+            key: {
+                html: govukTag({
+                    text: "Research needed",
+                    classes: "govuk-tag--magenta app-tag--full"
+                })
+            },
+            value: {
+                text: "More evidence is required before the finding can be acted on."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Policy review required",
+                    classes: "govuk-tag--orange app-tag--full"
+                })
+            },
+            value: {
+                text: "Requires policy clarification, interpretation or agreement before design work can proceed."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Design review required",
+                    classes: "govuk-tag--blue app-tag--full"
+                })
+            },
+            value: {
+                text: "Evidence exists and journeys, content or interactions need further design work."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Technical review required",
+                    classes: "govuk-tag--purple app-tag--full"
+                })
+            },
+            value: {
+                text: "Requires investigation of technical constraints, feasibility or implementation options."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Implemented in prototype",
+                    classes: "govuk-tag--teal app-tag--full"
+                })
+            },
+            value: {
+                text: "Changes have been implemented in the prototype and are ready for evaluation."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Validate in research",
+                    classes: "govuk-tag--pink app-tag--full"
+                })
+            },
+            value: {
+                text: "Include in upcoming research activities to evaluate the effectiveness of changes."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "No further action",
+                    classes: "govuk-tag--grey app-tag--full"
+                })
+            },
+            value: {
+                text: "Sufficiently understood and does not currently require additional work."
+            }
+        },
+        {
+            key: {
+                html: govukTag({
+                    text: "Superseded",
+                    classes: "govuk-tag--grey app-tag--full"
+                })
+            },
+            value: {
+                text: "Policy changes introduced a new eligibility model."
+            }
+        }
+    ]
+}) }}
+
+<h2 class="govuk-heading-m">Latest outcome</h2>
+
+<p class="govuk-body">
+    Use the latest outcome to record what happened after action was taken. Do not overwrite the original finding, confidence, recommendation or action.
+</p>
+
+<p class="govuk-body">
+    This creates a record of what was learned, what changed and whether further research supported the response.
+</p>

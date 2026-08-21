@@ -1,0 +1,141 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% macro appDocumentScanner(params) %}
+
+  {% set params = params or {} %}
+  {% set side = params.side | default('front') %}
+  {% set formOptions = params.form | default(false) %}
+  {% set errorSummaryId = params.errorSummaryId | default('') %}
+
+  {% if side == 'back' %}
+
+    {% set fallbackFieldName = "documentBack" %}
+  {% else %}
+    {% set fallbackFieldName = "documentFront" %}
+
+  {% endif %}
+
+  {% set fieldName = params.name | default(params.fieldName) | default(fallbackFieldName) %}
+  {% set scannerId = params.id | default(fieldName) %}
+  {% set wrapperClasses = params.classes | default('') %}
+  {% set scannerClasses = params.scannerClasses | default('') %}
+
+  {% if formOptions %}
+
+    {% set formId = formOptions.id | default(scannerId ~ '-form') %}
+    {% set formAction = formOptions.action | default('') %}
+    {% set formMethod = formOptions.method | default('post') %}
+    {% set formClasses = formOptions.classes | default('form app-document-scanning') %}
+  {% else %}
+    {% set formId = params.formId | default('') %}
+
+  {% endif %}
+
+  {% if params.hintText %}
+
+    {% set hintText = params.hintText %}
+  {% else %}
+    {% set hintText = 'Position the ' ~ side ~ ' of your photocard inside the frame.' %}
+
+  {% endif %}
+
+  <div class="app-document-scanner-wrapper {{ wrapperClasses }}"
+       data-module="app-document-scanner"
+       data-scanner-id="{{ scannerId }}"
+       data-field-name="{{ fieldName }}"
+       data-side="{{ side }}"
+       data-form-id="{{ formId }}"
+       data-error-summary-id="{{ errorSummaryId }}"
+       data-card-ratio="{{ params.cardRatio | default("1.586") }}"
+       data-guide-max-width="{{ params.guideMaxWidth | default("0.8") }}"
+       data-guide-max-height="{{ params.guideMaxHeight | default("0.5") }}"
+       data-capture-on-submit="{{ params.captureOnSubmit | default("true") }}"
+       data-reveal-form-on-camera-ready="{{ params.revealFormOnCameraReady | default("true") }}">
+
+    {% if params.displayUntilCameraReady %}
+
+      <div class="app-document-scanner__until-camera-permission">
+        {{ params.displayUntilCameraReady | safe }}
+      </div>
+
+    {% endif %}
+
+    {% if formOptions %}
+
+      <form id="{{ formId }}"
+            action="{{ formAction }}"
+            method="{{ formMethod }}"
+            class="{{ formClasses }}">
+
+      {% endif %}
+
+      {% if not errorSummaryId %}
+
+        {{ govukErrorSummary({
+                titleText: "There is a problem",
+                errorList: [
+                {
+                text: "There is a problem with the camera.",
+                href: "#app-document-scanner-" ~ scannerId
+                }
+                ],
+                classes: "app-document-scanner__permissions-warning",
+                attributes: {
+                hidden: "hidden",
+                tabindex: "-1",
+                "data-document-scanner-error": "true"
+                }
+                }) }}
+
+      {% endif %}
+
+      <div id="app-document-scanner-{{ scannerId }}"
+           class="app-document-scanner {{ scannerClasses }}">
+        <video class="app-document-scanner__video" autoplay muted playsinline>
+        </video>
+        <canvas class="app-document-scanner__canvas" hidden>
+        </canvas>
+        <svg class="app-document-scanner__overlay"
+             viewBox="0 0 100 100"
+             preserveAspectRatio="none"
+             aria-hidden="true"
+             focusable="false">
+          <path class="app-document-scanner__overlay-path" d=" M0 0 H100 V100 H0 Z  M15 25 H85 A5 5 0 0 1 90 30 V70 A5 5 0 0 1 85 75 H15 A5 5 0 0 1 10 70 V30 A5 5 0 0 1 15 25 Z " fill="rgba(0, 0, 0, 0.55)" fill-rule="evenodd">
+          </path>
+        </svg>
+        <div class="app-document-scanner__window">
+          <span class="app-document-scanner__corner app-document-scanner__corner--top-left"></span>
+          <span class="app-document-scanner__corner app-document-scanner__corner--top-right"></span>
+          <span class="app-document-scanner__corner app-document-scanner__corner--bottom-left"></span>
+          <span class="app-document-scanner__corner app-document-scanner__corner--bottom-right"></span>
+        </div>
+      </div>
+      <p class="govuk-body app-document-scanner__hint">{{ hintText }}</p>
+      <p class="govuk-visually-hidden app-document-scanner__status"
+         aria-live="polite">Position the document inside the frame.</p>
+      <input type="hidden" name="{{ fieldName }}" class="app-document-scanner__input" 
+        {% if not formOptions and formId %}
+           form="{{ formId }}" 
+        {% endif %}
+        >
+
+        {% if caller is defined %}
+
+          {{ caller() }}
+
+        {% endif %}
+
+        {% if formOptions %}
+
+        </form>
+
+      {% endif %}
+
+    </div>
+
+    {% if params.includeAssets | default(true) %}
+
+      <script>{% include "components/app-document-scanner/document-scanner.js" %}</script>
+
+    {% endif %}
+
+  {% endmacro %}

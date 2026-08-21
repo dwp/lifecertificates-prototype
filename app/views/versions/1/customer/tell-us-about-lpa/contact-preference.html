@@ -1,0 +1,60 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "How would you prefer we write to you?" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <form class="form" action="verify-identity-again" method="post">
+
+                {{ govukRadios({
+                    name: "contactPreference",
+                    fieldset: {
+                        legend: {
+                            text: pageName,
+                            isPageHeading: true,
+                            classes: "govuk-fieldset__legend--l"
+                        }
+                    },
+                    hint: { text: "This only applies to us contacting you about your pension payments" },
+                    value: data["contactPreference"],
+                    items: [
+                        {
+                            value: "Text message",
+                            text: "Text message"
+                        },
+                        {
+                            value: "Email",
+                            text: "Email"
+                        },
+                        {
+                            value: "Post",
+                            text: "Post"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

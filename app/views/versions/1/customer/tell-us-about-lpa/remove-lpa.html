@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Nominating someone to collect your state pension" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+      {% call govukPanel({
+        titleText: "Are you sure you want to remove their Lasting Power of Attorney?",
+        classes: "govuk-panel--interruption",
+        actions: {
+          items: [
+            {
+              text: "Yes, remove their lasting power of attorney",
+              href: "review-lpa?hasLPA=No",
+              type: "button"
+            }, {
+              text: "No, go back",
+              href: "review-lpa?hasLPA=Yes"
+            }
+          ]
+        }
+      }) %}
+        <p class="govuk-body">You selected to remove <strong>Jan Attornisson's</strong> lasting power of attorney.</p>
+      {% endcall %}
+
+        </div>
+    </div>
+
+{% endblock %}

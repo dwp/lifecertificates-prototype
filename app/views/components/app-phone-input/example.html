@@ -1,0 +1,68 @@
+<div class="govuk-form-group">
+  <fieldset
+    class="govuk-fieldset"
+    role="group"
+    aria-describedby="phone-number-hint">
+
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        What is your phone number?
+      </h1>
+    </legend>
+
+    <div id="phone-number-hint" class="govuk-hint">
+      Include the country code and phone number. For example, +44 7700900123.
+    </div>
+
+    <div class="app-phone-input" id="phone-number">
+
+      <div class="app-phone-input-item">
+        <div class="govuk-form-group">
+
+          <label
+            class="govuk-label app-phone-input-label"
+            for="phone-number-country-code">
+            Country code
+          </label>
+
+          <div class="app-phone-input-prefix-wrapper">
+            <span class="app-phone-input-prefix" aria-hidden="true">+</span>
+
+            <input
+              class="govuk-input govuk-input--width-2"
+              id="phone-number-country-code"
+              name="phone-number-country-code"
+              type="text"
+              inputmode="numeric"
+              autocomplete="tel-country-code"
+              maxlength="2">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="app-phone-input-item">
+        <div class="govuk-form-group">
+
+          <label
+            class="govuk-label app-phone-input-label"
+            for="phone-number-national-number">
+            Phone number
+          </label>
+
+          <input
+            class="govuk-input govuk-input--width-20"
+            id="phone-number-national-number"
+            name="phone-number-national-number"
+            type="text"
+            inputmode="tel"
+            autocomplete="tel-national"
+            maxlength="20">
+
+        </div>
+      </div>
+
+    </div>
+
+  </fieldset>
+</div>

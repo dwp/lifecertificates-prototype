@@ -1,0 +1,21 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}Customer journey – version v3{% endblock %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">Version v3</span>
+            <h1 class="govuk-heading-xl">Customer journey</h1>
+            <p class="govuk-body-l">This journey shows how a customer starts and submits a request.</p>
+            {{ govukButton({
+                "text": "Start customer journey",
+                "href": "/versions/v3/customer/start",
+                "isStartButton": true
+            }) }}
+            <h2 class="govuk-heading-m">Related documentation</h2>
+            <ul class="govuk-list">
+                <li><a class="govuk-link" href="/versions/v3/docs/service-overview">Service overview</a></li>
+                <li><a class="govuk-link" href="/docs/design-decisions">Design decisions</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

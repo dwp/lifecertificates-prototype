@@ -1,20 +1,244 @@
 {% extends "layouts/main.html" %}
 
-{% set pageName="Home" %}
+{% block pageTitle %}Life Certificates prototype – {{ serviceName }} – GOV.UK Prototype Kit{% endblock %}
 
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-three-quarters">
 
-    {% include "govuk-prototype-kit/includes/homepage-top.njk" %}
+    <span class="govuk-caption-xl">Interactive prototype</span>
 
-    <h1 class="govuk-heading-xl">
-      {{ serviceName }}
-    </h1>
+    <h1 class="govuk-heading-xl">{{ serviceName }}</h1>
 
-    
-    {% include "govuk-prototype-kit/includes/homepage-bottom.njk" %}
+    <p class="govuk-body-l">
+        Use this prototype to explore the current design, compare previous versions and understand how the design of the {{ serviceName }} service has evolved.
+    </p>
+    <p class="govuk-body">Contact
+        <a href="mailto:james.delaney1@engineering.digital.dwp.gov.uk">James Delaney</a> (interaction designer),
+        <a href="mailto:mark.wilson@dwp.gov.uk">Mark Wilson</a> (content designer) or user researchers
+        <a href="mailto:william.clarke@dwp.gov.uk">Will Clarke</a> and
+        <a href="mailto:ellen.gresty@dwp.gov.uk">Ellen Gresty</a>
+        for further information about this prototype.</p>
+
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+
+        <h2 class="govuk-heading-l">Current version</h2>
+
+        {{ govukSummaryList({
+            rows: [
+                {
+                    key: {
+                        text: "Version"
+                    },
+                    value: {
+                        text: currentVersionData.number
+                    }
+                },
+                {
+                    key: {
+                        text: "Title"
+                    },
+                    value: {
+                        text: currentVersionData.title
+                    }
+                },
+                {
+                    key: {
+                        text: "Purpose"
+                    },
+                    value: {
+                        text: currentVersionData.about[0]
+                    }
+                },
+                {
+                    key: {
+                        text: "Published"
+                    },
+                    value: {
+                        text: currentVersionData.date
+                    }
+                },
+                {
+                    key: {
+                        text: "Notes"
+                    },
+                    value: {
+                        html: "<a class=\"govuk-link\" href=\"/versions/" + currentVersionData.number + "\">View version notes</a>"
+                    }
+                }
+            ]
+        }) }}
+
+        <h2 class="govuk-heading-l">Current journeys</h2>
+
+        <dl class="govuk-summary-list">
+
+            {% for group in currentVersionData.users %}
+
+                {% for role in group.items %}
+
+                    {% if role.journeys.length %}
+
+                        <div class="govuk-summary-list__row">
+
+                            <dt class="govuk-summary-list__key">
+                                {{ role.name }}
+                            </dt>
+
+                            <dd class="govuk-summary-list__value">
+
+                                <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-3">
+
+                                    {% for journey in role.journeys %}
+
+                                        <li>
+                                            <a class="govuk-link" href="/versions/{{ currentVersionData.number }}{{ journey.href }}">
+                                                {{ journey.title }}
+                                            </a>
+
+                                            {% if journey.description %}
+                                                <br>
+                                                <span class="govuk-hint">
+                                                    {{ journey.description }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+
+                                    {% endfor %}
+
+                                </ul>
+
+                            </dd>
+
+                        </div>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endfor %}
+
+        </dl>
+
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+
+    <table class="govuk-table">
+
+    <caption class="govuk-table__caption govuk-table__caption--l">
+        Prototype versions
+    </caption>
+
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+        <th class="govuk-table__header">Version</th>
+        <th class="govuk-table__header">Status</th>
+        <th class="govuk-table__header">Date published</th>
+        <th class="govuk-table__header">Summary</th>
+        <th class="govuk-table__header"><!-- Links --></th>
+        </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+
+        {% for version in versions %}
+
+        <tr class="govuk-table__row">
+
+            <td class="govuk-table__cell">
+            {{ version.data.number }}
+                        {% if version.version == currentVersion %}
+                            <span class="govuk-hint"> (current)</span>
+                        {% endif %}
+            </td>
+
+            <td class="govuk-table__cell">
+            {% if version.data.status == "InProgress" %}
+                <strong class="govuk-tag govuk-tag--blue">
+                In draft
+                </strong>
+            {% else %}
+                <strong class="govuk-tag govuk-tag--grey">
+                Archived
+                </strong>
+            {% endif %}
+            </td>
+
+            <td class="govuk-table__cell">
+            {{ version.data.date }}
+            </td>
+
+            <td class="govuk-table__cell">
+            {{ version.data.title }}
+            </td>
+
+            <td class="govuk-table__cell">
+                <a class="govuk-link" href="/versions/{{ version.version }}">
+                    View
+                </a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+    </table>
+  </div>
+</div>
+
+<!--
+            [
+                { text: "v3", classes: "app-table__cell--nowrap" },
+                { html: govukTag({ text: "Current", classes: "govuk-tag--green" }) },
+                { text: "25 June 2026", classes: "app-table__cell--nowrap" },
+                { text: "Separated customer, support agent and service manager journeys. Added design decisions and design debt." },
+                { html: '<a class="govuk-link" href="/versions/v3">Open v3</a>', classes: "app-table__cell--nowrap" }
+            ],
+            [
+                { text: "v2", classes: "app-table__cell--nowrap" },
+                { html: govukTag({ text: "Previous", classes: "govuk-tag--yellow" }) },
+                { text: "12 June 2026", classes: "app-table__cell--nowrap" },
+                { text: "Previous service structure. Internal journey was not split by role." },
+                { html: '<a class="govuk-link" href="/versions/v2">Open v2</a>', classes: "app-table__cell--nowrap" }
+            ],
+            [
+                { text: "v1", classes: "app-table__cell--nowrap" },
+                { html: govukTag({ text: "Archived", classes: "govuk-tag--grey" }) },
+                { text: "29 May 2026", classes: "app-table__cell--nowrap" },
+                { text: "First end-to-end concept created to align the team." },
+                { html: '<a class="govuk-link" href="/versions/v1">Open v1</a>', classes: "app-table__cell--nowrap" }
+            ]
+-->
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+        <p class="govuk-body">
+        Versions represent material changes to the prototype that affect the service meaning or behaviour, for example where a new journey is added or an existing journey is changed.
+        </p>
+
+<!--
+    <ul class="govuk-list govuk-list--spaced">
+      <li><a class="govuk-link" href="/docs/documentation-guide">Documentation guide</a></li>
+      <li><a class="govuk-link" href="/docs/ways-of-working">Ways of working</a></li>
+      <li><a class="govuk-link" href="/docs/managing-research-and-evidence">Managing research and evidence</a></li>
+      <li><a class="govuk-link" href="/docs/research-and-evidence">Research and evidence</a></li>
+      <li><a class="govuk-link" href="/docs/maintaining-this-prototype">Maintaining this prototype</a></li>
+      <li><a class="govuk-link" href="/docs/design-decisions">Design decisions</a></li>
+      <li><a class="govuk-link" href="/docs/design-debt">Design debt</a></li>
+      <li><a class="govuk-link" href="/history">Design history</a></li>
+    </ul>
+-->
   </div>
 </div>
 

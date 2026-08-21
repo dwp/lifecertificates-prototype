@@ -1,0 +1,24 @@
+<nav aria-label="Version links">
+  <h2 class="govuk-heading-s">Versions</h2>
+  <ul class="govuk-list govuk-list--spaced">
+
+    {% for version in versions %}
+
+      <li>
+        <a class="govuk-link" href="/versions/{{ version.version }}">
+          {{ version.data.number }}: {{ version.data.title }}
+        </a>
+
+        {% if version.version == currentVersion %}
+
+          <br>
+          <span class="govuk-hint">(current)</span>
+
+        {% endif %}
+
+      </li>
+
+    {% endfor %}
+
+  </ul>
+</nav>

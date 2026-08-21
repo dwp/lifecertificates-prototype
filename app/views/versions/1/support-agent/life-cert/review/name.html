@@ -1,0 +1,112 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageCaption = "Review scanned life certificate" %}
+{% set pageName = "Check customer name" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <!-- =========================
+       NO DATA STATE
+  ========================= -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Life certificate not found
+      </h1>
+
+      {% if nino %}
+        <p class="govuk-body">
+          There is no life certificate for customer with National Insurance number
+          <strong>{{ nino }}</strong>.
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          No customer was specified.
+        </p>
+      {% endif %}
+
+      {{ govukButton({
+        text: "Back to life certificates",
+        href: baseUrl + "/life-certs",
+        classes: "govuk-button--secondary"
+      }) }}
+
+    </div>
+  </div>
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <!-- Step indicator -->
+      <span class="govuk-caption-m">
+        {{ pageCaption }}
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        Check the name read from the certificate matches what is written on the form.
+      </p>
+
+      <h2 class="govuk-heading-m">From the certificate</h2>
+
+      <div class="app-ocr-image">
+        <img
+          src="https://placehold.co/610x150?text=Customer name cropped from scanned life certificate"
+          width="610"
+          height="150"
+          alt="Cropped image of customer's handwritten name">
+      </div>
+
+      <form method="post">
+
+        {{ govukInput({
+          label: {
+            text: "Name read from the form",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Change this if it has been read incorrectly."
+          },
+          id: "name",
+          name: "name",
+          value: viewCase.scannedCustomer.name,
+          classes: "govuk-!-width-two-thirds",
+          attributes: {
+            "autofocus": "autofocus"
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          <a class="govuk-link" href="{{ baseUrl }}/life-cert?nino={{ nino }}">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

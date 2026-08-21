@@ -1,0 +1,528 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% if hasReviewedDifferences %}
+  {% set pageName = "Check answers before completing review" %}
+{% else %}
+  {% set pageName = "Check your answers" %}
+{% endif %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+
+      <p class="govuk-body">
+        There is no life certificate for this customer.
+      </p>
+
+      {{ govukButton({
+        text: "Back to life certificates",
+        href: baseUrl + "/life-certs",
+        classes: "govuk-button--secondary"
+      }) }}
+
+    </div>
+  </div>
+
+{% else %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">
+        Review scanned life certificate
+      </span>
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      {% if hasReviewedDifferences %}
+        <p class="govuk-body">
+          Check the details and decisions before completing the review.
+        </p>
+      {% else %}
+        <p class="govuk-body">
+          Check the details from the certificate before reviewing any differences.
+        </p>
+      {% endif %}
+
+      {# =========================
+         CUSTOMER NAME
+      ========================= #}
+
+      {% set customerNameValue = data.enteredName or viewCase.scannedCustomer.name %}
+      {% set customerNameSource = "" %}
+
+      {% if hasReviewedDifferences %}
+        {% if data.nameDecision == "keep-record" %}
+          {% set customerNameValue = viewCase.customer.name %}
+          {% set customerNameSource = "From existing record" %}
+        {% elif data.nameDecision == "use-certificate" %}
+          {% set customerNameSource = "From certificate" %}
+        {% elif data.nameDecision == "flag" %}
+          {% set customerNameSource = "Flagged for review" %}
+        {% endif %}
+      {% endif %}
+
+      {% set customerNameHtml = '<p class="govuk-body">' + customerNameValue + '</p>' %}
+
+      {% if hasReviewedDifferences and customerNameSource %}
+        {% set customerNameHtml = customerNameHtml + '<p class="govuk-body"><span class="govuk-hint">' + customerNameSource + '</span>' %}
+        {% if data.nameNote %}
+          {% set customerNameHtml = customerNameHtml + '<br><span class="govuk-body-s">Note: ' + data.nameNote + '</span>' %}
+        {% endif %}
+        {% set customerNameHtml = customerNameHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.nameDecision %}
+        {% set customerNameHref = baseUrl + "/life-cert/review/name-difference?nino=" + nino %}
+      {% else %}
+        {% set customerNameHref = baseUrl + "/life-cert/review/name?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         CUSTOMER ADDRESS
+      ========================= #}
+
+      {% set customerAddressSource = "" %}
+
+      {% if hasReviewedDifferences and data.addressDecision == "keep-record" %}
+
+        {% set customerAddressLine1 = viewCase.customer.address.line1 %}
+        {% set customerAddressLine2 = viewCase.customer.address.line2 %}
+        {% set customerAddressTown = viewCase.customer.address.townOrCity %}
+        {% set customerAddressCounty = viewCase.customer.address.county %}
+        {% set customerAddressPostcode = viewCase.customer.address.postcode %}
+        {% set customerAddressSource = "From existing record" %}
+
+      {% else %}
+
+        {% set customerAddressLine1 = data.customerAddressLine1 or viewCase.scannedCustomer.address.line1 %}
+        {% set customerAddressLine2 = data.customerAddressLine2 or viewCase.scannedCustomer.address.line2 %}
+        {% set customerAddressTown = data.customerAddressTown or viewCase.scannedCustomer.address.townOrCity %}
+        {% set customerAddressCounty = data.customerAddressCounty or viewCase.scannedCustomer.address.county %}
+        {% set customerAddressPostcode = data.customerAddressPostcode or viewCase.scannedCustomer.address.postcode %}
+
+        {% if hasReviewedDifferences %}
+          {% if data.addressDecision == "use-certificate" %}
+            {% set customerAddressSource = "From certificate" %}
+          {% elif data.addressDecision == "flag" %}
+            {% set customerAddressSource = "Flagged for review" %}
+          {% endif %}
+        {% endif %}
+
+      {% endif %}
+
+      {% set customerAddressHtml = '<p class="govuk-body">' + customerAddressLine1 %}
+
+      {% if customerAddressLine2 %}
+        {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressLine2 %}
+      {% endif %}
+
+      {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressTown %}
+
+      {% if customerAddressCounty %}
+        {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressCounty %}
+      {% endif %}
+
+      {% set customerAddressHtml = customerAddressHtml + '<br>' + customerAddressPostcode + '</p>' %}
+
+      {% if hasReviewedDifferences and customerAddressSource %}
+        {% set customerAddressHtml = customerAddressHtml + '<p class="govuk-body"><span class="govuk-hint">' + customerAddressSource + '</span>' %}
+        {% if data.addressNote %}
+          {% set customerAddressHtml = customerAddressHtml + '<br><span class="govuk-body-s">Note: ' + data.addressNote + '</span>' %}
+        {% endif %}
+        {% set customerAddressHtml = customerAddressHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.addressDecision %}
+        {% set customerAddressHref = baseUrl + "/life-cert/review/address-difference?nino=" + nino %}
+      {% else %}
+        {% set customerAddressHref = baseUrl + "/life-cert/review/address?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         CUSTOMER TELEPHONE
+      ========================= #}
+
+      {% set customerTelephoneValue = data.telephone or viewCase.scannedCustomer.phone %}
+      {% set customerTelephoneSource = "" %}
+
+      {% if hasReviewedDifferences %}
+        {% if data.telephoneDecision == "keep-record" %}
+          {% set customerTelephoneValue = viewCase.customer.phone %}
+          {% set customerTelephoneSource = "From existing record" %}
+        {% elif data.telephoneDecision == "use-certificate" %}
+          {% set customerTelephoneSource = "From certificate" %}
+        {% elif data.telephoneDecision == "flag" %}
+          {% set customerTelephoneSource = "Flagged for review" %}
+        {% endif %}
+      {% endif %}
+
+      {% set customerTelephoneHtml = '<p class="govuk-body">' + customerTelephoneValue + '</p>' %}
+
+      {% if hasReviewedDifferences and customerTelephoneSource %}
+        {% set customerTelephoneHtml = customerTelephoneHtml + '<p class="govuk-body"><span class="govuk-hint">' + customerTelephoneSource + '</span>' %}
+        {% if data.telephoneNote %}
+          {% set customerTelephoneHtml = customerTelephoneHtml + '<br><span class="govuk-body-s">Note: ' + data.telephoneNote + '</span>' %}
+        {% endif %}
+        {% set customerTelephoneHtml = customerTelephoneHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.telephoneDecision %}
+        {% set customerTelephoneHref = baseUrl + "/life-cert/review/telephone-difference?nino=" + nino %}
+      {% else %}
+        {% set customerTelephoneHref = baseUrl + "/life-cert/review/telephone?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         WITNESS NAME
+      ========================= #}
+
+      {% set witnessNameValue = data.witnessName or viewCase.scannedWitness.name %}
+      {% set witnessNameSource = "" %}
+
+      {% if hasReviewedDifferences %}
+        {% if data.witnessNameDecision == "keep-record" %}
+          {% set witnessNameValue = viewCase.witness.name %}
+          {% set witnessNameSource = "From existing record" %}
+        {% elif data.witnessNameDecision == "use-certificate" %}
+          {% set witnessNameSource = "From certificate" %}
+        {% elif data.witnessNameDecision == "flag" %}
+          {% set witnessNameSource = "Flagged for review" %}
+        {% endif %}
+      {% endif %}
+
+      {% set witnessNameHtml = '<p class="govuk-body">' + witnessNameValue + '</p>' %}
+
+      {% if hasReviewedDifferences and witnessNameSource %}
+        {% set witnessNameHtml = witnessNameHtml + '<p class="govuk-body"><span class="govuk-hint">' + witnessNameSource + '</span>' %}
+        {% if data.witnessNameNote %}
+          {% set witnessNameHtml = witnessNameHtml + '<br><span class="govuk-body-s">Note: ' + data.witnessNameNote + '</span>' %}
+        {% endif %}
+        {% set witnessNameHtml = witnessNameHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.witnessNameDecision %}
+        {% set witnessNameHref = baseUrl + "/life-cert/review/witness-name-difference?nino=" + nino %}
+      {% else %}
+        {% set witnessNameHref = baseUrl + "/life-cert/review/witness-name?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         WITNESS ROLE
+      ========================= #}
+
+      {% set witnessRoleValue = data.witnessRole or viewCase.scannedWitness.jobTitle %}
+      {% set witnessRoleSource = "" %}
+
+      {% if hasReviewedDifferences %}
+        {% if data.witnessRoleDecision == "keep-record" %}
+          {% set witnessRoleValue = viewCase.witness.jobTitle %}
+          {% set witnessRoleSource = "From existing record" %}
+        {% elif data.witnessRoleDecision == "use-certificate" %}
+          {% set witnessRoleSource = "From certificate" %}
+        {% elif data.witnessRoleDecision == "flag" %}
+          {% set witnessRoleSource = "Flagged for review" %}
+        {% endif %}
+      {% endif %}
+
+      {% set witnessRoleHtml = '<p class="govuk-body">' + witnessRoleValue + '</p>' %}
+
+      {% if hasReviewedDifferences and witnessRoleSource %}
+        {% set witnessRoleHtml = witnessRoleHtml + '<p class="govuk-body"><span class="govuk-hint">' + witnessRoleSource + '</span>' %}
+        {% if data.witnessRoleNote %}
+          {% set witnessRoleHtml = witnessRoleHtml + '<br><span class="govuk-body-s">Note: ' + data.witnessRoleNote + '</span>' %}
+        {% endif %}
+        {% set witnessRoleHtml = witnessRoleHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.witnessRoleDecision %}
+        {% set witnessRoleHref = baseUrl + "/life-cert/review/witness-role-difference?nino=" + nino %}
+      {% else %}
+        {% set witnessRoleHref = baseUrl + "/life-cert/review/witness-role?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         WITNESS ADDRESS
+      ========================= #}
+
+      {% set witnessAddressSource = "" %}
+
+      {% if hasReviewedDifferences and data.witnessAddressDecision == "keep-record" %}
+
+        {% set witnessAddressOrganisation = viewCase.witness.address.organisation %}
+        {% set witnessAddressLine1 = viewCase.witness.address.line1 %}
+        {% set witnessAddressLine2 = viewCase.witness.address.line2 %}
+        {% set witnessAddressTown = viewCase.witness.address.townOrCity %}
+        {% set witnessAddressCounty = viewCase.witness.address.county %}
+        {% set witnessAddressPostcode = viewCase.witness.address.postcode %}
+        {% set witnessAddressSource = "From existing record" %}
+
+      {% else %}
+
+        {% set witnessAddressOrganisation = data.witnessAddressOrganisation or viewCase.scannedWitness.address.organisation %}
+        {% set witnessAddressLine1 = data.witnessAddressLine1 or viewCase.scannedWitness.address.line1 %}
+        {% set witnessAddressLine2 = data.witnessAddressLine2 or viewCase.scannedWitness.address.line2 %}
+        {% set witnessAddressTown = data.witnessAddressTown or viewCase.scannedWitness.address.townOrCity %}
+        {% set witnessAddressCounty = data.witnessAddressCounty or viewCase.scannedWitness.address.county %}
+        {% set witnessAddressPostcode = data.witnessAddressPostcode or viewCase.scannedWitness.address.postcode %}
+
+        {% if hasReviewedDifferences %}
+          {% if data.witnessAddressDecision == "use-certificate" %}
+            {% set witnessAddressSource = "From certificate" %}
+          {% elif data.witnessAddressDecision == "flag" %}
+            {% set witnessAddressSource = "Flagged for review" %}
+          {% endif %}
+        {% endif %}
+
+      {% endif %}
+
+      {% set witnessAddressHtml = '<p class="govuk-body">' %}
+
+      {% if witnessAddressOrganisation %}
+        {% set witnessAddressHtml = witnessAddressHtml + witnessAddressOrganisation + '<br>' %}
+      {% endif %}
+
+      {% set witnessAddressHtml = witnessAddressHtml + witnessAddressLine1 %}
+
+      {% if witnessAddressLine2 %}
+        {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressLine2 %}
+      {% endif %}
+
+      {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressTown %}
+
+      {% if witnessAddressCounty %}
+        {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressCounty %}
+      {% endif %}
+
+      {% set witnessAddressHtml = witnessAddressHtml + '<br>' + witnessAddressPostcode + '</p>' %}
+
+      {% if hasReviewedDifferences and witnessAddressSource %}
+        {% set witnessAddressHtml = witnessAddressHtml + '<p class="govuk-body"><span class="govuk-hint">' + witnessAddressSource + '</span>' %}
+        {% if data.witnessAddressNote %}
+          {% set witnessAddressHtml = witnessAddressHtml + '<br><span class="govuk-body-s">Note: ' + data.witnessAddressNote + '</span>' %}
+        {% endif %}
+        {% set witnessAddressHtml = witnessAddressHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.witnessAddressDecision %}
+        {% set witnessAddressHref = baseUrl + "/life-cert/review/witness-address-difference?nino=" + nino %}
+      {% else %}
+        {% set witnessAddressHref = baseUrl + "/life-cert/review/witness-address?nino=" + nino %}
+      {% endif %}
+
+      {# =========================
+         WITNESS TELEPHONE
+      ========================= #}
+
+      {% set witnessTelephoneValue = data.witnessTelephone or viewCase.scannedWitness.phone %}
+      {% set witnessTelephoneSource = "" %}
+
+      {% if hasReviewedDifferences %}
+        {% if data.witnessTelephoneDecision == "keep-record" %}
+          {% set witnessTelephoneValue = viewCase.witness.phone %}
+          {% set witnessTelephoneSource = "From existing record" %}
+        {% elif data.witnessTelephoneDecision == "use-certificate" %}
+          {% set witnessTelephoneSource = "From certificate" %}
+        {% elif data.witnessTelephoneDecision == "flag" %}
+          {% set witnessTelephoneSource = "Flagged for review" %}
+        {% endif %}
+      {% endif %}
+
+      {% set witnessTelephoneHtml = '<p class="govuk-body">' + witnessTelephoneValue + '</p>' %}
+
+      {% if hasReviewedDifferences and witnessTelephoneSource %}
+        {% set witnessTelephoneHtml = witnessTelephoneHtml + '<p class="govuk-body"><span class="govuk-hint">' + witnessTelephoneSource + '</span>' %}
+        {% if data.witnessTelephoneNote %}
+          {% set witnessTelephoneHtml = witnessTelephoneHtml + '<br><span class="govuk-body-s">Note: ' + data.witnessTelephoneNote + '</span>' %}
+        {% endif %}
+        {% set witnessTelephoneHtml = witnessTelephoneHtml + '</p>' %}
+      {% endif %}
+
+      {% if hasReviewedDifferences and data.witnessTelephoneDecision %}
+        {% set witnessTelephoneHref = baseUrl + "/life-cert/review/witness-telephone-difference?nino=" + nino %}
+      {% else %}
+        {% set witnessTelephoneHref = baseUrl + "/life-cert/review/witness-telephone?nino=" + nino %}
+      {% endif %}
+
+      {% if hasReviewedDifferences %}
+        <h2 class="govuk-heading-m">Customer details</h2>
+      {% else %}
+        <h2 class="govuk-heading-m">Scanned customer details</h2>
+      {% endif %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Name"
+            },
+            value: {
+              html: customerNameHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: customerNameHref,
+                  text: "Change",
+                  visuallyHiddenText: "customer name"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Address"
+            },
+            value: {
+              html: customerAddressHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: customerAddressHref,
+                  text: "Change",
+                  visuallyHiddenText: "customer address"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Telephone number"
+            },
+            value: {
+              html: customerTelephoneHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: customerTelephoneHref,
+                  text: "Change",
+                  visuallyHiddenText: "customer telephone number"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      {% if hasReviewedDifferences %}
+        <h2 class="govuk-heading-m">Witness details</h2>
+      {% else %}
+        <h2 class="govuk-heading-m">Scanned witness details</h2>
+      {% endif %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Name"
+            },
+            value: {
+              html: witnessNameHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: witnessNameHref,
+                  text: "Change",
+                  visuallyHiddenText: "witness name"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Role"
+            },
+            value: {
+              html: witnessRoleHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: witnessRoleHref,
+                  text: "Change",
+                  visuallyHiddenText: "witness role"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Address"
+            },
+            value: {
+              html: witnessAddressHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: witnessAddressHref,
+                  text: "Change",
+                  visuallyHiddenText: "witness address"
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: "Telephone number"
+            },
+            value: {
+              html: witnessTelephoneHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: witnessTelephoneHref,
+                  text: "Change",
+                  visuallyHiddenText: "witness telephone number"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+
+      <form method="post">
+        <div class="govuk-button-group">
+
+          {% if hasReviewedDifferences %}
+            {{ govukButton({
+              text: "Confirm and complete review"
+            }) }}
+          {% else %}
+            {{ govukButton({
+              text: "Review differences"
+            }) }}
+          {% endif %}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}"
+            Cancel
+          </a>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

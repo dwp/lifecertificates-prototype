@@ -1,0 +1,5 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}Check your answers – version v3{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds"><span class="govuk-caption-xl">Customer journey – version v3</span><h1 class="govuk-heading-xl">Check your answers</h1>{{ govukSummaryList({ rows: [{ key: { text: "Reference number" }, value: { text: data["reference-number"] or "Not provided" }, actions: { items: [{ href: "/versions/v3/customer/start", text: "Change", visuallyHiddenText: "reference number" }] } }] }) }}{{ govukButton({ text: "Submit request", href: "/versions/v3/customer" }) }}</div></div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageCaption = "Review scanned life certificate" %}
+{% set pageName = "Differences found" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <span class="govuk-caption-m">
+      {{ pageCaption }}
+    </span>
+
+    <h1 class="govuk-heading-l">
+      {{ pageName }}
+    </h1>
+
+    <p class="govuk-body">
+      We’ve found differences between the completed life certificate and the existing customer record.
+      You need to review these before completing the check.
+    </p>
+
+    <p class="govuk-hint">
+    You will be asked to review each difference one at a time.
+    </p>
+
+    {% if mismatches and mismatches.length > 0 %}
+
+      <h2 class="govuk-heading-m">
+        Differences to review ({{ mismatches.length }})
+      </h2>
+
+      <ul class="govuk-list govuk-list--bullet">
+
+        {% for item in mismatches %}
+
+          <li>
+            {% if item.field == "name" %}
+              Customer name
+            {% elif item.field == "address" %}
+              Customer address
+            {% elif item.field == "telephone" %}
+              Customer telephone number
+            {% elif item.field == "witnessName" %}
+              Witness name
+            {% elif item.field == "witnessRole" %}
+              Witness role
+            {% elif item.field == "witnessAddress" %}
+              Witness address
+            {% elif item.field == "witnessTelephone" %}
+              Witness telephone number
+            {% else %}
+              {{ item.field }}
+            {% endif %}
+          </li>
+
+        {% endfor %}
+
+      </ul>
+
+      <form method="post">
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Start reviewing differences"
+          }) }}
+
+          <a class="govuk-link"
+             href="{{ baseUrl }}/life-cert/review/check-answers?nino={{ nino }}">
+             Go back
+          </a>
+
+        </div>
+
+      </form>
+
+    {% else %}
+
+      <p class="govuk-body">
+        No differences were found.
+      </p>
+
+      {{ govukButton({
+        text: "Continue",
+        href: baseUrl + "/life-cert/review/check-answers?nino=" + nino
+      }) }}
+
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageName = "Are you sure you want to leave this review?" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      {{ pageName }}
+    </h1>
+
+    <p class="govuk-body">
+      You will lose any changes you have made in this review.
+    </p>
+
+    <form method="post">
+
+      {{ govukRadios({
+        name: "confirmExit",
+        fieldset: {
+          legend: {
+            text: "Do you want to leave this review?",
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes, leave and return to the life certificate"
+          },
+          {
+            value: "no",
+            text: "No, continue reviewing"
+          }
+        ]
+      }) }}
+
+      <div class="govuk-button-group">
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

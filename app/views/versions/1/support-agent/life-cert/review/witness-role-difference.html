@@ -1,0 +1,130 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% set pageCaption = "Review scanned life certificate" %}
+{% set pageName = "Witness role does not match" %}
+
+{% block pageTitle %}
+  {{ pageName }}
+{% endblock %}
+
+{% block content %}
+
+{% if not viewCase %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Life certificate not found</h1>
+    </div>
+  </div>
+
+{% else %}
+
+  {% set roleDiff = data.witnessRole != viewCase.witness.jobTitle %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-m">{{ pageCaption }}</span>
+
+      <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+      <p class="govuk-body">
+        The witness role read from the certificate does not match the role on record.
+      </p>
+
+      <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Witness role on certificate</h3>
+
+          <p>
+            {% if roleDiff %}
+              <span class="app-highlight-difference">
+                {{ data.witnessRole }}
+              </span>
+            {% else %}
+              {{ data.witnessRole }}
+            {% endif %}
+          </p>
+
+          {% if roleDiff %}
+            <p class="govuk-hint">
+              Does not match witness role on record
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s">Witness role on record</h3>
+
+          <p>
+            {{ viewCase.witness.jobTitle }}
+          </p>
+        </div>
+
+      </div>
+
+      <form method="post">
+
+        {{ govukRadios({
+          name: "witnessRoleDecision",
+          fieldset: {
+            legend: {
+              text: "What do you want to do?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "use-certificate",
+              text: "Update record with the witness role on the certificate"
+            },
+            {
+              value: "keep-record",
+              text: "Keep the witness role on record"
+            },
+            {
+              value: "flag",
+              text: "Flag this mismatch for further review",
+              conditional: {
+                html: govukTextarea({
+                  name: "reason",
+                  label: {
+                    text: "Reason for flagging this mismatch"
+                  }
+                })
+              }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Save and continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Check form again",
+            classes: "govuk-button--secondary",
+            href: baseUrl + "/life-cert/review/witness-role?nino=" + nino
+          }) }}
+
+          <a class="govuk-link" href="{{ baseUrl }}/life-cert/review/exit-confirm?nino={{ nino }}">
+             Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% endblock %}

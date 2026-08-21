@@ -1,0 +1,5 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}Apply for the service – version v3{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds"><span class="govuk-caption-xl">Customer journey – version v3</span><h1 class="govuk-heading-xl">Apply for the service</h1><p class="govuk-body-l">Use this service to send your request.</p><p class="govuk-body">You need your reference number if you have one.</p><form method="post" novalidate>{{ govukInput({ label: { text: "Reference number", classes: "govuk-label--m" }, hint: { text: "For example, AB123456" }, name: "reference-number" }) }}{{ govukButton({ text: "Continue" }) }}</form></div></div>
+{% endblock %}

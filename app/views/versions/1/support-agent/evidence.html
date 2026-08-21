@@ -1,0 +1,148 @@
+{% extends "layouts/internal.html" %}
+
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% if viewCase %}
+  {% set pageName = "Check evidence" %}
+{% else %}
+  {% set pageName = "Case not found" %}
+{% endif %}
+
+{% block pageTitle %}
+    {% if viewCase %}
+        {{ viewCase.id }} - {{ pageName }}
+    {% else %}
+        {{ pageName }}
+    {% endif %}
+{% endblock %}
+
+{% block containerStart %}
+    {{ govukBreadcrumbs({
+    items: [
+        {
+        text: "Cases",
+        href: baseUrl + "/dashboard"
+        }
+    ]
+    }) }}
+{% endblock %}
+
+{% block content %}
+
+  {% if not viewCase %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {% if caseId %}
+            <p class="govuk-body">
+            There is no case matching reference <strong>{{ caseId }}</strong>.
+            </p>
+        {% else %}
+            <p class="govuk-body">
+            No case reference was provided.
+            </p>
+        {% endif %}
+
+        {{ govukButton({
+            text: "Back to dashboard",
+            href: baseUrl + "/dashboard",
+            classes: "govuk-button--secondary"
+        }) }}
+
+        </div>
+    </div>
+
+  {% else %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+
+        {{ dwpQuickReference({
+                ariaLabel: "Case information",
+                classes: "dwp-quick-reference--reduced",
+                primaryReference: {
+                    text: 'Name:',
+                    value: viewCase.customer.name
+                },
+                secondaryReference: {
+                    text: 'National Insurance number:',
+                    textDisplay: true,
+                    value: viewCase.customer.nino
+                },
+                status: {
+                    text: 'Certificate status:',
+                    value: viewCase.status,
+                    textDisplay: true,
+                    classes: viewCase.statusTagClass
+                }
+            })
+        }}
+
+        {{ dwpSideNavigation({
+            pageId: "case-navigation",
+            selectedItem: "#case-overview",
+            items: [
+            {
+                text: "Case overview",
+                href: baseUrl + "/case-overview?caseId=" + caseId,
+                id: "case-overview-link"
+            },
+            {
+                text: "Customer details",
+                href: baseUrl + "/customer?caseId=" + caseId,
+                id: "customer-link"
+            },
+            {
+                text: "Evidence",
+                href: baseUrl + "/evidence?caseId=" + caseId,
+                id: "evidence-link"
+            },
+            {
+                text: "Timeline",
+                href: baseUrl + "/timeline?caseId=" + caseId,
+                id: "timeline-link"
+            },
+            {
+                text: "Case notes",
+                href: baseUrl + "/notes?caseId=" + caseId,
+                id: "notes-link"
+            }
+            ]
+        }) }}
+        
+        </div>
+
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+                <p class="govuk-body">
+                    Review the submitted life certificate and supporting documents.
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>Life certificate form</li>
+                    <li>Identity document (if provided)</li>
+                </ul>
+
+                {% if viewCase.scannedCustomer.freeText %}
+
+                    <h2 class="govuk-heading-m">Customer notes</h2>
+
+                    <p>Captured from their life certificate form</p>
+
+                    <div class="govuk-inset-text">
+                        {{ viewCase.scannedCustomer.freeText }}
+                    </div>
+
+                {% endif %}
+                
+        </div>
+    </div>
+    
+    {% endif %}
+
+{% endblock %}

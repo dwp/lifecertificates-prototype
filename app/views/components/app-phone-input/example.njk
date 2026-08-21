@@ -1,0 +1,25 @@
+{{ appPhoneInput({
+id: "telephone",
+fieldset: {
+legend: {
+text: "What is your phone number?",
+classes: "govuk-fieldset__legend--l",
+isPageHeading: true
+}
+},
+hint: {
+text: "We'll use this if we need to contact you about your application."
+},
+countryCode: {
+label: {
+text: "Country code"
+},
+value: data["telephone-country-code"]
+},
+nationalNumber: {
+label: {
+text: "Phone number"
+},
+value: data["telephone-national-number"]
+}
+}) }}
