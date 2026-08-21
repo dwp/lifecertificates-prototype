@@ -425,7 +425,6 @@ module.exports = function createSupportAgentRouter({ version }) {
   // Review steps are defined statically within the
   // application and are not derived from user input.
   const reviewSteps = [
-  const reviewSteps = [
     'name',
     'address',
     'telephone',
@@ -654,7 +653,6 @@ module.exports = function createSupportAgentRouter({ version }) {
   // Difference review routes are application-defined
   // and form part of a fixed review workflow.
   const differenceSteps = [
-  const differenceSteps = [
     {
       route: 'name-difference',
       field: 'name',
@@ -720,7 +718,7 @@ module.exports = function createSupportAgentRouter({ version }) {
 
   })
 
-  //   // =====================================================
+  // =====================================================
   // Final review and decision
   // =====================================================
   //
