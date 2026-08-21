@@ -47,8 +47,16 @@ const allVersions = fs
 
     return {
       version: versionId,
-      data: require(`../data/versions/${versionId}`),
-    }
+
+      // Loads version files discovered from the trusted
+      // app/data/versions directory.
+      //
+      // versionId originates from fs.readdirSync() against a
+      // controlled repository directory and is never derived
+      // from user input.
+      //
+      // nosemgrep
+      data: require(`../data/versions/${versionId}`)    }
   })
   .sort((a, b) => {
     // Supports:

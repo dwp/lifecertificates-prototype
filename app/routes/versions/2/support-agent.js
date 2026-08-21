@@ -45,7 +45,11 @@ module.exports = function createSupportAgentRouter({ version }) {
     if (!nino) return
 
     function normalise(value) {
-      return value.replace(/\s/g, '').toUpperCase()
+function normalise(value) {
+        return String(value || '')
+          .replace(/\s/g, '')
+          .toUpperCase()
+      }
     }
 
     const incoming = normalise(nino)
@@ -190,17 +194,17 @@ module.exports = function createSupportAgentRouter({ version }) {
     // - support agent homepage
     // - dashboard
     // - life certificate work queue
-    
+
     router.get('/', function (req, res) {
       renderPage(res, 'index', {})
     })
-    
+
     router.get('/dashboard', function (req, res) {
       renderPage(res, 'dashboard', {
         cases: supportAgentCases,
       })
     })
-    
+
     router.get('/life-certs', function (req, res) {
       renderPage(res, 'life-certs', {
         cases: supportAgentCases,
@@ -554,7 +558,7 @@ module.exports = function createSupportAgentRouter({ version }) {
       `${baseUrl}${mismatches[0].url}?nino=${nino}`,
     )
   })
-  
+
   // =====================================================
   // Difference review journey
   // =====================================================
@@ -635,7 +639,7 @@ module.exports = function createSupportAgentRouter({ version }) {
     })
 
   })
-  
+
   //   // =====================================================
   // Final review and decision
   // =====================================================

@@ -1,5 +1,0 @@
-{% extends "layouts/main.html" %}
-{% block pageTitle %}Case dashboard – version v3{% endblock %}
-{% block content %}
-<div class="govuk-grid-row"><div class="govuk-grid-column-full"><span class="govuk-caption-xl">Support agent – version v3</span><h1 class="govuk-heading-xl">Case dashboard</h1><p class="govuk-body">Use this page to find cases that need support agent action.</p>{{ govukTable({ caption: "Cases", captionClasses: "govuk-table__caption--m", head: [{ text: "Case" }, { text: "Customer" }, { text: "Status" }, { text: "Action" }], rows: [[{ text: "CASE-001" }, { text: "Example customer" }, { text: "Under review" }, { html: '<a class="govuk-link" href="#">View case</a>' }]] }) }}</div></div>
-{% endblock %}

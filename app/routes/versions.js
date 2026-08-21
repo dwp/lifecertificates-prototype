@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const govukPrototypeKit = require('govuk-prototype-kit')
 
 module.exports = function createVersionRouter({ version }) {
@@ -27,58 +29,52 @@ module.exports = function createVersionRouter({ version }) {
     })
   })
 
-  // Customer journeys.
+  // Register all route files that exist for this version.
   //
-  // Example:
-  // /versions/2/customer
-  router.use(
-    '/customer',
-    require(`./versions/${version}/customer`)({
-      version,
-    }),
-  )
-
-  // Support agent journeys.
+  // Examples:
   //
-  // Example: /versions/2/support-agent
-  router.use(
-    '/support-agent',
-    require(`./versions/${version}/support-agent`)({
-      version,
-    }),
-  )
-
-  // Service manager journeys.
+  // app/routes/versions/1/customer.js
+  // app/routes/versions/1/exploratory.js
   //
-  // Example: /versions/2/service-manager
-  router.use(
-    '/service-manager',
-    require(`./versions/${version}/service-manager`)({
-      version,
-    }),
-  )
-
-  // Exploratory journeys.
+  // app/routes/versions/2/customer.js
+  // app/routes/versions/2/support-agent.js
+  // app/routes/versions/2/service-manager.js
   //
-  // Example: /versions/2/_exploratory
-  router.use(
-    '/_exploratory',
-    require(`./versions/${version}/exploratory`)({
-      version,
-    }),
-  )
+  // Route files are automatically mounted using the
+  // filename as the route path.
+  const versionRoutesDirectory = path.join(__dirname, 'versions', version)
 
-    // Version overview.
-    //
-    // Example:
-    // /versions/2/overview
-    router.get('/overview', function (req, res) {
-        res.render(`versions/${version}/overview`, {
+  if (fs.existsSync(versionRoutesDirectory)) {
+    fs.readdirSync(versionRoutesDirectory)
+      .filter((file) => file.endsWith('.js'))
+      .forEach((file) => {
+        const routeName = file.replace('.js', '')
+
+        // Keep the exploratory route prefixed with "_"
+        // so existing URLs continue to work.
+        const mountPath = routeName === 'exploratory'
+          ? '/_exploratory'
+          : `/${routeName}`
+
+        router.use(
+          mountPath,
+          require(`./versions/${version}/${routeName}`)({
             version,
-            versionData,
-            baseUrl: `/versions/${version}`,
-        })
+          }),
+        )
+      })
+  }
+
+  // Version overview.
+  //
+  // Example: /versions/2/overview
+  router.get('/overview', function (req, res) {
+    res.render(`versions/${version}/overview`, {
+      version,
+      versionData,
+      baseUrl: `/versions/${version}`,
     })
+  })
 
   return router
 
