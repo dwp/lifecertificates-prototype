@@ -5,6 +5,8 @@ const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
 const createVersionRouter = require('./versions')
+const appComponents = require('../data/app-components')
+
 
 // The version considered to be current.
 //
@@ -112,6 +114,11 @@ router.use((req, res, next) => {
   //
   // Display newest version first.
   res.locals.versions = [...visibleVersions].reverse()
+
+  // Custom component metadata used by:
+  // - component navigation
+  // - component index pages
+  res.locals.appComponents = appComponents
 
   next()
 })

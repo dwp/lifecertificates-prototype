@@ -1,5 +1,4 @@
 {% extends "layouts/main.html" %}
-
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
@@ -9,33 +8,82 @@
 {% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
 
 {% set pageName = "Liveness checker" %}
-{% set serviceName = "Component guidance" %}
 
 {% block pageTitle %}
   {{ pageName }} – {{ serviceName }}
 {% endblock %}
 
 {% block content %}
-
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
 
-    <span class="govuk-caption-xl">Components and patterns</span>
-    <h1 class="govuk-heading-xl">Liveness checker</h1>
+<div class="govuk-grid-column-one-quarter">
+  {% include "_partials/app-components-nav.njk" %}
+</div>
+
+<div class="govuk-grid-column-three-quarters">
+    <span class="govuk-caption-xl">Custom components and patterns</span>
+
+    <h1 class="govuk-heading-xl">
+      Liveness checker
+    </h1>
 
     <p class="govuk-body-l">
       Capture a photo of a person using a device camera and guide them to position their face inside an oval frame.
     </p>
 
-    <p class="govuk-body">
-      The liveness checker is a reusable component used within a page-level pattern. The component handles the camera preview, oval guide, capture behaviour and hidden input.
-    </p>
+    <div class="app-example-frame">
 
-    <p class="govuk-body">
-      The page pattern should handle the heading, error summary, form, fallback route and journey content.
-    </p>
+      {% set exampleDisplayUntilCameraReady %}
+        {{ govukWarningText({
+          text: "We need to use your camera. Choose Allow to continue."
+        }) }}
+      {% endset %}
 
-    <h2 class="govuk-heading-l">When to use this</h2>
+      {% call appLivenessChecker({
+        id: "example-liveness-check",
+        name: "exampleLivenessImage",
+        displayUntilCameraReady: exampleDisplayUntilCameraReady,
+        form: {
+          id: "exampleLivenessForm",
+          action: "#",
+          method: "post"
+        }
+      }) %}
+
+      {% endcall %}
+
+    </div>
+
+    {{ govukDetails({
+      summaryText: "Nunjucks",
+      html: '
+        <div class="app-example">
+          <pre><code>{% raw %}{% set displayUntilCameraReady %}
+  {{ govukWarningText({
+    text: "We need to use your camera. Choose Allow to continue."
+  }) }}
+{% endset %}
+{% call appLivenessChecker({
+  id: "example-liveness-check",
+  name: "exampleLivenessImage",
+  displayUntilCameraReady: displayUntilCameraReady,
+  form: {
+    id: "exampleLivenessForm",
+    action: "#",
+    method: "post"
+  }
+}) %}
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+{% endcall %}{% endraw %}</code></pre>
+        </div>
+      '
+    }) }}
+
+    <h2 class="govuk-heading-l">
+      When to use this
+    </h2>
 
     <ul class="govuk-list govuk-list--bullet">
       <li>checking that a person is present during an identity journey</li>
@@ -44,7 +92,9 @@
       <li>taking a selfie-style image using a front-facing camera</li>
     </ul>
 
-    <h2 class="govuk-heading-l">When not to use this</h2>
+    <h2 class="govuk-heading-l">
+      When not to use this
+    </h2>
 
     <p class="govuk-body">
       Do not use this as the only way for users to complete a task.
@@ -61,25 +111,41 @@
       text: "Always provide an alternative route for users who cannot use their camera or cannot verify their identity this way."
     }) }}
 
-    <h2 class="govuk-heading-l">Using the liveness checker pattern</h2>
+  <h2 class="govuk-heading-l">
+    How it works
+  </h2>
 
-    <p class="govuk-body">
-      The recommended pattern is to render the error summary before the page heading, render the form in the page, and pass the form ID and error summary ID into the liveness checker.
-    </p>
+  <p class="govuk-body">
+    The liveness checker is a reusable component used within a page-level pattern. The component handles the camera preview, oval guide, capture behaviour and hidden input.
+  </p>
 
-    <p class="govuk-body">
-      This keeps the GOV.UK page structure correct while allowing the component JavaScript to update the error summary if camera access fails.
-    </p>
+  <p class="govuk-body">
+    The page pattern should handle the heading, error summary, form, fallback route and journey content.
+  </p>
 
-    <div class="app-example govuk-!-margin-bottom-6">
-      <pre class="govuk-body"><code>{% raw %}{% from "govuk/components/button/macro.njk" import govukButton %}
+  <p class="govuk-body">
+    The recommended pattern is to render the error summary before the page heading, render the form in the page, and pass the form ID and error summary ID into the liveness checker.
+  </p>
+
+  <p class="govuk-body">
+    This keeps the GOV.UK page structure correct while allowing the component JavaScript to update the error summary if camera access fails.
+  </p>
+
+  <p class="govuk-body">
+    The following nunjucks example shows the recommended page-level implementation pattern.
+  </p>
+
+    {% set patternNunjucks %}
+{% raw %}
+<div class="app-example">
+<pre><code>
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
 
 &lt;div class="govuk-grid-row"&gt;
   &lt;div class="govuk-grid-column-full"&gt;
-
     {{ govukErrorSummary({
       titleText: "There is a problem",
       errorList: [
@@ -116,11 +182,9 @@
         errorSummaryId: "livenessErrorSummary",
         displayUntilCameraReady: displayUntilCameraReady
       }) %}
-
         {{ govukButton({
           text: "Take photo and continue"
         }) }}
-
       {% endcall %}
 
     &lt;/form&gt;
@@ -130,49 +194,58 @@
         Not able to verify your identity?
       &lt;/a&gt;
     &lt;/p&gt;
-
   &lt;/div&gt;
-&lt;/div&gt;{% endraw %}</code></pre>
-    </div>
+&lt;/div&gt;
+</code></pre>
+</div>
+{% endraw %}
+    {% endset %}
 
-    <h2 class="govuk-heading-l">Component example</h2>
+    {{ govukDetails({
+      summaryText: "Nunjucks",
+      html: patternNunjucks
+    }) }}
+
+    <h2 class="govuk-heading-l">
+      Capture a face image
+    </h2>
 
     <p class="govuk-body">
       This example shows the reusable liveness checker component on its own. Use the full page pattern above for service pages.
     </p>
 
-    {% set exampleDisplayUntilCameraReady %}
-      {{ govukWarningText({
-        text: "We need to use your camera. Choose Allow to continue."
-      }) }}
-    {% endset %}
+    <div class="app-example-frame">
+      {% set exampleDisplayUntilCameraReady %}
+        {{ govukWarningText({
+          text: "We need to use your camera. Choose Allow to continue."
+        }) }}
+      {% endset %}
 
-    {% call appLivenessChecker({
-      id: "example-liveness-check",
-      name: "exampleLivenessImage",
-      displayUntilCameraReady: exampleDisplayUntilCameraReady,
-      form: {
-        id: "exampleLivenessForm",
-        action: "#",
-        method: "post"
-      }
-    }) %}
+      {% call appLivenessChecker({
+        id: "example-liveness-check",
+        name: "exampleLivenessImage",
+        displayUntilCameraReady: exampleDisplayUntilCameraReady,
+        form: {
+          id: "exampleLivenessForm",
+          action: "#",
+          method: "post"
+        }
+      }) %}
+        {{ govukButton({
+          text: "Take photo and continue"
+        }) }}
+      {% endcall %}
+    </div>
 
-      {{ govukButton({
-        text: "Take photo and continue"
-      }) }}
-
-    {% endcall %}
-
-    <h3 class="govuk-heading-m">Nunjucks</h3>
-
-    <div class="app-example govuk-!-margin-bottom-6">
-      <pre class="govuk-body"><code>{% raw %}{% set displayUntilCameraReady %}
+    {{ govukDetails({
+      summaryText: "Nunjucks",
+      html: '
+        <div class="app-example">
+          <pre><code>{% raw %}{% set displayUntilCameraReady %}
   {{ govukWarningText({
     text: "We need to use your camera. Choose Allow to continue."
   }) }}
 {% endset %}
-
 {% call appLivenessChecker({
   id: "example-liveness-check",
   name: "exampleLivenessImage",
@@ -183,21 +256,25 @@
     method: "post"
   }
 }) %}
-
   {{ govukButton({
     text: "Take photo and continue"
   }) }}
-
 {% endcall %}{% endraw %}</code></pre>
-    </div>
+        </div>
+      '
+    }) }}
 
-    <h2 class="govuk-heading-l">Component reference</h2>
+    <h2 class="govuk-heading-l">
+      Component reference
+    </h2>
 
     <p class="govuk-body">
       The following sections describe the reusable component API.
     </p>
 
-    <h3 class="govuk-heading-m">Options</h3>
+    <h3 class="govuk-heading-m">
+      Options
+    </h3>
 
     {{ govukSummaryList({
       rows: [
@@ -252,97 +329,153 @@
       ]
     }) }}
 
-    <h3 class="govuk-heading-m">Form convenience option</h3>
+    <h3 class="govuk-heading-m">
+      Form convenience option
+    </h3>
 
     <p class="govuk-body">
       For simple prototypes, the component can render its own form using the <code>form</code> option. For service pages, render the form in the page and pass <code>formId</code> into the component instead.
     </p>
 
-    <pre class="govuk-body"><code>
-    {% raw %}
-        {% call appLivenessChecker({
-            id: "example-liveness-check",
-            name: "exampleLivenessImage",
-            form: {
-                id: "exampleLivenessForm",
-                action: "#",
-                method: "post"
-            }
-            }) %}
-            {{ govukButton({
-                text: "Take photo and continue"
-            }) }}
-        {% endcall %}
-    {% endraw %}
-    </code></pre>
+    <div class="app-example">
+      <pre><code>{% raw %}{% call appLivenessChecker({
+  id: "example-liveness-check",
+  name: "exampleLivenessImage",
+  form: {
+    id: "exampleLivenessForm",
+    action: "#",
+    method: "post"
+  }
+}) %}
+  {{ govukButton({
+    text: "Take photo and continue"
+  }) }}
+{% endcall %}{% endraw %}</code></pre>
+    </div>
 
-    <h3 class="govuk-heading-m">JavaScript API</h3>
+    <h2 class="govuk-heading-l">
+      JavaScript API
+    </h2>
 
     <p class="govuk-body">
       Each liveness checker instance is registered on <code>window.livenessCheckers</code>.
     </p>
 
-    <pre class="govuk-body"><code>var checker =
+    <div class="app-example">
+      <pre><code>var checker =
   window.livenessCheckers['liveness-check']</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">Capture an image</h4>
+    <h3 class="govuk-heading-m">
+      Capture an image
+    </h3>
 
-    <pre class="govuk-body"><code>checker.capture()</code></pre>
+    <div class="app-example">
+      <pre><code>checker.capture()</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">Get the current image</h4>
+    <h3 class="govuk-heading-m">
+      Get the current image
+    </h3>
 
-    <pre class="govuk-body"><code>checker.getImage()</code></pre>
+    <div class="app-example">
+      <pre><code>checker.getImage()</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">Clear the current image</h4>
+    <h3 class="govuk-heading-m">
+      Clear the image
+    </h3>
 
-    <pre class="govuk-body"><code>checker.clear()</code></pre>
+    <div class="app-example">
+      <pre><code>checker.clear()</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">Set detection state</h4>
+    <h3 class="govuk-heading-m">
+      Update detection state
+    </h3>
 
-    <pre class="govuk-body"><code>checker.setDetected(true)</code></pre>
+    <div class="app-example">
+      <pre><code>checker.setDetected(true)</code></pre>
+    </div>
 
-    <h3 class="govuk-heading-m">Events</h3>
+    <h2 class="govuk-heading-l">
+      Events
+    </h2>
 
-    <h4 class="govuk-heading-s">liveness-checker:capture</h4>
+    <h3 class="govuk-heading-m">
+      liveness-checker:capture
+    </h3>
 
     <p class="govuk-body">
       Fired after an image is captured.
     </p>
 
-    <pre class="govuk-body"><code>document.addEventListener(
+    <div class="app-example">
+      <pre><code>document.addEventListener(
   'liveness-checker:capture',
   function (event) {
     console.log(event.detail)
   }
 )</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">liveness-checker:clear</h4>
+    <h3 class="govuk-heading-m">
+      liveness-checker:clear
+    </h3>
 
     <p class="govuk-body">
       Fired when the stored image is cleared.
     </p>
 
-    <pre class="govuk-body"><code>document.addEventListener(
+    <div class="app-example">
+      <pre><code>document.addEventListener(
   'liveness-checker:clear',
   function (event) {
     console.log(event.detail)
   }
 )</code></pre>
+    </div>
 
-    <h4 class="govuk-heading-s">liveness-checker:resize</h4>
+    <h3 class="govuk-heading-m">
+      liveness-checker:resize
+    </h3>
 
     <p class="govuk-body">
       Fired when the oval guide geometry changes.
     </p>
 
-    <pre class="govuk-body"><code>document.addEventListener(
+    <div class="app-example">
+      <pre><code>document.addEventListener(
   'liveness-checker:resize',
   function (event) {
     console.log(event.detail.guide)
   }
 )</code></pre>
+    </div>
 
-    <h3 class="govuk-heading-m">Accessibility</h3>
+    <h2 class="govuk-heading-l">
+      Error handling
+    </h2>
+
+    <p class="govuk-body">
+      Camera errors are shown in the GOV.UK Error Summary when an <code>errorSummaryId</code> is supplied. If no external error summary is supplied, the component renders a fallback error summary inside the component.
+    </p>
+
+    <h3 class="govuk-heading-m">
+      Example error messages
+    </h3>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Camera access was denied. Allow camera access and try again.</li>
+      <li>No camera could be found on this device.</li>
+      <li>Your camera is currently being used by another application.</li>
+      <li>Your browser security settings are preventing access to the camera.</li>
+      <li>The camera is not ready yet. Try again in a moment.</li>
+    </ul>
+
+    <h2 class="govuk-heading-l">
+      Accessibility
+    </h2>
 
     <ul class="govuk-list govuk-list--bullet">
       <li>uses a live region for status updates</li>
@@ -350,27 +483,6 @@
       <li>can update an external GOV.UK Error Summary</li>
       <li>does not rely only on the visual oval to explain the task</li>
     </ul>
-
-    <h3 class="govuk-heading-m">Error handling</h3>
-
-    <p class="govuk-body">
-      Camera errors are shown in the GOV.UK Error Summary when an <code>errorSummaryId</code> is supplied. If no external error summary is supplied, the component renders a fallback error summary inside the component.
-    </p>
-
-    {{ govukDetails({
-      summaryText: "Example error messages",
-      html: "
-        <ul class=\"govuk-list govuk-list--bullet\">
-          <li>Camera access was denied. Allow camera access and try again.</li>
-          <li>No camera could be found on this device.</li>
-          <li>Your camera is currently being used by another application.</li>
-          <li>Your browser security settings are preventing access to the camera.</li>
-          <li>The camera is not ready yet. Try again in a moment.</li>
-        </ul>
-      "
-    }) }}
-
   </div>
 </div>
-
 {% endblock %}

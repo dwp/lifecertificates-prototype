@@ -227,9 +227,29 @@
         Versions represent material changes to the prototype that affect the service meaning or behaviour, for example where a new journey is added or an existing journey is changed.
         </p>
 
+
+<h2 class="govuk-heading-l">Custom components and patterns</h2>
+
+<p class="govuk-body">
+  Reusable elements used in this prototype.
+</p>
+
+<ul class="govuk-list govuk-list--spaced">
+  {% for component in appComponents %}
+    <li>
+      <a class="govuk-link" href="{{ component.href }}">{{ component.text }}</a>
+      {% if component.description %}
+          <br>
+          <span class="govuk-hint">
+              {{ component.description }}
+          </span>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
 <!--
     <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="/docs/documentation-guide">Documentation guide</a></li>
       <li><a class="govuk-link" href="/docs/ways-of-working">Ways of working</a></li>
       <li><a class="govuk-link" href="/docs/managing-research-and-evidence">Managing research and evidence</a></li>
       <li><a class="govuk-link" href="/docs/research-and-evidence">Research and evidence</a></li>

@@ -11,16 +11,52 @@
 @import "components/app-subnav";
 
 // Guidance styles
+
+// nunjucks and code examples
+.app-example-frame {
+  padding: govuk-spacing(5);
+  margin-bottom: govuk-spacing(4);
+  border: 1px solid $govuk-border-colour;
+  background: govuk-colour("white");
+}
+
 .app-example {
-    padding: 20px;
-    border: 1px solid #b1b4b6;
-    background: #f3f2f1;
-  }
-  
-  .app-example pre {
-    margin: 0;
-    white-space: pre-wrap;
-  }
+  margin-bottom: govuk-spacing(6);
+}
+
+.app-example pre {
+  overflow-x: auto;
+  padding: govuk-spacing(4);
+  background: #f8f8f8;
+  outline: 1px solid #cecece;
+  font-size: 1.1875rem;
+  line-height: 1.3157894737;
+  font-family: ui-monospace, menlo,
+    "Cascadia Mono",
+    "Segoe UI Mono",
+    consolas,
+    "Liberation Mono",
+    monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*.app-example pre {
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font-family: ui-monospace,menlo,"Cascadia Mono","Segoe UI Mono",consolas,"Liberation Mono",monospace;
+  -webkit-font-smoothing: antialiased;
+  font-size: 1.1875rem;
+  line-height: 1.3157894737;
+} */
+
+
+.app-example code {
+  white-space: pre;
+}
+
 
 // Other styles (Used on Agent screens)
 .app-table__cell--nowrap {

@@ -1,120 +1,134 @@
-{# app/views/phone-number-guidance.njk #}
+{% extends "layouts/main.html" %}
 
-{% extends "layouts/main.njk" %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "components/app-phone-input/macro.njk" import appPhoneInput %}
+
+{% set pageName = "Phone input" %}
 
 {% block pageTitle %}
-  Ask users for a phone number – GOV.UK Prototype Kit
+  {{ pageName }} – {{ serviceName }}
 {% endblock %}
 
 {% block content %}
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
 
-    <span class="govuk-caption-xl">Pattern</span>
+<div class="govuk-grid-column-one-quarter">
+  {% include "_partials/app-components-nav.njk" %}
+</div>
+
+<div class="govuk-grid-column-three-quarters">
+
+    <span class="govuk-caption-xl">Components and patterns</span>
+
     <h1 class="govuk-heading-xl">
-      Ask users for a phone number
+      Phone input
     </h1>
 
     <p class="govuk-body-l">
-      Help users enter a phone number, with or without a country code.
+      Collect telephone numbers using separate country code and national number inputs.
     </p>
+
+    <div class="app-example-frame">
+
+      {{ appPhoneInput({
+        id: "phone-number-example",
+        namePrefix: "phone-number-example",
+        fieldset: {
+          legend: {
+            text: "What is your phone number?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "Include the country code and phone number. For example, +44 7700900123."
+        },
+        countryCode: {
+          value: data["phone-number-country-code"]
+        },
+        nationalNumber: {
+          value: data["phone-number-national-number"]
+        }
+      }) }}
+
+    </div>
 
     <h2 class="govuk-heading-l">
-      When to use this pattern
+      When to use this
     </h2>
-
-    <p class="govuk-body">
-      Use this pattern when users need to enter a phone number.
-    </p>
-
-    <p class="govuk-body">
-      You can use it to ask for:
-    </p>
 
     <ul class="govuk-list govuk-list--bullet">
-      <li>a phone number only</li>
-      <li>a phone number with a separate country code</li>
+      <li>when users may provide international telephone numbers</li>
+      <li>when country codes need to be stored separately</li>
+      <li>when a service is used by customers in multiple countries</li>
+      <li>when country codes and national numbers need different validation rules</li>
     </ul>
 
-    <p class="govuk-body">
-      Ask for the country code separately if your service needs to store, validate or use it separately from the rest of the phone number.
-    </p>
-
     <h2 class="govuk-heading-l">
-      When not to use this pattern
+      When not to use this
     </h2>
 
-    <p class="govuk-body">
-      Do not ask for a country code if your service does not need one.
-    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>when a phone number is not required</li>
+      <li>when another contact method is more appropriate</li>
+      <li>when telephone details are supplied from another trusted source</li>
+    </ul>
 
-    <p class="govuk-body">
-      For example, if your service only accepts UK phone numbers, or already knows the user’s country, a single phone number input may be simpler.
-    </p>
-
-    <p class="govuk-body">
-      Do not split the phone number into separate fields unless there is a clear user or service need.
-    </p>
+    {{ govukInsetText({
+      text: "Hide the country code input when users only need to provide a national phone number."
+    }) }}
 
     <h2 class="govuk-heading-l">
       How it works
     </h2>
 
     <p class="govuk-body">
-      The pattern uses a fieldset and legend to group the related inputs together as one question.
-    </p>
-
-    <p class="govuk-body">
-      If you need a country code, show it before the phone number input.
-    </p>
-
-    <div class="govuk-inset-text">
-      <p class="govuk-body">
-        What is your phone number?
-      </p>
-
-      <p class="govuk-body">
-        Country code: +44<br>
-        Phone number: 7700900123
-      </p>
-    </div>
-
-    <p class="govuk-body">
-      If you do not need a country code, only show the phone number input.
-    </p>
-
-    <div class="govuk-inset-text">
-      <p class="govuk-body">
-        What is your phone number?
-      </p>
-
-      <p class="govuk-body">
-        Phone number: 07700 900123
-      </p>
-    </div>
-
-    <h2 class="govuk-heading-l">
-      Country code
-    </h2>
-
-    <p class="govuk-body">
-      Make the country code optional in the component configuration.
-    </p>
-
-    <p class="govuk-body">
-      Show the country code input when your service needs an international number or needs to validate the country code separately.
-    </p>
-
-    <p class="govuk-body">
-      Hide the country code input when users only need to provide a national phone number.
+      The component provides separate inputs for the country code and national phone number. This avoids forcing services to split phone numbers after submission and makes it easier to validate and store both values independently.
     </p>
 
     <h3 class="govuk-heading-m">
-      With country code
+      If you're collecting an international phone number
     </h3>
 
-    <pre class="govuk-!-margin-bottom-6"><code>{{ appPhoneInput({
+    <p class="govuk-body">
+      Use the country code input when users may provide phone numbers from different countries or when the country code needs to be stored separately.
+    </p>
+
+    <div class="app-example-frame">
+
+      {{ appPhoneInput({
+        id: "phone-number-international",
+        namePrefix: "phone-number-international",
+        fieldset: {
+          legend: {
+            text: "What is your phone number?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "Include the country code and phone number. For example, +44 7700900123."
+        },
+        countryCode: {
+          value: data["phone-number-country-code"]
+        },
+        nationalNumber: {
+          value: data["phone-number-national-number"]
+        }
+      }) }}
+
+    </div>
+
+{{ govukDetails({
+  summaryText: "Nunjucks",
+  html: '
+    <div class="app-example">
+      <pre><code>{% raw %}{% from "components/app-phone-input/macro.njk" import appPhoneInput %}
+
+{{ appPhoneInput({
   id: "phone-number",
   namePrefix: "phone-number",
   fieldset: {
@@ -133,15 +147,51 @@
   nationalNumber: {
     value: data["phone-number-national-number"]
   }
-}) }}</code></pre>
+}) }}{% endraw %}</code></pre>
+    </div>
+  '
+}) }}
 
     <h3 class="govuk-heading-m">
-      Without country code
+      If you're collecting a national phone number
     </h3>
 
-    <pre class="govuk-!-margin-bottom-6"><code>{{ appPhoneInput({
-  id: "phone-number",
-  namePrefix: "phone-number",
+    <p class="govuk-body">
+      Hide the country code input when all users are expected to provide a national telephone number and the service does not need to store the country code separately.
+    </p>
+
+    <div class="app-example-frame">
+
+      {{ appPhoneInput({
+        id: "phone-number-national",
+        namePrefix: "phone-number-national",
+        fieldset: {
+          legend: {
+            text: "What is your phone number?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+          text: "For example, 07700 900123."
+        },
+        countryCode: {
+          show: false
+        },
+        nationalNumber: {
+          value: data["phone-number-national"]
+        }
+      }) }}
+
+    </div>
+
+{{ govukDetails({
+  summaryText: "Nunjucks",
+  html: '
+    <div class="app-example">
+      <pre><code>{% raw %}{{ appPhoneInput({
+  id: "phone-number-national",
+  namePrefix: "phone-number-national",
   fieldset: {
     legend: {
       text: "What is your phone number?",
@@ -154,209 +204,94 @@
   },
   countryCode: {
     show: false
-  },
-  nationalNumber: {
-    value: data["phone-number-national-number"]
   }
-}) }}</code></pre>
+}) }}{% endraw %}</code></pre>
+    </div>
+  '
+}) }}
 
     <h2 class="govuk-heading-l">
-      Use a fieldset and legend
+      Component reference
     </h2>
 
     <p class="govuk-body">
-      Use a fieldset to group the inputs because they form one answer.
+      The following options are available when using the component.
     </p>
 
-    <p class="govuk-body">
-      The legend should usually be the question, for example “What is your phone number?”.
-    </p>
-
-    <p class="govuk-body">
-      If the page asks one question, the legend can be the page heading.
-    </p>
+    {{ govukSummaryList({
+      rows: [
+        {
+          key: { text: "id" },
+          value: { text: "Unique identifier for the component instance." }
+        },
+        {
+          key: { text: "namePrefix" },
+          value: { text: "Prefix used when generating the country code and national number field names." }
+        },
+        {
+          key: { text: "fieldset" },
+          value: { text: "Standard GOV.UK fieldset configuration." }
+        },
+        {
+          key: { text: "hint" },
+          value: { text: "Hint text displayed below the legend." }
+        },
+        {
+          key: { text: "errorMessage" },
+          value: { text: "Error message displayed above the inputs." }
+        },
+        {
+          key: { text: "countryCode" },
+          value: { text: "Configuration options for the country code input." }
+        },
+        {
+          key: { text: "nationalNumber" },
+          value: { text: "Configuration options for the phone number input." }
+        }
+      ]
+    }) }}
 
     <h2 class="govuk-heading-l">
-      Labels
+      Validation and error handling
     </h2>
 
     <p class="govuk-body">
-      Use short, clear labels for each input.
+      Validation should be performed by the page or service using the component. The component displays any supplied error state and error messaging using standard GOV.UK patterns.
     </p>
 
-    <p class="govuk-body">
-      If you include the country code input, use:
-    </p>
+    <div class="app-example">
+      <pre><code>{% raw %}{{ appPhoneInput({
+  id: "phone-number",
+  errorMessage: {
+    text: "Enter a valid phone number"
+  }
+}) }}{% endraw %}</code></pre>
+    </div>
+
+    <h3 class="govuk-heading-m">
+      Example validation messages
+    </h3>
 
     <ul class="govuk-list govuk-list--bullet">
-      <li>Country code</li>
-      <li>Phone number</li>
+      <li>Enter a phone number</li>
+      <li>Enter a valid country code</li>
+      <li>Enter a valid phone number</li>
+      <li>Phone number must contain only valid characters</li>
     </ul>
-
-    <p class="govuk-body">
-      If you do not include the country code input, use:
-    </p>
-
-    <ul class="govuk-list govuk-list--bullet">
-      <li>Phone number</li>
-    </ul>
-
-    <p class="govuk-body">
-      Avoid abbreviations such as “CC”, “intl code” or “dialling code” unless your research shows users understand them.
-    </p>
-
-    <h2 class="govuk-heading-l">
-      Hint text
-    </h2>
-
-    <p class="govuk-body">
-      Use hint text to show the expected format.
-    </p>
-
-    <h3 class="govuk-heading-m">
-      If asking for a country code
-    </h3>
-
-    <div class="govuk-inset-text">
-      Include the country code and phone number. For example, +44 7700900123.
-    </div>
-
-    <h3 class="govuk-heading-m">
-      If not asking for a country code
-    </h3>
-
-    <div class="govuk-inset-text">
-      For example, 07700 900123.
-    </div>
-
-    <h2 class="govuk-heading-l">
-      The plus sign
-    </h2>
-
-    <p class="govuk-body">
-      If you ask for a country code, show the plus sign as a GOV.UK input prefix.
-    </p>
-
-    <p class="govuk-body">
-      Do not ask users to type the plus sign if your service only stores the numeric country code.
-    </p>
-
-    <p class="govuk-body">
-      Some users may still type the plus sign into the country code field. Allow for this in validation by removing the plus sign before validating or storing the value.
-    </p>
-
-    <h2 class="govuk-heading-l">
-      Validation
-    </h2>
-
-    <p class="govuk-body">
-      Validate the fields that are shown to the user.
-    </p>
-
-    <h3 class="govuk-heading-m">
-      If country code and phone number are shown
-    </h3>
-
-    <p class="govuk-body">
-      Validate the country code and phone number separately.
-    </p>
-
-    <h4 class="govuk-heading-s">
-      If nothing is entered
-    </h4>
-
-    <div class="govuk-inset-text">
-      Enter your phone number
-    </div>
-
-    <h4 class="govuk-heading-s">
-      If the country code is missing
-    </h4>
-
-    <div class="govuk-inset-text">
-      Enter a country code
-    </div>
-
-    <h4 class="govuk-heading-s">
-      If the country code is not valid
-    </h4>
-
-    <div class="govuk-inset-text">
-      Country code must be 2 numbers
-    </div>
-
-    <h4 class="govuk-heading-s">
-      If the phone number is missing
-    </h4>
-
-    <div class="govuk-inset-text">
-      Enter a phone number
-    </div>
-
-    <h4 class="govuk-heading-s">
-      If the phone number is too long
-    </h4>
-
-    <div class="govuk-inset-text">
-      Phone number must be 20 numbers or fewer
-    </div>
-
-    <h3 class="govuk-heading-m">
-      If only phone number is shown
-    </h3>
-
-    <p class="govuk-body">
-      Only validate the phone number field.
-    </p>
-
-    <h4 class="govuk-heading-s">
-      If nothing is entered
-    </h4>
-
-    <div class="govuk-inset-text">
-      Enter a phone number
-    </div>
-
-    <h4 class="govuk-heading-s">
-      If the phone number is too long
-    </h4>
-
-    <div class="govuk-inset-text">
-      Phone number must be 20 numbers or fewer
-    </div>
 
     <h2 class="govuk-heading-l">
       Accessibility
     </h2>
 
-    <p class="govuk-body">
-      This pattern uses:
-    </p>
-
     <ul class="govuk-list govuk-list--bullet">
-      <li>a fieldset to group related inputs</li>
-      <li>a legend to describe the group</li>
-      <li>visible labels for each input</li>
-      <li>hint text connected to the fieldset using aria-describedby</li>
-      <li>text inputs so leading zeroes are not removed</li>
-      <li>a GOV.UK input prefix for the plus sign when the country code is shown</li>
-    </ul>
-
-    <h2 class="govuk-heading-l">
-      Research considerations
-    </h2>
-
-    <p class="govuk-body">
-      Test whether users:
-    </p>
-
-    <ul class="govuk-list govuk-list--bullet">
-      <li>understand what “country code” means</li>
-      <li>notice that the plus sign is already provided</li>
-      <li>know whether to include leading zeroes in the phone number</li>
-      <li>expect to enter the full phone number in one field</li>
-      <li>can complete the pattern on mobile devices</li>
-      <li>find it easier with or without a separate country code field</li>
+      <li>uses standard GOV.UK form markup</li>
+      <li>associates labels with inputs using matching <code>id</code> and <code>for</code> attributes</li>
+      <li>supports keyboard navigation</li>
+      <li>supports GOV.UK error message patterns</li>
+      <li>works with screen readers</li>
+      <li>works without JavaScript</li>
+      <li>supports browser telephone autocomplete behaviour</li>
+      <li>does not rely on placeholder text to communicate instructions</li>
     </ul>
 
   </div>
