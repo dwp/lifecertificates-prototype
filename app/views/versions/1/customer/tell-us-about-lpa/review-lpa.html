@@ -5,14 +5,15 @@
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
 
+{% set numberOfLPAs = customer.powerOfAttorney.registeredLPAs.length %}
+
 {% set pageName %}
     {% if data["hasLPA"] == "Yes" %}
-        You have 1 lasting power of attorney
+        You have {{ numberOfLPAs }} lasting power{% if numberOfLPAs != 1 %}s{% endif %} of attorney
     {% else %}
         Nominate someone who can collect your state pension
     {% endif %}
 {% endset %}
-
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -29,29 +30,39 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-
             <form class="form" action="review-lpa" method="post">
 
+            {% set lpas = customer.powerOfAttorney.registeredLPAs %}
+
             {% if data["hasLPA"] == "Yes" %}
-                <h1 class="govuk-heading-l">{{ pageName }}</h1>
-                <p class="govuk-body">They can collect, access and manage your UK State Pension on your behalf
-                {{ govukTable({
-                    caption: "Registered lasting power of attorney",
-                    captionClasses: "govuk-table__caption--m",
-                    firstCellIsHeader: true,
-                    head: [
-                        { text: "Representative" },
-                        { text: "Date registered" },
-                        { text: "" }
-                    ],
-                    rows: [
-                        [
-                            { text: "Jan Attornisson" },
-                            { text: "10 May 2022" },
-                            { html: "<a href=\"remove-lpa\" class=\"govuk-link\">Remove</a>" }
-                        ]
-                    ]
-                    }) }}
+
+              <h1 class="govuk-heading-l">{{ pageName }}</h1>
+              <p class="govuk-body">They can collect, access and manage your UK State Pension on your behalf
+
+              <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">
+                  Registered lasting power of attorney
+                </caption>
+
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Attorney</th>
+                    <th class="govuk-table__header">Date registered</th>
+                    <th class="govuk-table__header"></th>
+                  </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                  {% for lpa in customer.powerOfAttorney.registeredLPAs %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">{{ lpa.representative }}</td>
+                      <td class="govuk-table__cell">{{ lpa.registeredDate }}</td>
+                      <td class="govuk-table__cell"><a href="remove-lpa?attorney={{ loop.index0 }}" class="govuk-link">Remove<span class="govuk-visually-hidden"> {{ lpa.representative }}</span></a></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
             {% endif %}
 
             {% set legendText %}
@@ -87,16 +98,16 @@
                     items: [
                         {
                             value: "Yes",
-                            text: "Yes"
+                            text: "Yes",
+                            checked: data.registerLPA == "Yes"
                         },
                         {
                             value: "No",
-                            text: "No"
+                            text: "No",
+                            checked: data.registerLPA == "No"
                         }
                     ]
                 }) }}
-
-                {{ govukRadios(radioOptions) }}
 
                 <div class="govuk-button-group">
 
@@ -105,14 +116,12 @@
                 }) }}
 
             {% if data["hasLPA"] == "Yes" %}
-                <input name="hasLPA" type="hidden" value="No">
                 {{ govukButton({
                     text: "Page if customer has no LPA",
                     classes: "govuk-button--secondary",
                     href: "review-lpa?hasLPA=No"
                 }) }}
             {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
-                <input name="hasLPA" type="hidden" value="Yes">
                  {{ govukButton({
                     text: "Page if customer has LPA",
                     classes: "govuk-button--secondary",

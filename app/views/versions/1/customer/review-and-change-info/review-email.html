@@ -37,9 +37,8 @@
                     hint: {
                         text: "For example, name@domain.com"
                     },
-                    value: data["emailAddress"]
+                    value: data["emailAddress"] or customer.contactDetails.emailAddress
                 }) }}
-
 
                 {{ govukButton({
                     text: "Continue"

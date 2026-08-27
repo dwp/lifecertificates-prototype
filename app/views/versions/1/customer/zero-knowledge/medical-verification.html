@@ -35,7 +35,7 @@
                     name: "doctorFullName",
                     autocomplete: "name",
                     spellcheck: false,
-                    value: data['doctorFullName']                
+                    value: data['doctorFullName']
                 }) }}
 
                 {% call govukFieldset({
@@ -133,6 +133,7 @@
                 javascript: true
                 }) }}
 
+                <input type="hidden" name="medicalExemption" id="doctor-exemption" value="Yes">
 
                 {{ govukButton({
                     text: "Continue"

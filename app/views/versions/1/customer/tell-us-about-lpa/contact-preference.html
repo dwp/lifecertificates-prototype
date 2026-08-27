@@ -22,36 +22,36 @@
 
             <form class="form" action="verify-identity-again" method="post">
 
-                {{ govukRadios({
-                    name: "contactPreference",
-                    fieldset: {
-                        legend: {
-                            text: pageName,
-                            isPageHeading: true,
-                            classes: "govuk-fieldset__legend--l"
-                        }
-                    },
-                    hint: { text: "This only applies to us contacting you about your pension payments" },
-                    value: data["contactPreference"],
-                    items: [
-                        {
-                            value: "Text message",
-                            text: "Text message"
-                        },
-                        {
-                            value: "Email",
-                            text: "Email"
-                        },
-                        {
-                            value: "Post",
-                            text: "Post"
-                        }
-                    ]
-                }) }}
+              {{ govukRadios({
+                name: "contactPreference",
+                fieldset: {
+                  legend: {
+                    text: pageName,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                  }
+                },
+                hint: { text: "This only applies to us contacting you about your pension payments" },
+                value: data["contactPreference"] or customer.contactDetails.contactPreference,
+                items: [
+                  {
+                    value: "Post",
+                    text: "Post"
+                  },
+                  {
+                    value: "Email",
+                    text: "Email"
+                  },
+                  {
+                    value: "Phone",
+                    text: "Phone"
+                  }
+                ]
+              }) }}
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+              {{ govukButton({
+                  text: "Continue"
+              }) }}
 
             </form>
         </div>

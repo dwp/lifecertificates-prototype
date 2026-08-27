@@ -26,65 +26,69 @@
 
             <form class="form" action="review-address" method="post">
 
-                {% call govukFieldset({
+              {% call govukFieldset({
                 legend: {
-                    text: "Bank or building society account details",
-                    classes: "govuk-fieldset__legend--m"
-                }
+                  text: "Bank or building society account details",
+                  classes: "govuk-fieldset__legend--m"
+                  }
                 }) %}
 
-                    {{ govukInput({
-                    label: {
-                        text: "Name on the account"
+                {{ govukInput({
+                  label: {
+                    text: "Name on the account"
                     },
-                    id: "name-on-the-account",
-                    name: "nameOnTheAccount",
-                    autocomplete: "name",
-                    spellcheck: false
-                    }) }}
+                  id: "name-on-the-account",
+                  name: "nameOnTheAccount",
+                  autocomplete: "name",
+                  spellcheck: false,
+                  value: data["nameOnTheAccount"] or customer.paymentDetails.nameOnTheAccount
+                }) }}
 
-                    {{ govukInput({
-                    label: {
-                        text: "Sort code"
+                {{ govukInput({
+                  label: {
+                    text: "Sort code"
                     },
-                    classes: "govuk-input--width-5 govuk-input--extra-letter-spacing",
-                    hint: {
-                        text: "Must be 6 digits long"
+                  classes: "govuk-input--width-5 govuk-input--extra-letter-spacing",
+                  hint: {
+                    text: "Must be 6 digits long"
                     },
-                    id: "sort-code",
-                    name: "sortCode",
-                    inputmode: "numeric",
-                    spellcheck: false
-                    }) }}
+                  id: "sort-code",
+                  name: "sortCode",
+                  inputmode: "numeric",
+                  spellcheck: false,
+                  value: data["sortCode"] or customer.paymentDetails.sortCode
+                }) }}
 
-                    {{ govukInput({
-                    label: {
-                        text: "Account number"
+                {{ govukInput({
+                  label: {
+                    text: "Account number"
                     },
-                    classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
-                    hint: {
-                        text: "Must be between 6 and 8 digits long"
+                  classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
+                  hint: {
+                    text: "Must be between 6 and 8 digits long"
                     },
-                    id: "account-number",
-                    name: "accountNumber",
-                    inputmode: "numeric",
-                    spellcheck: false
-                    }) }}
+                  id: "account-number",
+                  name: "accountNumber",
+                  inputmode: "numeric",
+                  spellcheck: false,
+                  value: data["accountNumber"] or customer.paymentDetails.accountNumber
+                }) }}
 
-                    {{ govukInput({
-                    label: {
-                        text: "Building society roll number (if you have one)"
+                {{ govukInput({
+                  label: {
+                    text: "Building society roll number (if you have one)"
                     },
-                    classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
-                    hint: {
-                        text: "You can find it on your card, statement or passbook"
+                  classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
+                  hint: {
+                    text: "You can find it on your card, statement or passbook"
                     },
-                    id: "roll-number",
-                    name: "rollNumber",
-                    spellcheck: false
-                    }) }}
+                  id: "roll-number",
+                  name: "rollNumber",
+                  spellcheck: false,
+                  value: data["rollNumber"] or customer.paymentDetails.rollNumber
+                }) }}
 
-                {% endcall %}
+              {% endcall %}
 
 
                 {{ govukButton({

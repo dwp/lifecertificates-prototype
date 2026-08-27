@@ -22,7 +22,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-<!--            <span class="govuk-caption-l">About your doctor</span> -->
             <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
             <form class="form" action="medical-contact-info" method="post">
@@ -35,7 +34,7 @@
                     name: "doctorFullName",
                     autocomplete: "name",
                     spellcheck: false,
-                    value: data['doctorFullName']                
+                    value: data['doctorFullName']
                 }) }}
 
                 {% call govukFieldset({
@@ -133,6 +132,7 @@
                 javascript: true
                 }) }}
 
+                <input type="hidden" name="medicalExemption" id="doctor-exemption" value="Yes">
 
                 {{ govukButton({
                     text: "Continue"

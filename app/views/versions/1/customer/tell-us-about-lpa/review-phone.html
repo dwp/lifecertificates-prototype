@@ -41,10 +41,10 @@
                         text: "Include the country code and phone number. For example, +44 7900900123."
                     },
                     countryCode: {
-                        value: data["phone-country-code"]
+                        value: data["phone-country-code"] or customer.contactDetails.phone.countryCode
                     },
                     nationalNumber: {
-                        value: data["phone-national-number"]
+                        value: data["phone-national-number"] or customer.contactDetails.phone.nationalNumber
                     }
                 }) }}
 
@@ -55,7 +55,7 @@
                             text: "Is this a mobile phone?"
                         }
                     },
-                    value: data["mobilePhone"],
+                    value: data["mobilePhone"] or (customer.contactDetails.phone.isMobile and "Yes") or "No",
                     items: [
                         {
                             value: "Yes",

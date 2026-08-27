@@ -7,6 +7,9 @@
 {% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
 {% set pageName = "Nominating someone to collect your state pension" %}
 
+{% set attorneyIndex = (data.attorney or 0) | int %}
+{% set attorney = customer.powerOfAttorney.registeredLPAs[attorneyIndex] %}
+
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
 {% endblock %}
@@ -38,7 +41,7 @@
           ]
         }
       }) %}
-        <p class="govuk-body">You selected to remove <strong>Jan Attornisson's</strong> lasting power of attorney.</p>
+        <p class="govuk-body">You selected to remove <strong>{{ attorney.attorney }}'s</strong> lasting power of attorney.</p>
       {% endcall %}
 
         </div>

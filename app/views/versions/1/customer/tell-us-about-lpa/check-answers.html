@@ -16,344 +16,272 @@
 
             <h2 class="govuk-heading-m">Identity document</h2>
 
-            {{ govukSummaryList({
-                rows: [
-                {
-                    key: {
-                        text: "Document"
-                    },
-                    value: {
-                        text: "Driver license"
-                    },
-                    actions: {
-                        items: [
-                            {
-                            href: "document-front-scan",
-                            text: "Change",
-                            visuallyHiddenText: "or rescan ID document"
-                            }
-                        ]
-                    }
-                }
-                ]
-            }) }}
+            {% set identityDocument = customer.identityDocument %}
+            {% set extractedDetails = identityDocument.extractedDetails %}
 
             {{ govukSummaryList({
-                card: {
-                    title: {
-                    text: "From your driver license"
-                    }
-                },
-                classes: "govuk-summary-list--no-border",
-                rows: [
-                {
-                    key: {
-                        text: "Name"
-                    },
-                    value: {
-                        text: "Maria Fernandez"
-                    },
-                    classes: "govuk-summary-list__row--no-border"
-                },
-                {
-                    key: {
-                        text: "Date of birth"
-                    },
-                    value: {
-                        text: "5 January 1978"
-                    },
-                    classes: "govuk-summary-list__row--no-border"
-                },
-                {
-                    key: {
-                        text: "Address"
-                    },
-                    value: {
-                        html: "Calle Mayor 45<br>Madrid<br>28013<br>Spain"
-                    }
-                }
-                ]
+              rows: [
+              {
+                  key: { text: "Document" },
+                  value: { text: identityDocument.type },
+                  actions: {
+                      items: [
+                          {
+                          href: "document-front-scan",
+                          text: "Change",
+                          visuallyHiddenText: "or rescan ID document"
+                          }
+                      ]
+                  }
+              }
+              ]
             }) }}
 
-            <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
-
-            {% if data['medicalExemption'] or data['doctorLetter'] or data['doctorFullName'] %}
-
-            <h2 class="govuk-heading-m">Identity verification by a doctor</h2>
-    
-                {% set doctorName %}
-                    {% if data["doctorFullName"] %}
-                        {{ data["doctorFullName"] }}
-                        {% else %}Dr Watson
-                    {% endif %}
-                {% endset %}
-
-                {% set doctorAddress %}
-                    {% if data["addressPractice"] %}
-                        {{ data["addressPractice"] }}<br>
-                        {% else %}Doctors Inc.<br>
-                    {% endif %}
-                    {% if data["addressLine1"] %}
-                        {{ data["addressLine1"] }}<br>
-                        {% else %}999 Letsby Avenue<br>
-                    {% endif %}
-                    {% if data["addressLine2"] %}
-                        {{ data["addressLine2"] }}<br>
-                        {% else %}Suburbia<br>
-                    {% endif %}
-                    {% if data["addressTown"] %}
-                        {{ data["addressTown"] }}<br>
-                        {% else %}City of Town<br>
-                    {% endif %}
-                    {% if data["addressCounty"] %}
-                        {{ data["addressCounty"] }}<br>
-                        {% else %}Countyshireford<br>
-                    {% endif %}
-                    {% if data["addressPostcode"] %}
-                        {{ data["addressPostcode"] }}<br>
-                        {% else %}PO57 3DE<br>
-                    {% endif %}
-                    {% if data["addressCountry"] %}
-                        {{ data["addressCountry"] }}<br>
-                        {% else %}United Kingdom<br>
-                    {% endif %}
-                {% endset %}
-
-                {% set doctorLetter %}
-                    <ul class="govuk-list">
-                        <li>
-                            <a class="govuk-link" href="#">letter-from-doctor.pdf</a>
-                        </li>
-                    </ul>
-                {% endset %}
-
-                {% set doctorContact %}
-                    <p class="govuk-body">
-                    {% if data["doctorEmailAddress"] %}
-                        {{ data["doctorEmailAddress"] }}
-                        {% else %}dr.watson@medicalpractice.com
-                    {% endif %}
-                    </p>
-
-                    <p class="govuk-body">
-                    {% if data["doctor-country-code"] and data["doctor-national-number"] %}
-                        +{{ data["doctor-country-code"] }} {{ data["doctor-national-number"] }}
-                    {% else %}
-                        +353 7900 123900
-                    {% endif %}
-                    </p>
-                {% endset %}
-
-                {{ govukSummaryList({
-                    classes: "govuk-!-margin-bottom-9",
-                    rows: [
-                    {
-                        key: {
-                            text: "Doctor"
-                        },
-                        value: {
-                            text: doctorName
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "doctor",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's name"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Address"
-                        },
-                        value: {
-                            html: doctorAddress
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "doctor",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's address"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Doctor's letter"
-                        },
-                        value: {
-                            html: doctorLetter
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "doctor",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's letter"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Contact details"
-                        },
-                        value: {
-                            html: doctorContact
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "doctor",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's contact details"
-                                }
-                            ]
-                        }
-                    }
-                    ]
-                }) }}
-
-            {% endif %}
-
-{% if not (
-    data['medicalExemption'] == 'Yes'
-    or data['doctorLetter']
-    or data['doctorFullName']
-) %}
-
-            <h2 class="govuk-heading-m">Payment details</h2>
-
-            {% set paymentDetails %}
-                {% if data["nameOnTheAccount"] %}
-                    <p class="govuk-body">{{ data["nameOnTheAccount"] }}</p>
-                    {% else %}<p class="govuk-body">Mrs Maria Fernandez</p>
-                {% endif %}
-                {% if data["sortCode"] %}
-                    <p class="govuk-body">{{ data["sortCode"] }}</p>
-                    {% else %}<p class="govuk-body">Sort code: 11-22-33</p>
-                {% endif %}
-                {% if data["accountNumber"] %}
-                    <p class="govuk-body">{{ data["accountNumber"] }}</p>
-                    {% else %}<p class="govuk-body">Account number: 12345678</p>
-                {% endif %}
-<!--                {% if data["rollNumber"] %}
-                    <p class="govuk-body">{{ data["rollNumber"] }}</p>
-                    {% else %}<p class="govuk-body">A1B2C3D4</p>
-                {% endif %}-->
+            {% set extractedAddressHtml %}
+              {{ extractedDetails.address.line1 }}<br>
+              {% if extractedDetails.address.line2 %}{{ extractedDetails.address.line2 }}<br>{% endif %}
+              {{ extractedDetails.address.town }}<br>
+              {% if extractedDetails.address.county %}{{ extractedDetails.address.county }}<br>{% endif %}
+              {{ extractedDetails.address.postcode }}<br>
+              {{ extractedDetails.address.country }}
             {% endset %}
 
-            {% if data["hasLPA"] == "Yes" %}
+            {{ govukSummaryList({
+              card: {
+                title: { text: "From your " + identityDocument.type | lower }
+              },
+              classes: "govuk-summary-list--no-border",
+              rows: [
+                {
+                  key: { text: "Name" },
+                  value: { text: extractedDetails.fullName },
+                  classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                  key: { text: "Date of birth" },
+                  value: { text: extractedDetails.dateOfBirth },
+                  classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                  key: { text: "Address" },
+                  value: { html: extractedAddressHtml }
+                }
+              ]
+          }) }}
 
-                {% set LPAHtml %}
-                    Jan Attornisson
-                {% endset %}
+          <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
 
-                {% elseif data['hasLPA'] == 'No' or (not data['medicalExemption']) %}
-                {% set LPAHtml %}
-                    You have not registered any lasting power of attorney
-                {% endset %}
+          {% if data['proofOfLifeVerifiedOnline'] == 'No' %}
+
+          <h2 class="govuk-heading-m">Identity verification by a doctor</h2>
+
+          {% set doctorName = data["doctorFullName"] or customer.doctor.fullName %}
+
+          {% set doctorAddressHtml %}
+              {{ data["addressPractice"] or customer.doctor.practice.name }}<br>
+              {{ data["addressLine1"] or customer.doctor.practice.address.line1 }}<br>
+              {% if data["addressLine2"] or customer.doctor.practice.address.line2 %}
+                  {{ data["addressLine2"] or customer.doctor.practice.address.line2 }}<br>
+              {% endif %}
+              {{ data["addressTown"] or customer.doctor.practice.address.town }}<br>
+              {% if data["addressCounty"] or customer.doctor.practice.address.county %}
+                  {{ data["addressCounty"] or customer.doctor.practice.address.county }}<br>
+              {% endif %}
+              {{ data["addressPostcode"] or customer.doctor.practice.address.postcode }}<br>
+              {{ data["addressCountry"] or customer.doctor.practice.address.country }}
+          {% endset %}
+
+          {% set doctorEmailAddress = data["doctorEmailAddress"] or customer.doctor.emailAddress %}
+          {% set doctorPhoneNumber %}
+              {% if data["doctor-country-code"] and data["doctor-national-number"] %}
+                  +{{ data["doctor-country-code"] }} {{ data["doctor-national-number"] }}
+              {% else %}
+                  {{ customer.doctor.phoneNumber }}
+              {% endif %}
+          {% endset %}
+
+          {% set doctorLetterHtml %}
+            {% if data["doctorLetter"] or customer.doctor.letter.fileName %}
+              <ul class="govuk-list">
+                  <li>
+                      <a class="govuk-link" href="#">{{ data["doctorLetter"] or customer.doctor.letter.fileName }}</a>
+                  </li>
+              </ul>
+            {% endif %}
+          {% endset %}
+
+          {% set doctorContactHtml %}
+              <p class="govuk-body">{{ doctorEmailAddress }}</p>
+              <p class="govuk-body">{{ doctorPhoneNumber }}</p>
+          {% endset %}
+
+              {{ govukSummaryList({
+                  classes: "govuk-!-margin-bottom-9",
+                  rows: [
+                  {
+                      key: {
+                          text: "Doctor"
+                      },
+                      value: {
+                          text: doctorName
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's name"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Address"
+                      },
+                      value: {
+                          html: doctorAddressHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's address"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Doctor's letter"
+                      },
+                      value: {
+                          html: doctorLetterHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's letter"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Contact details"
+                      },
+                      value: {
+                          html: doctorContactHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's contact details"
+                              }
+                          ]
+                      }
+                  }
+                  ]
+              }) }}
 
             {% endif %}
 
+            {% if data['proofOfLifeVerifiedOnline'] == 'Yes' %}
+
+            <h2 class="govuk-heading-m">Pension payment details</h2>
+
+            {% set accountName = data["nameOnTheAccount"] or customer.paymentDetails.nameOnTheAccount %}
+            {% set sortCode = data["sortCode"] or customer.paymentDetails.sortCode %}
+            {% set accountNumber = data["accountNumber"] or customer.paymentDetails.accountNumber %}
+            {% set rollNumber = data["rollNumber"] or customer.paymentDetails.rollNumber %}
+
+            {% set paymentDetailsHtml %}
+              <p class="govuk-body">{{ accountName }}</p>
+              <p class="govuk-body">Sort code: {{ sortCode }}</p>
+              <p class="govuk-body">Account number: {{ accountNumber }}</p>
+              <!-- <p class="govuk-body">Roll number: {{ rollNumber }}</p>-->
+            {% endset %}
+
+            {% set LPAValue %}
+              {% if data.hasLPA == "Yes" %}
+                  {{ customer.powerOfAttorney.representative }}
+                {% else %}
+                  You have not registered any lasting power of attorney
+              {% endif %}
+            {% endset %}
 
             {{ govukSummaryList({
-                classes: "govuk-!-margin-bottom-9",
-                rows: [
-                    {
-                        key: {
-                            text: "Bank or building society account"
-                        },
-                        value: {
-                            html: paymentDetails
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "review-bank-details",
-                                text: "Change",
-                                visuallyHiddenText: "bank or building society account details"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Lasting power of attorney"
-                        },
-                        value: {
-                            html: LPAHtml
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "review-lpa",
-                                text: "Change",
-                                visuallyHiddenText: "lasting power of attorney"
-                                }
-                            ]
-                        }
-                    }
-                ]
+              classes: "govuk-!-margin-bottom-9",
+              rows: [
+                  {
+                      key: {
+                          text: "Bank or building society account"
+                      },
+                      value: {
+                          html: paymentDetailsHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "review-bank-details",
+                              text: "Change",
+                              visuallyHiddenText: "bank or building society account details"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Lasting power of attorney"
+                      },
+                      value: {
+                          html: LPAValue
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "review-lpa",
+                              text: "Change",
+                              visuallyHiddenText: "lasting power of attorney"
+                              }
+                          ]
+                      }
+                  }
+              ]
             }) }}
 
             <h2 class="govuk-heading-m">Contact details</h2>
 
-            {% set customerAddress %}
-                {% if data["addressLine1"] %}
-                    {{ data["addressLine1"] }}<br>
-                    {% else %}999 Letsby Avenue<br>
-                {% endif %}
-                {% if data["addressLine2"] %}
-                    {{ data["addressLine2"] }}<br>
-                    {% else %}Suburbia<br>
-                {% endif %}
-                {% if data["addressTown"] %}
-                    {{ data["addressTown"] }}<br>
-                    {% else %}City of Town<br>
-                {% endif %}
-                {% if data["addressCounty"] %}
-                    {{ data["addressCounty"] }}<br>
-                    {% else %}Countyshireford<br>
-                {% endif %}
-                {% if data["addressPostcode"] %}
-                    {{ data["addressPostcode"] }}<br>
-                    {% else %}PO57 3DE<br>
-                {% endif %}
-                {% if data["addressCountry"] %}
-                    {{ data["addressCountry"] }}<br>
-                    {% else %}United Kingdom<br>
-                {% endif %}
+            {% set customerAddressHtml %}
+              {{ data["addressLine1"] or customer.contactDetails.address.line1 }}<br>
+              {% if data["addressLine2"] or customer.contactDetails.address.line2 %}
+                  {{ data["addressLine2"] or customer.contactDetails.address.line2 }}<br>
+              {% endif %}
+              {{ data["addressTown"] or customer.contactDetails.address.town }}<br>
+              {% if data["addressCounty"] or customer.contactDetails.address.county %}
+                  {{ data["addressCounty"] or customer.contactDetails.address.county }}<br>
+              {% endif %}
+              {{ data["addressPostcode"] or customer.contactDetails.address.postcode }}<br>
+              {{ data["addressCountry"] or customer.contactDetails.address.country }}
             {% endset %}
 
-            {% set customerEmailAddress %}
-                {% if data["emailAddress"] %}
-                    {{ data["emailAddress"] }}
-                {% else %}
-                    name@domain.com
-                {% endif %}
-            {% endset %}
-
+            {% set customerEmailAddress = data["emailAddress"] or customer.contactDetails.emailAddress %}
 
             {% set customerPhoneNumber %}
                 {% if data["mobile-national-number"] %}
                     +{{ data["mobile-country-code"] }} {{ data["mobile-national-number"] }}
                 {% else %}
-                    +353 7900 900123
+                    +{{ customer.contactDetails.phone.countryCode }}
+                    {{ customer.contactDetails.phone.nationalNumber }}
                 {% endif %}
             {% endset %}
 
-            {% set contactPreference %}
-                {% if data["contactPreference"] %}
-                    {{ data["contactPreference"] }}
-                {% else %}
-                    Post
-                {% endif %}
-            {% endset %}
+            {% set customerContactPreference = data["contactPreference"] or customer.contactDetails.contactPreference %}
 
             {{ govukSummaryList({
                 classes: "govuk-!-margin-bottom-9",
@@ -363,7 +291,7 @@
                             text: "Address"
                         },
                         value: {
-                            html: customerAddress
+                            html: customerAddressHtml
                         },
                         actions: {
                             items: [
@@ -414,7 +342,7 @@
                         text: "Preferred contact method"
                     },
                     value: {
-                        text: contactPreference
+                        text: customerContactPreference
                     },
                     actions: {
                         items: [

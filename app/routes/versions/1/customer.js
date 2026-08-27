@@ -1,5 +1,6 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 
+
 module.exports = function createCustomerRouter({ version }) {
 
   const router = govukPrototypeKit.requests.setupRouter()
@@ -11,6 +12,19 @@ module.exports = function createCustomerRouter({ version }) {
   // View: versions/1/customer/start
   const viewPath = `versions/${version}/customer`
   const baseUrl = `/versions/${version}/customer`
+
+  // =====================================================
+  // Set up the mock customer data
+  // =====================================================
+  //
+  // Set the customer object using the custome const
+  // defined at the top if the file.
+  const customer = require('../../../data/customer')
+
+  router.use((req, res, next) => {
+    res.locals.customer = customer
+    next()
+  })
 
   // =====================================================
   // Journey entry points
@@ -26,7 +40,24 @@ module.exports = function createCustomerRouter({ version }) {
   })
 
   router.get('/start', function (req, res) {
+
+    // Reset journey data so users do not carry answers
+    // between different prototype journey variations.
+    req.session.data = {}
+
     res.render(`${viewPath}/start`, {
+      version,
+      baseUrl,
+    })
+  })
+
+  // Users starting the zero-knowledge journey
+  // begin with a clean set of answers.
+  router.get('/zero-knowledge/start', function (req, res) {
+
+    req.session.data = {}
+
+    res.render(`${viewPath}/zero-knowledge/start`, {
       version,
       baseUrl,
     })
@@ -46,10 +77,18 @@ module.exports = function createCustomerRouter({ version }) {
   // Prototype routes used to review and manage
   // lasting power of attorney information.
 
+  // Users move from reviewing their bank details
+  // to reviewing any lasting power of attorney
+  // information before continuing their journey.
+  router.post('/tell-us-about-lpa/review-bank-details', function (req, res) {
+
+    res.redirect(`${baseUrl}/tell-us-about-lpa/review-lpa`)
+  })
+
+  // Allow hasLPA to be passed via the URL and
+  // stored in the session for later pages.
   router.get('/tell-us-about-lpa/review-lpa', function (req, res) {
 
-    // Allow hasLPA to be passed via the URL and
-    // stored in the session for later pages.
     if (req.query.hasLPA !== undefined) {
       req.session.data.hasLPA = req.query.hasLPA
     }
@@ -58,22 +97,34 @@ module.exports = function createCustomerRouter({ version }) {
       version,
       baseUrl,
     })
-
   })
 
+  // Users who need to register a lasting power of
+  // attorney are shown additional guidance before
+  // returning to the main journey.
   router.post('/tell-us-about-lpa/review-lpa', function (req, res) {
 
     const registerLPA = req.session.data.registerLPA
 
-    // Direct users to the appropriate next step
-    // depending on whether they want to register
-    // a power of attorney.
     if (registerLPA === 'Yes') {
-      return res.redirect(`${baseUrl}/tell-us-about-lpa/register-lpa`)
+      return res.redirect(
+        `${baseUrl}/tell-us-about-lpa/register-lpa`,
+      )
     }
 
-    return res.redirect(`${baseUrl}/tell-us-about-lpa/review-address`)
+    return res.redirect(
+      `${baseUrl}/tell-us-about-lpa/review-address`,
+    )
+  })
 
+  // After viewing guidance about registering a
+  // lasting power of attorney, users return to
+  // review their LPA information before continuing.
+  router.post('/tell-us-about-lpa/register-lpa', function (req, res) {
+
+    res.redirect(
+      `${baseUrl}/tell-us-about-lpa/review-lpa`,
+    )
   })
 
   return router

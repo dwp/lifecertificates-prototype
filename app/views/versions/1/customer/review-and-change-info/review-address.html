@@ -38,7 +38,7 @@
                         id: "address-line-1",
                         name: "addressLine1",
                         autocomplete: "address-line1",
-                        value: data['addressLine1']
+                        value: data["addressLine1"] or customer.contactDetails.address.line1
                     }) }}
 
                     {{ govukInput({
@@ -48,7 +48,7 @@
                         id: "address-line-2",
                         name: "addressLine2",
                         autocomplete: "address-line2",
-                        value: data['addressLine2']
+                        value: data["addressLine2"] or customer.contactDetails.address.line2
                     }) }}
 
                     {{ govukInput({
@@ -59,7 +59,7 @@
                         id: "address-town",
                         name: "addressTown",
                         autocomplete: "address-city",
-                        value: data['addressTown']
+                        value: data["addresssTown"] or customer.contactDetails.address.town
                     }) }}
 
                     {{ govukInput({
@@ -69,7 +69,7 @@
                         classes: "govuk-!-width-two-thirds",
                         id: "address-county",
                         name: "addressCounty",
-                        value: data['addressCounty']
+                        value: data["addressCounty"] or customer.contactDetails.address.county
                     }) }}
 
                     {{ govukInput({
@@ -80,7 +80,7 @@
                         id: "address-postcode",
                         name: "addressPostcode",
                         autocomplete: "postal-code",
-                        value: data['addressPostcode']
+                        value: data["addressPostcode"] or customer.contactDetails.address.postcode
                     }) }}
 
                     {{ govukInput({
@@ -91,7 +91,7 @@
                         id: "address-country",
                         name: "addressCountry",
                         autocomplete: "country",
-                        value: data['addressCountry']
+                        value: data["addressCountry"] or customer.contactDetails.address.country
                     }) }}
 
                 {% endcall %}
