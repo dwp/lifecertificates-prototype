@@ -3,11 +3,13 @@ module.exports = {
 
   title: 'Support agent life certificate processing',
 
-  status: 'InProgress',
+  dateCreated: '21 July 2026',
 
   visible: true,
 
-  date: '21 August 2026',
+  status: 'Exploratory',
+
+  dateUpdated: '',
 
   about: [
     'This prototype introduces a support agent journey for reviewing and processing submitted life certificates.',

@@ -21,17 +21,34 @@
                 {{ version.title }}
             </h1>
 
+            {% set status = versionStatuses[version.status] %}
+
+            {% set statusHtml %}
+              {{ govukTag({
+                text: status.tag.text,
+                classes: status.tag.classes
+              }) }}
+            {% endset %}
+
+            {% set lastUpdatedText %}
+              {{ version.dateUpdated or "Not applicable" }}
+            {% endset %}
+
             {{ govukSummaryList({
-                "rows": [
-                    {
-                        "key": {
-                            "text": "Date"
-                        },
-                        "value": {
-                            "text": version.date
-                        }
-                    }
-                ]
+              "rows": [
+                {
+                  "key": { "text": "Status" },
+                  "value": { "html": statusHtml }
+                },
+                {
+                  "key": { "text": "Created" },
+                  "value": { "text": version.dateCreated }
+                },
+                {
+                  "key": { "text": "Last updated" },
+                  "value": { "text": lastUpdatedText }
+                }
+              ]
             }) }}
 
             {% if version.about.length %}

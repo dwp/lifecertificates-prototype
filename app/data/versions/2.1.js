@@ -1,19 +1,21 @@
 module.exports = {
     number: '2.1',
-  
+
     title: 'Assisting medically incapacitated customers',
-  
-    status: 'InProgress',
+
+    dateCreated: 'Not applicable',
 
     visible: false,
-  
-    date: 'Not applicable',
-  
+
+    status: 'Exploratory',
+
+    dateUpdated: '',
+
     about: [
       'This prototype builds on the initial digital proof of life concept created in Version 1.',
       'The prototype explores how customers understand evidence requirements, identity verification and confirmation messaging. Representative-assisted journeys have also been introduced for the first time.'
     ],
-  
+
     users: [
       {
         title: 'Primary roles',
@@ -80,7 +82,7 @@ module.exports = {
         ]
       }
     ],
-  
+
     currentFocus: [
       'Whether customers understand what evidence they need to provide.',
       'Whether customers understand why identity verification is required.',
@@ -88,7 +90,7 @@ module.exports = {
       'How representatives may interact with the service.',
       'What support is needed for customers who cannot complete the journey independently.'
     ],
-  
+
     knownGaps: [
       'Representative journeys are exploratory and require further validation.',
       'Providing a Cert de Vie is not yet represented.',
@@ -97,22 +99,21 @@ module.exports = {
       'Error handling remains limited.',
       'Operational journeys are not yet represented.'
     ],
-  
+
     changes: {
       added: [
         'Representative journey because support for third-party interactions required further exploration.',
         'Additional guidance content because some customers needed more support during the journey.'
       ],
-  
+
       updated: [
         'Evidence guidance because customers needed clearer information about what they need to provide.',
         'Identity verification content because customers were unsure why identity verification was required.',
         'Confirmation messaging because customers needed clearer information about outcomes and next steps.'
       ],
-  
+
       removed: [
         'Duplicate guidance content because it was no longer adding value to the journey.'
       ]
     }
   }
-  

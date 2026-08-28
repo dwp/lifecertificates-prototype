@@ -5,8 +5,8 @@ const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
 
 const createVersionRouter = require('./versions')
+const versionStatuses = require('../data/version-statuses')
 const appComponents = require('../data/app-components')
-
 
 // The version considered to be current.
 //
@@ -42,47 +42,47 @@ const versionsDirectory = path.join(__dirname, '../data/versions')
 // - identify the current version
 // - build navigation
 const allVersions = fs
-  .readdirSync(versionsDirectory)
-  .filter((file) => file.endsWith('.js'))
-  .map((file) => {
-    const versionId = file.replace('.js', '')
+.readdirSync(versionsDirectory)
+.filter((file) => file.endsWith('.js'))
+.map((file) => {
+  const versionId = file.replace('.js', '')
 
-    return {
-      version: versionId,
+  return {
+    version: versionId,
 
-      // Loads version files discovered from the trusted
-      // app/data/versions directory.
-      //
-      // versionId originates from fs.readdirSync() against a
-      // controlled repository directory and is never derived
-      // from user input.
-      //
-      // nosemgrep
-      data: require(`../data/versions/${versionId}`)    }
-  })
-  .sort((a, b) => {
-    // Supports:
-    // 1
-    // 1.1
-    // 1.2
-    // 2
-    // 2.1
+    // Loads version files discovered from the trusted
+    // app/data/versions directory.
+    //
+    // versionId originates from fs.readdirSync() against a
+    // controlled repository directory and is never derived
+    // from user input.
+    //
+    // nosemgrep
+    data: require(`../data/versions/${versionId}`)    }
+})
+.sort((a, b) => {
+  // Supports:
+  // 1
+  // 1.1
+  // 1.2
+  // 2
+  // 2.1
 
-    const aParts = a.data.number.split('.').map(Number)
-    const bParts = b.data.number.split('.').map(Number)
+  const aParts = a.data.number.split('.').map(Number)
+  const bParts = b.data.number.split('.').map(Number)
 
-    const aMajor = aParts[0]
-    const aMinor = aParts[1] || 0
+  const aMajor = aParts[0]
+  const aMinor = aParts[1] || 0
 
-    const bMajor = bParts[0]
-    const bMinor = bParts[1] || 0
+  const bMajor = bParts[0]
+  const bMinor = bParts[1] || 0
 
-    if (aMajor !== bMajor) {
-      return aMajor - bMajor
-    }
+  if (aMajor !== bMajor) {
+    return aMajor - bMajor
+  }
 
-    return aMinor - bMinor
-  })
+  return aMinor - bMinor
+})
 
 // Hidden versions remain accessible by direct URL
 // but do not appear in navigation or tables.
@@ -104,9 +104,25 @@ router.use((req, res, next) => {
   // Full version definition for the current version.
   //
   // Used by:
-  // - Current version section
-  // - Current journeys section
-  res.locals.currentVersionData = allVersions.find((v) => v.version === currentVersion)?.data
+  // - current version sections
+  // - current journey listings
+  // - version metadata
+  res.locals.currentVersionData =
+    allVersions.find((v) => v.version === currentVersion)?.data
+
+  // Version status definitions.
+  //
+  // Single source of truth for:
+  // - GOV.UK status tags
+  // - status colours
+  // - version banners
+  // - warning messages
+  // - status descriptions
+  //
+  // Example:
+  // versionStatuses["InProgress"].tag.text
+  // versionStatuses["Current"].banner
+  res.locals.versionStatuses = versionStatuses
 
   // Visible versions shown in:
   // - homepage version table
@@ -125,32 +141,32 @@ router.use((req, res, next) => {
 
 // Homepage
 router.get('/', function (req, res) {
-  res.render('index')
+res.render('index')
 })
 
 // Convenience redirects to the current version
 router.get('/versions', function (req, res) {
-  res.redirect('/')
+res.redirect('/')
 })
 
 router.get('/current', function (req, res) {
-  res.redirect(`/versions/${currentVersion}`)
+res.redirect(`/versions/${currentVersion}`)
 })
 
 router.get('/current/customer', function (req, res) {
-  res.redirect(`/versions/${currentVersion}/customer`)
+res.redirect(`/versions/${currentVersion}/customer`)
 })
 
 router.get('/current/support-agent', function (req, res) {
-  res.redirect(`/versions/${currentVersion}/support-agent`)
+res.redirect(`/versions/${currentVersion}/support-agent`)
 })
 
 router.get('/current/service-manager', function (req, res) {
-  res.redirect(`/versions/${currentVersion}/service-manager`)
+res.redirect(`/versions/${currentVersion}/service-manager`)
 })
 
 router.get('/current/overview', function (req, res) {
-  res.redirect(`/versions/${currentVersion}/overview`)
+res.redirect(`/versions/${currentVersion}/overview`)
 })
 
 // Register routes for every discovered version.
@@ -165,12 +181,12 @@ router.get('/current/overview', function (req, res) {
 // Hidden versions are included here so they remain
 // accessible during development and review.
 allVersions.forEach(function (version) {
-  router.use(
-    `/versions/${version.version}`,
-    createVersionRouter({
-      version: version.version,
-    }),
-  )
+router.use(
+  `/versions/${version.version}`,
+  createVersionRouter({
+    version: version.version,
+  }),
+)
 })
 
 module.exports = router

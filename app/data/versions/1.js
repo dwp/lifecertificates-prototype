@@ -3,11 +3,13 @@ module.exports = {
 
   title: 'Baseline identity and proof of life service concept',
 
-  status: 'InProgress',
+  dateCreated: '10 July 2026',
 
   visible: true,
 
-  date: '10 July 2026',
+  status: 'Draft',
+
+  dateUpdated: '28 August 2026',
 
   about: [
     'This prototype builds on the initial digital proof of life concept created in Version 1.',

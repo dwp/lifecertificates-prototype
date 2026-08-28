@@ -57,10 +57,10 @@
                 },
                 {
                     key: {
-                        text: "Published"
+                        text: "Last updated"
                     },
                     value: {
-                        text: currentVersionData.date
+                        text: currentVersionData.dateUpdated
                     }
                 },
                 {
@@ -142,7 +142,7 @@
         <tr class="govuk-table__row">
         <th class="govuk-table__header">Version</th>
         <th class="govuk-table__header">Status</th>
-        <th class="govuk-table__header">Date published</th>
+        <th class="govuk-table__header">Last updated</th>
         <th class="govuk-table__header">Summary</th>
         <th class="govuk-table__header"><!-- Links --></th>
         </tr>
@@ -156,35 +156,30 @@
 
             <td class="govuk-table__cell">
             {{ version.data.number }}
-                        {% if version.version == currentVersion %}
-                            <span class="govuk-hint"> (current)</span>
-                        {% endif %}
+              {% if version.version == currentVersion %}
+                  <span class="govuk-hint"> (current)</span>
+              {% endif %}
+            </td>
+
+            {% set status = versionStatuses[version.data.status] %}
+
+            <td class="govuk-table__cell">
+              {{ govukTag({
+                text: status.tag.text,
+                classes: status.tag.classes
+              }) }}
             </td>
 
             <td class="govuk-table__cell">
-            {% if version.data.status == "InProgress" %}
-                <strong class="govuk-tag govuk-tag--blue">
-                In draft
-                </strong>
-            {% else %}
-                <strong class="govuk-tag govuk-tag--grey">
-                Archived
-                </strong>
-            {% endif %}
+              {{ version.data.dateUpdated or version.data.dateCreated }}
             </td>
 
             <td class="govuk-table__cell">
-            {{ version.data.date }}
+              {{ version.data.title }}
             </td>
 
             <td class="govuk-table__cell">
-            {{ version.data.title }}
-            </td>
-
-            <td class="govuk-table__cell">
-                <a class="govuk-link" href="/versions/{{ version.version }}">
-                    View
-                </a>
+              <a class="govuk-link" href="/versions/{{ version.version }}">View</a>
             </td>
 
         </tr>
