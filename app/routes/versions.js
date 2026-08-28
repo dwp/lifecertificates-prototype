@@ -19,6 +19,27 @@ module.exports = function createVersionRouter({ version }) {
   // prototype versions rather than arbitrary paths.
   const versionData = require(`../data/versions/${version}`)
 
+  // Make the current version available to every route
+  // handled by this version router.
+  //
+  // Exposes:
+  // - versionId   -> route version identifier
+  //                  Example: '1', '2', '2.1'
+  //
+  // - version     -> full version definition object
+  //                  Example: version.status
+  //                           version.number
+  //                           version.title
+  //
+  // This allows all pages within a version to use the
+  // same version metadata without needing to pass it
+  // explicitly on every render.
+  router.use((req, res, next) => {
+    res.locals.version = versionData
+
+    next()
+  })
+
   // Version landing page.
   //
   // Examples:
@@ -30,8 +51,8 @@ module.exports = function createVersionRouter({ version }) {
   // all content is driven from the version file.
   router.get('/', function (req, res) {
     res.render(`versions/${version}/index`, {
-      version: versionData,
       baseUrl: `/versions/${version}`,
+      page: 'version-overview',
     })
   })
 
@@ -103,15 +124,14 @@ module.exports = function createVersionRouter({ version }) {
       })
   }
 
-  // Version overview.
+  // Service overview for the current version.
   //
   // Example:
   // /versions/2/overview
   router.get('/overview', function (req, res) {
     res.render(`versions/${version}/overview`, {
-      version,
-      versionData,
       baseUrl: `/versions/${version}`,
+      page: 'service-overview',
     })
   })
 

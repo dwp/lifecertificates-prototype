@@ -150,18 +150,18 @@
 
     <tbody class="govuk-table__body">
 
-        {% for version in versions %}
+        {% for prototypeVersion in versions %}
 
         <tr class="govuk-table__row">
 
             <td class="govuk-table__cell">
-            {{ version.data.number }}
-              {% if version.version == currentVersion %}
+            {{ prototypeVersion.data.number }}
+              {% if item.version == currentVersion %}
                   <span class="govuk-hint"> (current)</span>
               {% endif %}
             </td>
 
-            {% set status = versionStatuses[version.data.status] %}
+            {% set status = versionStatuses[prototypeVersion.data.status] %}
 
             <td class="govuk-table__cell">
               {{ govukTag({
@@ -171,15 +171,15 @@
             </td>
 
             <td class="govuk-table__cell">
-              {{ version.data.dateUpdated or version.data.dateCreated }}
+              {{ prototypeVersion.data.dateUpdated or prototypeVersion.data.dateCreated }}
             </td>
 
             <td class="govuk-table__cell">
-              {{ version.data.title }}
+              {{ prototypeVersion.data.title }}
             </td>
 
             <td class="govuk-table__cell">
-              <a class="govuk-link" href="/versions/{{ version.version }}">View</a>
+              <a class="govuk-link" href="/versions/{{ prototypeVersion.data.number }}">View</a>
             </td>
 
         </tr>

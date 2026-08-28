@@ -1,0 +1,89 @@
+<nav aria-label="Version navigation">
+
+
+  <ul class="govuk-list govuk-list--spaced">
+
+    <li>
+      <a class="govuk-link" href="/">
+        Prototype homepage
+      </a>
+    </li>
+
+  </ul>
+
+<!--  <h2 class="govuk-heading-s govuk-!-margin-top-6">
+    This version
+  </h2>
+-->
+  <ul class="govuk-list">
+
+    <li>
+      {% if versionNav.page == "version-overview" %}
+        About this version
+      {% else %}
+        <a class="govuk-link" href="/versions/{{ version.number }}">
+          About this version
+        </a>
+      {% endif %}
+    </li>
+
+    <li>
+      {% if versionNav.page == "service-overview" %}
+        Service overview
+      {% else %}
+        <a class="govuk-link" href="/versions/{{ version.number }}/overview">
+          Service overview
+        </a>
+      {% endif %}
+    </li>
+
+  </ul>
+
+  <h2 class="govuk-heading-s govuk-!-margin-top-4">
+    Versions
+  </h2>
+
+  <ul class="govuk-list govuk-list--spaced">
+
+    {% for prototypeVersion in versions %}
+
+      <li>
+
+        {% set labels = [] %}
+
+        {% if prototypeVersion.version == currentVersion %}
+          {% set labels = (labels.push("current"), labels) %}
+        {% endif %}
+
+        {% if prototypeVersion.version == version.number %}
+          {% set labels = (labels.push("this version"), labels) %}
+        {% endif %}
+
+        {% if item.version == version %}
+
+          <strong>
+            Version {{ prototypeVersion.data.number }}
+          </strong>
+
+        {% else %}
+
+        <a class="govuk-link" href="/versions/{{ prototypeVersion.data.number }}">
+          {{ prototypeVersion.data.number }}: {{ prototypeVersion.data.title }}
+        </a>
+        {% endif %}
+
+        {% if labels.length %}
+<br>
+          <span class="govuk-hint govuk-!-margin-top-0">
+            ({{ labels | join(", ") }})
+          </span>
+
+        {% endif %}
+
+      </li>
+
+    {% endfor %}
+
+  </ul>
+
+</nav>

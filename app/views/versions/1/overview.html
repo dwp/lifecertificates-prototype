@@ -3,7 +3,7 @@
 {% set pageName = "Service overview" %}
 
 {% block pageTitle %}
-  {{ pageName }} – version {{ version }}
+  {{ pageName }} – version {{ version.number }}
 {% endblock %}
 
 {% block content %}
@@ -11,263 +11,142 @@
     {% include "_partials/status-banner.njk" %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
 
-<span class="govuk-caption-xl">
-  Version {{ version }}
-</span>
+          <span class="govuk-caption-xl">
+            Version {{ version.number }}
+          </span>
 
             <h1 class="govuk-heading-xl">{{ pageName }}</h1>
 
-<p class="govuk-body-l">
-  This page shows how the main journeys connect in version {{ version }}.
-</p>
+            <p class="govuk-body-l">
+              This page shows how the main journey flows in version {{ version.number }} to address user needs.
+            </p>
 
-        </div>
-    </div>
+            <h2 class="govuk-heading-l">User needs</h2>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-
-            <h2 class="govuk-heading-m">Simplified journey flow</h2>
-            <h3 class="govuk-heading-s">Common start</h3>
-            <ol class="govuk-list govuk-list--spaced govuk-list--number">
-                <li>Customer starts journey</li>
-                <li>Scan ID</li>
-                <li>Provide proof of life</li>
-            </ol>
-            <p>Then the journey takes one of two paths:</p>
-
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-
-            <h3 class="govuk-heading-s">Path 1: digital verification</h3>
-            <ol class="govuk-list govuk-list--spaced govuk-list--number">
-                <li>Review or change DWP-held information</li>
-                <li>Submit proof of life</li>
-                <li>Service processes immediately</li>
-                <li>Customer sees processed confirmation</li>
-            </ol>
-
-        </div>
-        <div class="govuk-grid-column-one-half">
- 
-            <h3 class="govuk-heading-s">Path 2: doctor’s letter</h3>
-            <ol class="govuk-list govuk-list--spaced govuk-list--number">
-                <li>Provide contact details without seeing DWP-held information</li>
-                <li>Submit proof of life</li>
-                <li>Service schedules case review</li>
-                <li>Customer sees review confirmation</li>
-                <li>Support agent reviews case</li>
-            </ol>
-
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+            <ul class="govuk-list govuk-list--spaced">
+                <li>As a customer, I need to send my life certificate, so that I can continue to receive pension payments.</li>
+                <!--<li>As a support agent, I need to find and update cases, so that I can process life.</li>-->
+                <!--<li>As a service manager, I need to see workload and risk, so that I can manage the service.</li>-->
+            </ul>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-  
-        </div>
-    </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
 
-<!--
-        <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-l">Simplified journey flow</h2>
+                    <h3 class="govuk-heading-m">Common start</h3>
+                    <ol class="govuk-list govuk-list--spaced govuk-list--number">
+                        <li>Customer starts journey</li>
+                        <li>Scan ID</li>
+                    </ol>
+                    <p>Then the journey takes one of two paths:</p>
 
-            <h2 class="govuk-heading-m">Simplified journey flow</h2>
+                </div>
+            </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
 
-{% set step1Html %}
-  <p class="govuk-body">
-    The customer learns about providing proof of life and chooses to use the digital service
-  </p>
+                    <h3 class="govuk-heading-m">Path 1: digital verification</h3>
+                    <ol class="govuk-list govuk-list--spaced govuk-list--number">
+                        <li>Provide proof of life</li>
+                        <li>Share, review or change DWP-held information</li>
+                        <li>Provide proof of life again<br>(if changing DWP-held info)</li>
+                        <li>Service processes immediately</li>
+                        <li>Customer sees processed confirmation</li>
+                    </ol>
 
-{% set step2Html %}
-  <p class="govuk-body">
-    The customer scans and checks:
-  </p>
-{% endset %}
+                </div>
+                <div class="govuk-grid-column-one-half">
 
-  <ul class="govuk-list govuk-list--bullet">
-    <li>the front of their identity document</li>
-    <li>the back of their identity document</li>
-  </ul>
-{% endset %}
+                    <h3 class="govuk-heading-m">Path 2: doctor’s letter</h3>
+                    <ol class="govuk-list govuk-list--spaced govuk-list--number">
+                        <li>Provide contact details without seeing DWP-held information</li>
+                        <li>Submit proof of life</li>
+                        <li>Service schedules case review</li>
+                        <li>Customer sees review confirmation</li>
+                        <li>Support agent reviews case</li>
+                    </ol>
 
-{% set step3Html %}
-  <p class="govuk-body">
-    Proof of life is provided in one of the following ways:
-  </p>
+                </div>
+            </div>
 
-  <ul class="govuk-list govuk-list--bullet">
-    <li>the customer verifies their identity and proves they are alive (preferred)</li>
-    <li>a representative uploads a doctor's letter stating that the customer is alive</li>
-  </ul>
-{% endset %}
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-{% set step4Html %}
-  <p class="govuk-body">
-    The next step depends on whether the customer verified their identity or a doctor’s letter was provided.
-  </p>
+            <h2 class="govuk-heading-l">Screen links</h2>
 
-  <p class="govuk-body">
-    <strong>If the customer verified their identity:</strong>
-  </p>
+            {% set variation1Path = "./customer/zero-knowledge" + "/" %}
+            {% set variation2Path = "./customer/review-and-change-info" + "/" %}
+            {% set variation3Path = "./customer/tell-us-about-lpa" + "/" %}
 
-  <p class="govuk-body">
-    The customer reviews and/or updates information held by DWP, including:
-  </p>
+            <h3 class="govuk-heading-m">Common start</h3>
+            <p class="govuk-body">From variation 1 (zero knowledge of the customer)</p>
 
-  <ul class="govuk-list govuk-list--bullet">
-    <li>contact details and preferred contact method</li>
-    <li>banking details</li>
-    <li>any existing lasting powers of attorney</li>
-  </ul>
-
-  <p class="govuk-body">
-    <strong>If a doctor's letter was provided, or DWP does not check customer details during the journey:</strong>
-  </p>
-
-  <p class="govuk-body">
-    The customer provides contact details and their preferred contact method without seeing information held by DWP.
-  </p>
-{% endset %}
-
-{% set step6Html %}
-  <p class="govuk-body">
-    The service creates a case and routes it based on the proof method.
-  </p>
-
-  <ul class="govuk-list govuk-list--bullet">
-    <li>If the customer verified their identity, the service processes the case immediately.</li>
-    <li>If a doctor's letter was used, or DWP does not check customer details during the journey, the service schedules the case for review by a support agent.</li>
-  </ul>
-{% endset %}
-
-{% set step7Html %}
-  <p class="govuk-body">
-    The customer sees a confirmation page.
-  </p>
-
-  <ul class="govuk-list govuk-list--bullet">
-    <li>If the case was processed immediately, the confirmation says proof of life has been processed.</li>
-    <li>If the case was scheduled for review, the confirmation says the case is being reviewed.</li>
-  </ul>
-{% endset %}
-
-{{ govukSummaryList({
-  rows: [
-    {
-      key: {
-        text: "1. Customer starts the journey"
-      },
-      value: {
-        html: step1Html }
-    },
-    {
-      key: { text: "2. Customer scans ID" },
-      value: { html: step2Html }
-    },
-    {
-      key: { text: "3. Customer or their representative proves life" },
-      value: {
-        html: step3Html }
-    },
-    {
-      key: { text: "4. Customer reviews or provides details" },
-      value: { html: step4Html }
-    },
-    {
-      key: { text: "5. Customer submits proof of life" },
-      value: { text: "The customer checks their answers and sends their proof of life." }
-    },
-    {
-      key: {
-        text: "6. Service routes the case"
-      },
-      value: { html: step6Html }
-    },
-    {
-      key: {
-        text: "7. Customer sees confirmation"
-      },
-      value: {
-        html: step7Html }
-    },
-    {
-      key: {
-        text: "8. Support agent reviews scheduled case"
-      },
-      value: {
-        text: "The support agent reviews any scheduled cases and records action. This part of the journey is not yet prototyped."
-      }
-    }
-  ]
-}) }}
-
-
-        </div>
-</div>-->
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-
-            <h2 class="govuk-heading-m">Screen links</h2>
-
-            {% set variation1Path = "../customer/zero-knowledge-proof-of-life" + "/" %}
-            {% set variation2Path = "../customer/review-and-change-info" + "/" %}
-            {% set variation3Path = "../customer/tell-us-about-lpa" + "/" %}
- 
-            <p class="govuk-body">From variation 1 (zero knowledge of the customer):</p>
- 
             <ul class="govuk-list govuk-list--spaced">
+                <li><a class="govuk-link" href="{{ variation1Path }}start">Before you start</a></li>
                 <li><a class="govuk-link" href="{{ variation1Path }}document-front-scan">Scan front of document</a></li>
                 <li><a class="govuk-link" href="{{ variation1Path }}document-front-check">Check front of document</a></li>
                 <li><a class="govuk-link" href="{{ variation1Path }}document-back-scan">Scan back of document</a></li>
                 <li><a class="govuk-link" href="{{ variation1Path }}document-back-check">Check back of document</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}verify-identity">Verify identity</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}medical-verification">Enter doctor's details and upload letter</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}medical-contact-info">Enter doctor's contact information</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}contact-email">Provide email address</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}contact-phone">Provide mobile number</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}check-phone">Verify mobile number</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}contact-preference">Choose preferred contact method</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
-                <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
             </ul>
-
-            <p class="govuk-body">Added in variation 2 (review and change info if a known customer):</p>
+            <p class="govuk-body">Then the journey takes one of two paths:</p>
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-one-half">
+                <h3 class="govuk-heading-m">Digital verification path</h3>
+                <ul class="govuk-list govuk-list--spaced">
+                <p class="govuk-body">Customers share their information with us</p>
+                  <li><a class="govuk-link" href="{{ variation1Path }}verify-identity">Verify identity</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}contact-email">Provide email address</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}contact-phone">Provide mobile number</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}check-phone">Verify mobile number</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}contact-preference">Choose preferred contact method</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
+                </ul>
+            <h3 class="govuk-heading-s">Variation 2</h3>
+            <p class="govuk-body">Customers can review and update the information we hold about them</p>
 
             <ul class="govuk-list govuk-list--spaced">
+                <li><a class="govuk-link" href="{{ variation2Path }}verify-identity">Verify identity</a></li>
                 <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review pension payment bank details</a></li>
                 <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review email address</a></li>
                 <li><a class="govuk-link" href="{{ variation2Path }}review-phone">Review mobile number</a></li>
                 <li><a class="govuk-link" href="{{ variation2Path }}contact-preference">Review preferred contact method</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}confirmation">Confirmation</a></li>
+                <li><a class="govuk-link" href="{{ variation2Path }}check-answers">Check your answers</a></li>
             </ul>
 
-            <p class="govuk-body">Added in variation 3 (optionally tell us about power of attorney):</p>
+            <h3 class="govuk-heading-s">Variation 3</h3>
+            <p class="govuk-body">As variation 2 and customers can review their registered lasting power of attorney</p>
             <ul class="govuk-list govuk-list--spaced">
                 <li><a class="govuk-link" href="{{ variation3Path }}review-lpa">Review registered lasting power of attorney</a></li>
                 <li><a class="govuk-link" href="{{ variation3Path }}remove-lpa">Remove a registered lasting power of attorney</a></li>
                 <li><a class="govuk-link" href="{{ variation3Path }}register-lpa">Register a power of attorney</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}confirmation">Confirmation</a></li>
+                <li><a class="govuk-link" href="{{ variation3Path }}check-answers">Check your answers</a></li>
             </ul>
-
-            <hr class="govuk-section-break govuk-section-break--l _govuk-section-break--visible">
-
-            <h2 class="govuk-heading-m">User needs</h2>
-
-            <ul class="govuk-list govuk-list--bullet">
-                <li>As a customer, I need to send my life certificate, so that I can continue to receive pension payments.</li>
-                <li>As a support agent, I need to find and update cases, so that I can process life.</li>
-                <!--                <li>As a service manager, I need to see workload and risk, so that I can manage the service.</li>-->
-            </ul>
+            <h3 class="govuk-heading-s">Journey end</h3>
+                <ul class="govuk-list govuk-list--spaced">
+                  <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
+                </ul>
+              </div>
+              <div class="govuk-grid-column-one-half">
+                <h3 class="govuk-heading-m">Doctor's letter path</h3>
+                <p class="govuk-body">Customers provide a letter from their doctor</p>
+                <ul class="govuk-list govuk-list--spaced">
+                  <li><a class="govuk-link" href="{{ variation1Path }}medical-verification">Enter doctor's details and upload letter</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}medical-contact-info">Enter doctor's contact information</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
+                  <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
+                </ul>
+              </div>
+            </div>
 
         </div>
+
+      <div class="govuk-grid-column-one-third">
+
+        {% include "_partials/app-subnav-version.njk" %}
+
+      </div>
     </div>
 
 {% endblock %}
