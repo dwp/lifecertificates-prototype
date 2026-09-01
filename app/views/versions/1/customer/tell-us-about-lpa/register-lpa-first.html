@@ -1,0 +1,49 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Are you sure you want to leave?" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+      {% call govukPanel({
+        titleText: pageName,
+        classes: "govuk-panel--interruption",
+        actions: {
+          items: [
+            {
+              text: "Yes, leave to register a lasting power of attorney",
+              href: "https://www.gov.uk/power-of-attorney/register",
+              type: "button"
+            }, {
+              text: "No, go back",
+              href: "register-lpa?hasLPA=Yes"
+            }
+          ]
+        }
+      }) %}
+
+      <p class="govuk-body">You selected to register a lasting power of attorney <strong>before</strong> sending your life certificate.</p>
+      <p class="govuk-bod"y>Pension payments may be suspended if you do not return to send your life certificate.</p>
+      {% endcall %}
+
+        </div>
+    </div>
+
+{% endblock %}

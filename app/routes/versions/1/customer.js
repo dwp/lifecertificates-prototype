@@ -114,13 +114,21 @@ module.exports = function createCustomerRouter({ version }) {
     )
   })
 
-  // After viewing guidance about registering a
-  // lasting power of attorney, users return to
-  // review their LPA information before continuing.
+  // Users decide whether to continue with their
+  // life certificate or leave the service to
+  // register a lasting power of attorney first.
   router.post('/tell-us-about-lpa/register-lpa', function (req, res) {
 
-    res.redirect(
-      `${baseUrl}/tell-us-about-lpa/review-lpa`,
+    const LPAAction = req.session.data.LPAAction
+
+    if (LPAAction === 'Leave') {
+      return res.redirect(
+        `${baseUrl}/tell-us-about-lpa/register-lpa-first`,
+      )
+    }
+
+    return res.redirect(
+      `${baseUrl}/tell-us-about-lpa/review-address`,
     )
   })
 

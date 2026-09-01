@@ -3,7 +3,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
-{% set pageName = "Register someone to collect your state pension" %}
+{% set pageName = "You cannot register a lasting power of attorney here" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -20,26 +20,62 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+          <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-                <p class="govuk-body">
-                    When you’ve made your lasting power of attorney (LPA), you need to register it with the Office of the Public Guardian (OPG).
-                </p>
-                <p class="govuk-body">
-                    It takes 8 to 10 weeks to register an LPA if there are no mistakes in the application.
-                <p class="govuk-body">
-                    <a class="govuk-link" href="https://www.gov.uk/power-of-attorney/register">Make, register or end a lasting power of attorney</a>
-                </p>
+          <!---
+          <p class="govuk-body">
+              When you’ve made your lasting power of attorney (LPA), you need to register it with the Office of the Public Guardian (OPG).
+          </p>
+          <p class="govuk-body">
+              It takes 8 to 10 weeks to register an LPA if there are no mistakes in the application.
+          <p class="govuk-body">
+              <a class="govuk-link" href="https://www.gov.uk/power-of-attorney/register">Make, register or end a lasting power of attorney</a>
+          </p>
 
-                <p class="govuk-body">
-                    Your attorney can also register it for you. You’ll be told if they do and you can object to the registration.
-                </p>
+          <p class="govuk-body">
+              Your attorney can also register it for you. You’ll be told if they do and you can object to the registration.
+          </p>
+          -->
 
-                {{ govukButton({
-                    text: "Return",
-                    classes: "govuk-button--secondary",
-                    href: "review-lpa"
-                }) }}
+          <p class="govuk-body">You need to <a class="govuk-link" href="https://www.gov.uk/power-of-attorney/register">register a lasting power of attorney</a> with the Office of the Public Guardian before we can record it on your State Pension account.</p>
+
+          <p class="govuk-body">It can take 8 to 10 weeks to register a lasting power of attorney.</p>
+
+          <p class="govuk-body">You can continue with your life certificate now and tell us about the lasting power of attorney later.</p>
+
+          <form class="form" method="post">
+
+            {{ govukRadios({
+              name: "LPAAction",
+              classes: "govuk-radios",
+              fieldset: {
+                legend: {
+                  text: "What would you like to do?",
+                  classes: "govuk-fieldset__legend--m",
+                  isPageHeading: false
+                }
+              },
+              items: [
+                {
+                  value: "Continue",
+                  text: "Continue with my life certificate",
+                  hint: {
+                    text: "Recommended to avoid interrupting pension payments"
+                  }
+                },
+                {
+                  value: "Leave",
+                  text: "Register a lasting power of attorney first"
+                }
+              ]
+            }) }}
+
+          {{ govukButton({
+            text: "Continue",
+            classes: "govuk-button--primary"
+          }) }}
+
+          </form>
 
         </div>
     </div>
