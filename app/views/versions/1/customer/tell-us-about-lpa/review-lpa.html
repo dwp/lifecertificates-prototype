@@ -68,19 +68,19 @@
             {% set legendText %}
                 Do you need to register a{% if data["hasLPA"] == "Yes" %}nother{% endif %} lasting power of attorney?
             {% endset %}
-            {% if data["hasLPA"] == "No" %}
-                {% set radiosIsPageHeading = true %}
-                {% set radiosClassses = "govuk-fieldset__legend--l" %}
-            {% else %}
+            {% if data["hasLPA"] == "Yes" %}
                 {% set radiosIsPageHeading = false %}
                 {% set radiosClassses = "govuk-fieldset__legend--m" %}
+            {% else %}
+                {% set radiosIsPageHeading = true %}
+                {% set radiosClassses = "govuk-fieldset__legend--l" %}
             {% endif %}
 
 
 
                 {% if data["hasLPA"] == "No" %}
                     {% set radiosHint = {
-                        text: "To collect, access and manage your UK State Pension on your behalf"
+                        text: "They can collect, access and manage your UK State Pension on your behalf"
                     } %}
                 {% endif %}
 
