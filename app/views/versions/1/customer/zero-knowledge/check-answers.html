@@ -78,17 +78,17 @@
           {% set doctorName = data["doctorFullName"] or customer.doctor.fullName %}
 
           {% set doctorAddressHtml %}
-              {{ data["addressPractice"] or customer.doctor.practice.name }}<br>
-              {{ data["addressLine1"] or customer.doctor.practice.address.line1 }}<br>
-              {% if data["addressLine2"] or customer.doctor.practice.address.line2 %}
-                  {{ data["addressLine2"] or customer.doctor.practice.address.line2 }}<br>
+              {{ data["doctorAddressPractice"] or customer.doctor.practice.name }}<br>
+              {{ data["doctorAddressLine1"] or customer.doctor.practice.address.line1 }}<br>
+              {% if data["doctorAddressLine2"] or customer.doctor.practice.address.line2 %}
+                  {{ data["doctorAddressLine2"] or customer.doctor.practice.address.line2 }}<br>
               {% endif %}
-              {{ data["addressTown"] or customer.doctor.practice.address.town }}<br>
-              {% if data["addressCounty"] or customer.doctor.practice.address.county %}
-                  {{ data["addressCounty"] or customer.doctor.practice.address.county }}<br>
+              {{ data["doctorAddressTown"] or customer.doctor.practice.address.town }}<br>
+              {% if data["doctorAddressCounty"] or customer.doctor.practice.address.county %}
+                  {{ data["doctorAddressCounty"] or customer.doctor.practice.address.county }}<br>
               {% endif %}
-              {{ data["addressPostcode"] or customer.doctor.practice.address.postcode }}<br>
-              {{ data["addressCountry"] or customer.doctor.practice.address.country }}
+              {{ data["doctorAddressPostcode"] or customer.doctor.practice.address.postcode }}<br>
+              {{ data["doctorAddressCountry"] or customer.doctor.practice.address.country }}
           {% endset %}
 
           {% set doctorEmailAddress = data["doctorEmailAddress"] or customer.doctor.emailAddress %}
@@ -195,19 +195,6 @@
 
             <h2 class="govuk-heading-m">Contact details</h2>
 
-            {% set customerAddressHtml %}
-              {{ data["addressLine1"] or customer.contactDetails.address.line1 }}<br>
-              {% if data["addressLine2"] or customer.contactDetails.address.line2 %}
-                  {{ data["addressLine2"] or customer.contactDetails.address.line2 }}<br>
-              {% endif %}
-              {{ data["addressTown"] or customer.contactDetails.address.town }}<br>
-              {% if data["addressCounty"] or customer.contactDetails.address.county %}
-                  {{ data["addressCounty"] or customer.contactDetails.address.county }}<br>
-              {% endif %}
-              {{ data["addressPostcode"] or customer.contactDetails.address.postcode }}<br>
-              {{ data["addressCountry"] or customer.contactDetails.address.country }}
-            {% endset %}
-
             {% set customerEmailAddress = data["emailAddress"] or customer.contactDetails.emailAddress %}
 
             {% set customerPhoneNumber %}
@@ -224,24 +211,7 @@
             {{ govukSummaryList({
                 classes: "govuk-!-margin-bottom-9",
                 rows: [
-                    {
-                        key: {
-                            text: "Address"
-                        },
-                        value: {
-                            html: customerAddressHtml
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "review-address",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's address"
-                                }
-                            ]
-                        }
-                    },
-                    {
+                {
                     key: {
                         text: "Email address"
                     },
@@ -299,7 +269,7 @@
 
             <h2 class="govuk-heading-m">Now send your proof of life</h2>
 
-            <p class="govuk-body">By submitting this proof of life you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+            <p class="govuk-body">By sending this proof of life you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
 
             <form action="/form-handler" method="post" novalidate>
 

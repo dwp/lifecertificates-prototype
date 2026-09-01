@@ -78,17 +78,17 @@
           {% set doctorName = data["doctorFullName"] or customer.doctor.fullName %}
 
           {% set doctorAddressHtml %}
-              {{ data["addressPractice"] or customer.doctor.practice.name }}<br>
-              {{ data["addressLine1"] or customer.doctor.practice.address.line1 }}<br>
-              {% if data["addressLine2"] or customer.doctor.practice.address.line2 %}
-                  {{ data["addressLine2"] or customer.doctor.practice.address.line2 }}<br>
+              {{ data["doctorAddressPractice"] or customer.doctor.practice.name }}<br>
+              {{ data["doctorAddressLine1"] or customer.doctor.practice.address.line1 }}<br>
+              {% if data["doctorAddressLine2"] or customer.doctor.practice.address.line2 %}
+                  {{ data["doctorAddressLine2"] or customer.doctor.practice.address.line2 }}<br>
               {% endif %}
-              {{ data["addressTown"] or customer.doctor.practice.address.town }}<br>
-              {% if data["addressCounty"] or customer.doctor.practice.address.county %}
-                  {{ data["addressCounty"] or customer.doctor.practice.address.county }}<br>
+              {{ data["doctorAddressTown"] or customer.doctor.practice.address.town }}<br>
+              {% if data["doctorAddressCounty"] or customer.doctor.practice.address.county %}
+                  {{ data["doctorAddressCounty"] or customer.doctor.practice.address.county }}<br>
               {% endif %}
-              {{ data["addressPostcode"] or customer.doctor.practice.address.postcode }}<br>
-              {{ data["addressCountry"] or customer.doctor.practice.address.country }}
+              {{ data["doctorAddressPostcode"] or customer.doctor.practice.address.postcode }}<br>
+              {{ data["doctorAddressCountry"] or customer.doctor.practice.address.country }}
           {% endset %}
 
           {% set doctorEmailAddress = data["doctorEmailAddress"] or customer.doctor.emailAddress %}
@@ -198,7 +198,7 @@
             {% set accountName = data["nameOnTheAccount"] or customer.paymentDetails.nameOnTheAccount %}
             {% set sortCode = data["sortCode"] or customer.paymentDetails.sortCode %}
             {% set accountNumber = data["accountNumber"] or customer.paymentDetails.accountNumber %}
-            {% set rollNumber = data["rollNumber"] or customer.paymentDetails.rollNumber %}
+            {# set rollNumber = data["rollNumber"] or customer.paymentDetails.rollNumber #}
 
             {% set paymentDetailsHtml %}
               <p class="govuk-body">{{ accountName }}</p>

@@ -1,6 +1,6 @@
 module.exports = {
   identityDocument: {
-    type: 'Driver license',
+    type: 'Driver licence',
 
     extractedDetails: {
       fullName: 'Maria Fernandez',

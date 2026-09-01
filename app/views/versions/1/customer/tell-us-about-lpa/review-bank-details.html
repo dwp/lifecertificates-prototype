@@ -74,7 +74,7 @@
                   value: data["accountNumber"] or customer.paymentDetails.accountNumber
                 }) }}
 
-                {{ govukInput({
+                {# govukInput({
                   label: {
                     text: "Building society roll number (if you have one)"
                     },
@@ -86,7 +86,7 @@
                   name: "rollNumber",
                   spellcheck: false,
                   value: data["rollNumber"] or customer.paymentDetails.rollNumber
-                }) }}
+                }) #}
 
               {% endcall %}
 
