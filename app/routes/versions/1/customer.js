@@ -39,39 +39,38 @@ module.exports = function createCustomerRouter({ version }) {
     })
   })
 
-  router.get('/start', function (req, res) {
-
-    // Reset journey data so users do not carry answers
-    // between different prototype journey variations.
-    req.session.data = {}
-
-    res.render(`${viewPath}/start`, {
-      version,
-      baseUrl,
-    })
+  // Temporary routing path while the journey is being
+  // developed. Users are redirected directly to the
+  // check answers page.
+  // Change post url to include parent folder to apply
+  router.post('/start', function (req, res) {
+    res.redirect(`${baseUrl}/check-answers`)
   })
 
   // Users starting the zero-knowledge journey
   // begin with a clean set of answers.
   router.get('/zero-knowledge/start', function (req, res) {
-
     req.session.data = {}
-
     res.render(`${viewPath}/zero-knowledge/start`, {
       version,
       baseUrl,
     })
   })
 
-  // Temporary routing used while the journey is being
-  // developed. Users are redirected directly to the
-  // check answers page.
-  router.post('/start', function (req, res) {
-    res.redirect(`${baseUrl}/check-answers`)
+  // =====================================================
+  // Verify identity (Variation 3)
+  // =====================================================
+  //
+  // Prototype routes used to action verified identity.
+
+  // Users move from verifying proof of life with their
+  // camera to reviewing bank details held by DWP
+  router.post('/tell-us-about-lpa/verify-identity', function (req, res) {
+    res.redirect(`${baseUrl}/tell-us-about-lpa/review-bank-details`)
   })
 
   // =====================================================
-  // Power of attorney
+  // Power of attorney (Variation 3)
   // =====================================================
   //
   // Prototype routes used to review and manage
@@ -79,11 +78,9 @@ module.exports = function createCustomerRouter({ version }) {
 
   // Users move from reviewing their bank details
   // to reviewing any lasting power of attorney
-  // information before continuing their journey.
   router.post('/tell-us-about-lpa/review-bank-details', function (req, res) {
-
     res.redirect(`${baseUrl}/tell-us-about-lpa/review-lpa`)
-  })
+   })
 
   // Allow hasLPA to be passed via the URL and
   // stored in the session for later pages.

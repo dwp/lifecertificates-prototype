@@ -32,28 +32,26 @@
                 </strong>
             </div>
 
-            {% call appLivenessChecker({
+            <form id="livenessForm" method="post" class="form app-liveness-checking">
+
+              {% call appLivenessChecker({
                 id: "liveness-check",
                 name: "livenessImage",
-                displayUntilCameraReady: displayUntilCameraReady,
-                form: {
-                    id: "livenessForm",
-                    action: "review-bank-details",
-                    method: "post"
-                }
-                }) %}
+                formId: "livenessForm",
+                errorSummaryId: "livenessErrorSummary",
+                displayUntilCameraReady: displayUntilCameraReady
+              }) %}
 
-            <input type="hidden" name="proofOfLifeVerifiedOnline" value="Yes">
-
-            {{ govukButton({
-                    text: "Take photo and continue"
+                {{ govukButton({
+                  text: "Take photo and continue"
                 }) }}
 
-                {% endcall %}
-
-                <p><a class="govuk-link" href="unable-to-verify-identity">Not able to verify your identity?</a></p>
+              {% endcall %}
 
             </form>
+
+            <p><a class="govuk-link" href="unable-to-verify-identity">Not able to verify your identity?</a></p>
+
         </div>
     </div>
 
