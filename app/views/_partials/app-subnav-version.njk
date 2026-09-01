@@ -39,16 +39,17 @@
     </li>
 
   </ul>
+<hr class="govuk-section-break govuk-section-break--visible">
 
   <h2 class="govuk-heading-s govuk-!-margin-top-4">
     Versions
   </h2>
 
-  <ul class="govuk-list govuk-list--spaced">
+  <ol class="govuk-list govuk-list--number govuk-list--spaced">
 
     {% for prototypeVersion in versions %}
 
-      <li>
+      <li value="{{ prototypeVersion.data.number }}">
 
         {% set labels = [] %}
 
@@ -60,22 +61,20 @@
           {% set labels = (labels.push("this version"), labels) %}
         {% endif %}
 
-        {% if item.version == version %}
-
+        {% if prototypeVersion.version == version.number %}
           <strong>
-            Version {{ prototypeVersion.data.number }}
-          </strong>
-
-        {% else %}
+        {% endif %}
 
         <a class="govuk-link" href="/versions/{{ prototypeVersion.data.number }}">
-          {{ prototypeVersion.data.number }}: {{ prototypeVersion.data.title }}
+          {{ prototypeVersion.data.title }}
         </a>
+        {% if prototypeVersion.version == version.number %}
+          </strong>
         {% endif %}
 
         {% if labels.length %}
-<br>
-          <span class="govuk-hint govuk-!-margin-top-0">
+          <br>
+          <span class="govuk-body govuk-!-margin-top-0">
             ({{ labels | join(", ") }})
           </span>
 
@@ -85,6 +84,6 @@
 
     {% endfor %}
 
-  </ul>
+  </ol>
 
 </nav>

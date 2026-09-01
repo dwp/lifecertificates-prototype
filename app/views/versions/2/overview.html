@@ -1,0 +1,236 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Service overview" %}
+
+{% block pageTitle %}
+  {{ pageName }} – version {{ version.number }}
+{% endblock %}
+
+{% block content %}
+
+    {% include "_partials/status-banner.njk" %}
+
+    <div class="govuk-grid-row">
+
+      <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">
+          Version {{ version.number }}
+        </span>
+
+        <h1 class="govuk-heading-xl">
+          {{ pageName }}
+        </h1>
+
+        <p class="govuk-body-l">
+          This page shows how the support agent service works in version {{ version.number }}.
+        </p>
+
+        <h2 class="govuk-heading-l">
+          User needs
+        </h2>
+
+        <ul class="govuk-list govuk-list--spaced">
+
+          <li>
+            As a support agent, I need to review submitted life certificates, so that I can decide whether pension payments should continue.
+          </li>
+
+          <li>
+            As a support agent, I need to review customer information and evidence, so that I can understand and resolve cases.
+          </li>
+
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <h2 class="govuk-heading-l">
+          Simplified journey flow
+        </h2>
+
+            <h3 class="govuk-heading-m">
+              Case management
+            </h3>
+
+            <ol class="govuk-list govuk-list--number govuk-list--spaced">
+
+              <li>Open dashboard</li>
+
+              <li>Select a case</li>
+
+              <li>Review case overview</li>
+
+              <li>Review customer information, evidence, notes or timeline</li>
+
+              <li>Add case notes if required</li>
+
+            </ol>
+
+
+            <h3 class="govuk-heading-m">
+              Life certificate review
+            </h3>
+
+            <ol class="govuk-list govuk-list--number govuk-list--spaced">
+
+              <li>Open life certificate</li>
+
+              <li>Review OCR-captured information</li>
+
+              <li>Review identified differences</li>
+
+              <li>Record review decisions</li>
+
+              <li>Complete review and return to case</li>
+
+            </ol>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <h2 class="govuk-heading-l">Screen links</h2>
+
+        <h3 class="govuk-heading-m">Case management</h3>
+
+        <ul class="govuk-list govuk-list--spaced">
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/dashboard">Dashboard</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/case-overview">Case overview</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/customer">Customer</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/evidence">Evidence</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/notes">Notes</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/add-note">Add note</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/timeline">Timeline</a>
+          </li>
+
+        </ul>
+
+        <h3 class="govuk-heading-m">Life certificate review</h3>
+
+        <ul class="govuk-list govuk-list--spaced">
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-certs">Life certificate work queue</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert">Life certificate overview</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/name">Review customer name</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/address">Review customer address</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/telephone">Review customer telephone</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/signature">Review customer signature</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-name">Review witness name</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-role">Review witness role</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-address">Review witness address</a>
+          </li>
+
+          <li><a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-telephone">Review witness telephone</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/check-answers">Check answers</a>
+          </li>
+
+        </ul>
+
+        <h3 class="govuk-heading-m">Differences review</h3>
+
+        <p class="govuk-body">Support agents review differences identified between submitted information and existing customer records.</p>
+
+        <ul class="govuk-list govuk-list--spaced">
+
+          <li><a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/differences">Differences summary</a>
+          </li>
+
+          <li><a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/name-difference">Name difference</a>
+          </li>
+
+          <li><a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/address-difference">Address difference</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/telephone-difference">Telephone difference</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-name-difference">Witness name difference</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-role-difference">Witness role difference</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-address-difference">Witness address difference</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/witness-telephone-difference">Witness telephone difference</a>
+          </li>
+
+        </ul>
+
+        <h3 class="govuk-heading-m">Final review and decision</h3>
+
+        <ul class="govuk-list govuk-list--spaced">
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/check-answers-final">Final check answers</a>
+          </li>
+
+          <li>
+            <a class="govuk-link" href="/versions/{{ version.number }}/support-agent/life-cert/review/exit-confirm">Exit confirmation</a>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+
+        {% include "_partials/app-subnav-version.njk" %}
+
+      </div>
+
+    </div>
+
+{% endblock %}
