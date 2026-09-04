@@ -8,7 +8,9 @@
 @import "components/app-document-scanner";
 @import "components/app-liveness-checker";
 @import "components/app-phone-input";
-@import "components/app-subnav";
+
+@import "partials/app-subnav";
+@import "partials/app-subnav-version";
 
 // Guidance styles
 

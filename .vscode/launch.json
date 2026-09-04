@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "editor-browser",
+      "request": "launch",
+      "name": "Run + Open Prototype",
+      "url": "http://localhost:3000",
+      "preLaunchTask": "start-server"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+.app-subnav-version {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-subnav-version__item {
+  display: flex;
+  align-items: flex-start;
+}
+
+.app-subnav-version__number {
+  flex-shrink: 0;
+  width: 1em;
+  margin-right: govuk-spacing(2);
+  margin-bottom: 0;
+  text-align: right;
+}
+
+.app-subnav-version__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+}

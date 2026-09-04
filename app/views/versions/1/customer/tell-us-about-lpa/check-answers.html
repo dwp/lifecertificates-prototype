@@ -201,15 +201,18 @@
             {# set rollNumber = data["rollNumber"] or customer.paymentDetails.rollNumber #}
 
             {% set paymentDetailsHtml %}
-              <p class="govuk-body">{{ accountName }}</p>
-              <p class="govuk-body">Sort code: {{ sortCode }}</p>
-              <p class="govuk-body">Account number: {{ accountNumber }}</p>
+              <p class="govuk-body">Payee: {{ accountName }}<br>
+                Account number: {{ accountNumber }}<br>
+                Sort code: {{ sortCode }}</p>
               <!-- <p class="govuk-body">Roll number: {{ rollNumber }}</p>-->
             {% endset %}
 
             {% set LPAValue %}
-              {% if data.hasLPA == "Yes" %}
-                  {{ customer.powerOfAttorney.representative }}
+              {% if data["hasLPA"] == "Yes" %}
+                  {% for lpa in customer.powerOfAttorney.registeredLPAs %}
+                    <p class"govuk-body">{{ lpa.attorney }}<br>
+                      <span class="govuk-hint">Registered: {{ lpa.registeredDate }}</span></p>
+                  {% endfor %}
                 {% else %}
                   You have not registered any lasting power of attorney
               {% endif %}

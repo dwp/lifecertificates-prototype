@@ -55,7 +55,7 @@
                 <tbody class="govuk-table__body">
                   {% for lpa in customer.powerOfAttorney.registeredLPAs %}
                     <tr class="govuk-table__row">
-                      <td class="govuk-table__cell">{{ lpa.representative }}</td>
+                      <td class="govuk-table__cell">{{ lpa.attorney }}</td>
                       <td class="govuk-table__cell">{{ lpa.registeredDate }}</td>
                       <td class="govuk-table__cell"><a href="remove-lpa?attorney={{ loop.index0 }}" class="govuk-link">Remove<span class="govuk-visually-hidden"> {{ lpa.representative }}</span></a></td>
                     </tr>

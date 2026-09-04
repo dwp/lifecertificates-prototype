@@ -47,11 +47,11 @@ module.exports = {
 
     registeredLPAs: [
       {
-        representative: 'Jan Attornisson',
+        attorney: 'Jan Attornisson',
         registeredDate: '10 May 2022'
       },
       {
-        representative: 'John Smith',
+        attorney: 'John Smith',
         registeredDate: '1 June 2023'
       }
     ]
