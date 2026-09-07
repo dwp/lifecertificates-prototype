@@ -9,7 +9,7 @@ module.exports = {
 
   status: 'Draft',
 
-  dateUpdated: '28 August 2026',
+  dateUpdated: '7 September 2026',
 
   about: [
     'This prototype builds on the initial digital proof of life concept created in Version 1.',
