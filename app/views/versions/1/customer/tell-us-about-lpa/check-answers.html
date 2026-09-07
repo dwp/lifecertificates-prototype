@@ -210,11 +210,11 @@
             {% set LPAValue %}
               {% if data["hasLPA"] == "Yes" %}
                   {% for lpa in customer.powerOfAttorney.registeredLPAs %}
-                    <p class"govuk-body">{{ lpa.attorney }}<br>
+                    <p class="govuk-body">{{ lpa.attorney }}<br>
                       <span class="govuk-hint">Registered: {{ lpa.registeredDate }}</span></p>
                   {% endfor %}
                 {% else %}
-                  You have not registered any lasting power of attorney
+                  None registered
               {% endif %}
             {% endset %}
 
