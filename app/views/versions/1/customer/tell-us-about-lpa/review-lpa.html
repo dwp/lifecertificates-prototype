@@ -84,6 +84,20 @@
                     } %}
                 {% endif %}
 
+
+                <div class="govuk-button-group">
+
+            {% if data["hasLPA"] == "Yes" %}
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+                 {{ govukButton({
+                    text: "Register another attorney",
+                    classes: "govuk-button--secondary",
+                     href: "register-lpa"
+                }) }}
+            {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
                 {{ govukRadios({
                     name: "registerLPA",
                     classes: "govuk-radios--inline",
@@ -108,28 +122,31 @@
                         }
                     ]
                 }) }}
-
-                <div class="govuk-button-group">
-
                 {{ govukButton({
                     text: "Continue"
                 }) }}
 
+          {% endif %}
+
+                </div>
+
             {% if data["hasLPA"] == "Yes" %}
-                {{ govukButton({
+              <a class="govuk-link" href="review-lpa?hasLPA=No">Page if customer has no LPA</a>
+                {#{ govukButton({
                     text: "Page if customer has no LPA",
                     classes: "govuk-button--secondary",
                     href: "review-lpa?hasLPA=No"
-                }) }}
+                }) }#}
             {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
-                 {{ govukButton({
+              <a class="govuk-link" href="review-lpa?hasLPA=Yes">Page if customer has LPA</a>
+                 {# { govukButton({
                     text: "Page if customer has LPA",
                     classes: "govuk-button--secondary",
                      href: "review-lpa?hasLPA=Yes"
-                }) }}
+                }) }#}
            {% endif %}
 
-                </div>
+
 
             </form>
         </div>
