@@ -19,6 +19,22 @@ module.exports = function createVersionRouter({ version }) {
   // prototype versions rather than arbitrary paths.
   const versionData = require(`../data/versions/${version}`)
 
+  const validJourneys = versionData.users
+  .flatMap((group) => group.items || [])
+  .flatMap((item) => {
+    const userSlug = item.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+
+    return (item.journeys || []).map((journey) => {
+      const parts = journey.href.split('/')
+
+      return {
+        user: parts[1],
+        journey: parts[2],
+      }
+    })
+  })
   // Make the current version available to every route
   // handled by this version router.
   //
@@ -134,6 +150,28 @@ module.exports = function createVersionRouter({ version }) {
       page: 'service-overview',
     })
   })
+
+router.get('/:user/:journey/:page', function (req, res, next) {
+  const { user, journey, page } = req.params
+
+  const validJourney = validJourneys.find(
+    (entry) =>
+      entry.user === user &&
+      entry.journey === journey,
+  )
+
+  if (!validJourney) {
+    return next()
+  }
+
+  return res.render(
+    `versions/${version}/${user}/${journey}/${page}`,
+    {
+      version,
+      baseUrl: `/versions/${version}`,
+    },
+  )
+})
 
   return router
 }

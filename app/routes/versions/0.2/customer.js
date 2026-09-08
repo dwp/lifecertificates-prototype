@@ -76,14 +76,6 @@ module.exports = function createCustomerRouter({ version }) {
 
   })
 
-  router.get('/:journey/:page', (req, res) => {
-    const { journey, page } = req.params
-
-    res.render(`${viewPath}/${journey}/${page}`, {
-      version,
-      baseUrl,
-    })
-  })
 
   return router
 

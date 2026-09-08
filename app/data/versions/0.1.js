@@ -1,7 +1,7 @@
 module.exports = {
   number: '0.1',
 
-  title: 'Baseline identity and proof of life service concept',
+  title: 'Baseline concept',
 
   dateCreated: '10 July 2026',
 
