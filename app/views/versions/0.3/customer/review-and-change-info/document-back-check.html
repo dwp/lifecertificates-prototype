@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Is the text readable?" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <form class="form" method="post">
+
+            {% if data.scannedDocumentBack %}
+            <img src="{{ data.scannedDocumentBack }}" alt="Document scan" class="app-document-review">
+            {% endif %}
+
+            <p class="govukBody">Not readable? <a class="govuk-link" href="scan-document-back">Try again</a></p>
+
+            {{ govukButton({
+                "id": "continueButton",
+                "text": "Continue",
+                "href": "verify-identity"
+            }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

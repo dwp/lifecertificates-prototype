@@ -58,7 +58,7 @@ module.exports = function createCustomerRouter({ version }) {
   })
 
   // =====================================================
-  // Verify identity (Variation 3)
+  // Verify identity (Variation 2)
   // =====================================================
   //
   // Prototype routes used to action verified identity.
@@ -69,12 +69,8 @@ module.exports = function createCustomerRouter({ version }) {
     res.redirect(`${baseUrl}/review-and-change-info/review-bank-details`)
   })
 
-  router.post('/tell-us-about-lpa/verify-identity', function (req, res) {
-    res.redirect(`${baseUrl}/tell-us-about-lpa/review-bank-details`)
-  })
-
   // =====================================================
-  // Power of attorney (Variation 3)
+  // Power of attorney (Variation 2)
   // =====================================================
   //
   // Prototype routes used to review and manage
@@ -82,19 +78,19 @@ module.exports = function createCustomerRouter({ version }) {
 
   // Users move from reviewing their bank details
   // to reviewing any lasting power of attorney
-  router.post('/tell-us-about-lpa/review-bank-details', function (req, res) {
-    res.redirect(`${baseUrl}/tell-us-about-lpa/review-lpa`)
+  router.post('/review-and-change-info/review-bank-details', function (req, res) {
+    res.redirect(`${baseUrl}/review-and-change-info/review-lpa`)
    })
 
   // Allow hasLPA to be passed via the URL and
   // stored in the session for later pages.
-  router.get('/tell-us-about-lpa/review-lpa', function (req, res) {
+  router.get('/review-and-change-info/review-lpa', function (req, res) {
 
     if (req.query.hasLPA !== undefined) {
       req.session.data.hasLPA = req.query.hasLPA
     }
 
-    res.render(`${viewPath}/tell-us-about-lpa/review-lpa`, {
+    res.render(`${viewPath}/review-and-change-info/review-lpa`, {
       version,
       baseUrl,
     })
@@ -103,36 +99,36 @@ module.exports = function createCustomerRouter({ version }) {
   // Users who need to register a lasting power of
   // attorney are shown additional guidance before
   // returning to the main journey.
-  router.post('/tell-us-about-lpa/review-lpa', function (req, res) {
+  router.post('/review-and-change-info/review-lpa', function (req, res) {
 
     const registerLPA = req.session.data.registerLPA
 
     if (registerLPA === 'Yes') {
       return res.redirect(
-        `${baseUrl}/tell-us-about-lpa/register-lpa`,
+        `${baseUrl}/review-and-change-info/register-lpa`,
       )
     }
 
     return res.redirect(
-      `${baseUrl}/tell-us-about-lpa/review-address`,
+      `${baseUrl}/review-and-change-info/review-address`,
     )
   })
 
   // Users decide whether to continue with their
   // life certificate or leave the service to
   // register a lasting power of attorney first.
-  router.post('/tell-us-about-lpa/register-lpa', function (req, res) {
+  router.post('/review-and-change-info/register-lpa', function (req, res) {
 
     const LPAAction = req.session.data.LPAAction
 
     if (LPAAction === 'Leave') {
       return res.redirect(
-        `${baseUrl}/tell-us-about-lpa/register-lpa-first`,
+        `${baseUrl}/review-and-change-info/register-lpa-first`,
       )
     }
 
     return res.redirect(
-      `${baseUrl}/tell-us-about-lpa/review-address`,
+      `${baseUrl}/review-and-change-info/review-address`,
     )
   })
 

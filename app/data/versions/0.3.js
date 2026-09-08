@@ -1,19 +1,19 @@
 module.exports = {
-  number: '0.1',
+  number: '0.3',
 
-  title: 'Baseline identity and proof of life service concept',
+  title: 'Proof of life service concept',
 
-  dateCreated: '10 July 2026',
+  dateCreated: '8 September 2026',
 
   visible: true,
 
-  status: 'Previous',
+  status: 'Draft',
 
-  dateUpdated: '7 September 2026',
+  dateUpdated: 'Not applicable',
 
   about: [
-    'This prototype builds on the initial digital proof of life concept created in Version 1.',
-    'The prototype explores how customers understand evidence requirements, identity verification and confirmation messaging. Representative-assisted journeys have also been introduced for the first time.',
+    'This prototype builds on the initial digital proof of life concept.',
+    'The prototype explores customers understanding of evidence requirements, identity verification and confirmation messaging. Representative-assisted journeys are also supported as are deterrents targeted at bad actors',
   ],
 
   users: [
@@ -32,15 +32,9 @@ module.exports = {
             },
             {
               href: '/customer/review-and-change-info/start',
-              title: 'Variation 2: review and change information (no power of attorney)',
+              title: 'Variation 2: review and change information',
               description:
-                'After proving their identity, customers can review and request changes to information held by DWP.',
-            },
-            {
-              href: '/customer/tell-us-about-lpa/start',
-              title: 'Variation 3: tell us about power of attorney',
-              description:
-                'Builds on Variation 2 and includes the option to review, remove or register a lasting power of attorney.',
+                'After proving their identity, customers can review and request changes to information held by DWP including reviewing previously registered power of attorney.',
             },
           ],
         },
@@ -64,17 +58,22 @@ module.exports = {
     'Proof of life uses placeholder interactions.',
     "Using another nation's credential or evidence, like a Cert de Vie, is not yet represented.",
     'Notifications and reminders are not prototyped.',
-    'Field validation is limited.',
+    'Limited input field validation.',
     'Internal operational journeys are not yet represented.',
   ],
 
   changes: {
     added: [
-      'Customer proof of life journey to establish a shared understanding of a future digital service.',
+      'Non-editable display of known information before the user makes any changes.',
+      'Deterrent for potential bad actors in an assisted journey: guidance advising that all registered lasting powers of attorney will be notified on journey completion.',
     ],
 
-    updated: [],
+    updated: [
+      'Confirmation screen messaging to include reference to confirmation sent by email.'
+    ],
 
-    removed: [],
+    removed: [
+      'Variation for review and change info (without power of attorney) to simplify prototype.'
+    ],
   },
 }

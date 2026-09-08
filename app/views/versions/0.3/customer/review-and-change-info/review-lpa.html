@@ -1,0 +1,174 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+
+{% set numberOfLPAs = customer.powerOfAttorney.registeredLPAs.length %}
+
+{% set pageName %}
+    {% if data["hasLPA"] == "Yes" %}
+        You have {{ numberOfLPAs }} lasting power{% if numberOfLPAs != 1 %}s{% endif %} of attorney
+    {% else %}
+        Nominate someone who can collect your state pension
+    {% endif %}
+{% endset %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <form class="form" action="review-lpa" method="post">
+
+            {% set lpas = customer.powerOfAttorney.registeredLPAs %}
+
+            {% if data["hasLPA"] == "Yes" %}
+
+              <h1 class="govuk-heading-l">{{ pageName }}</h1>
+              <p class="govuk-body">They can collect, access and manage your UK State Pension on your behalf
+
+              <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">
+                  Registered lasting power of attorney
+                </caption>
+
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Attorney</th>
+                    <th class="govuk-table__header">Date registered</th>
+                    <th class="govuk-table__header"></th>
+                  </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                  {% for lpa in customer.powerOfAttorney.registeredLPAs %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">{{ lpa.attorney }}</td>
+                      <td class="govuk-table__cell">{{ lpa.registeredDate }}</td>
+                      <td class="govuk-table__cell"><a href="remove-lpa?attorney={{ loop.index0 }}" class="govuk-link">Remove<span class="govuk-visually-hidden"> {{ lpa.representative }}</span></a></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            {% endif %}
+
+            {% set legendText %}
+                Do you need to register a{% if data["hasLPA"] == "Yes" %}nother{% endif %} lasting power of attorney?
+            {% endset %}
+            {% if data["hasLPA"] == "Yes" %}
+                {% set radiosIsPageHeading = false %}
+                {% set radiosClassses = "govuk-fieldset__legend--m" %}
+            {% else %}
+                {% set radiosIsPageHeading = true %}
+                {% set radiosClassses = "govuk-fieldset__legend--l" %}
+            {% endif %}
+
+
+
+                {% if data["hasLPA"] == "No" %}
+                    {% set radiosHint = {
+                        text: "They can collect, access and manage your UK State Pension on your behalf"
+                    } %}
+                {% endif %}
+
+
+                <div class="govuk-button-group">
+
+            {% if data["hasLPA"] == "Yes" %}
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+                 {{ govukButton({
+                    text: "Register another attorney",
+                    classes: "govuk-button--secondary",
+                     href: "register-lpa"
+                }) }}
+            {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
+                {{ govukRadios({
+                    name: "registerLPA",
+                    classes: "govuk-radios--inline",
+                    fieldset: {
+                        legend: {
+                            text: legendText,
+                            isPageHeading: radiosIsPageHeading,
+                            classes: radiosClassses
+                        }
+                    },
+                    hint: radiosHint,
+                    items: [
+                        {
+                            value: "Yes",
+                            text: "Yes",
+                            checked: data.registerLPA == "Yes"
+                        },
+                        {
+                            value: "No",
+                            text: "No",
+                            checked: data.registerLPA == "No"
+                        }
+                    ]
+                }) }}
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+          {% endif %}
+
+                </div>
+
+            {% if data["hasLPA"] == "Yes" %}
+              <a class="govuk-link" href="review-lpa?hasLPA=No">Page if customer has no LPA</a>
+                {#{ govukButton({
+                    text: "Page if customer has no LPA",
+                    classes: "govuk-button--secondary",
+                    href: "review-lpa?hasLPA=No"
+                }) }#}
+            {% elseif data["hasLPA"] == "No" or not data["hasLPA"] %}
+              <a class="govuk-link" href="review-lpa?hasLPA=Yes">Page if customer has LPA</a>
+                 {# { govukButton({
+                    text: "Page if customer has LPA",
+                    classes: "govuk-button--secondary",
+                     href: "review-lpa?hasLPA=Yes"
+                }) }#}
+           {% endif %}
+
+
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block ContainerEnd %}
+    <script>
+        // Get the current URL
+        const currentUrl = window.location.href;
+
+        // Remove the parameter (replace "param" with your actual parameter name)
+        const strippedUrl = currentUrl
+        .replace(/([?&])hasLPA=[^&]*/, '$1')
+        .replace(/&$/, '')
+        .replace(/\?$/, '');
+
+        // If the URL changed, update it
+        if (strippedUrl !== currentUrl) {
+            // Use replace() to force the URL to update
+            window.location.replace(strippedUrl);
+        }
+    </script>
+{% endblock %}

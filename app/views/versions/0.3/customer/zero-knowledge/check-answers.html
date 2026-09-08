@@ -1,0 +1,288 @@
+{% extends "layouts/main.html" %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
+{% set pageName = "Check your answers" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">{{ pageName }}</h1>
+
+            <h2 class="govuk-heading-m">Identity document</h2>
+
+            {% set identityDocument = customer.identityDocument %}
+            {% set extractedDetails = identityDocument.extractedDetails %}
+
+            {{ govukSummaryList({
+              rows: [
+              {
+                  key: { text: "Document" },
+                  value: { text: identityDocument.type },
+                  actions: {
+                      items: [
+                          {
+                          href: "document-front-scan",
+                          text: "Change",
+                          visuallyHiddenText: "or rescan ID document"
+                          }
+                      ]
+                  }
+              }
+              ]
+            }) }}
+
+            {% set extractedAddressHtml %}
+              {{ extractedDetails.address.line1 }}<br>
+              {% if extractedDetails.address.line2 %}{{ extractedDetails.address.line2 }}<br>{% endif %}
+              {{ extractedDetails.address.town }}<br>
+              {% if extractedDetails.address.county %}{{ extractedDetails.address.county }}<br>{% endif %}
+              {{ extractedDetails.address.postcode }}<br>
+              {{ extractedDetails.address.country }}
+            {% endset %}
+
+            {{ govukSummaryList({
+              card: {
+                title: { text: "From your " + identityDocument.type | lower }
+              },
+              classes: "govuk-summary-list--no-border",
+              rows: [
+                {
+                  key: { text: "Name" },
+                  value: { text: extractedDetails.fullName },
+                  classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                  key: { text: "Date of birth" },
+                  value: { text: extractedDetails.dateOfBirth },
+                  classes: "govuk-summary-list__row--no-border"
+                },
+                {
+                  key: { text: "Address" },
+                  value: { html: extractedAddressHtml }
+                }
+              ]
+          }) }}
+
+            <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
+
+            {% if data['proofOfLifeVerifiedOnline'] == 'No' %}
+
+          <h2 class="govuk-heading-m">Identity verification by a doctor</h2>
+
+          {% set doctorName = data["doctorFullName"] or customer.doctor.fullName %}
+
+          {% set doctorAddressHtml %}
+              {{ data["doctorAddressPractice"] or customer.doctor.practice.name }}<br>
+              {{ data["doctorAddressLine1"] or customer.doctor.practice.address.line1 }}<br>
+              {% if data["doctorAddressLine2"] or customer.doctor.practice.address.line2 %}
+                  {{ data["doctorAddressLine2"] or customer.doctor.practice.address.line2 }}<br>
+              {% endif %}
+              {{ data["doctorAddressTown"] or customer.doctor.practice.address.town }}<br>
+              {% if data["doctorAddressCounty"] or customer.doctor.practice.address.county %}
+                  {{ data["doctorAddressCounty"] or customer.doctor.practice.address.county }}<br>
+              {% endif %}
+              {{ data["doctorAddressPostcode"] or customer.doctor.practice.address.postcode }}<br>
+              {{ data["doctorAddressCountry"] or customer.doctor.practice.address.country }}
+          {% endset %}
+
+          {% set doctorEmailAddress = data["doctorEmailAddress"] or customer.doctor.emailAddress %}
+          {% set doctorPhoneNumber %}
+              {% if data["doctor-country-code"] and data["doctor-national-number"] %}
+                  +{{ data["doctor-country-code"] }} {{ data["doctor-national-number"] }}
+              {% else %}
+                  {{ customer.doctor.phoneNumber }}
+              {% endif %}
+          {% endset %}
+
+          {% set doctorLetterHtml %}
+            {% if data["doctorLetter"] or customer.doctor.letter.fileName %}
+              <ul class="govuk-list">
+                  <li>
+                      <a class="govuk-link" href="#">{{ data["doctorLetter"] or customer.doctor.letter.fileName }}</a>
+                  </li>
+              </ul>
+            {% endif %}
+          {% endset %}
+
+          {% set doctorContactHtml %}
+              <p class="govuk-body">{{ doctorEmailAddress }}</p>
+              <p class="govuk-body">{{ doctorPhoneNumber }}</p>
+          {% endset %}
+
+              {{ govukSummaryList({
+                  classes: "govuk-!-margin-bottom-9",
+                  rows: [
+                  {
+                      key: {
+                          text: "Doctor"
+                      },
+                      value: {
+                          text: doctorName
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's name"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Address"
+                      },
+                      value: {
+                          html: doctorAddressHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's address"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Doctor's letter"
+                      },
+                      value: {
+                          html: doctorLetterHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's letter"
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      key: {
+                          text: "Contact details"
+                      },
+                      value: {
+                          html: doctorContactHtml
+                      },
+                      actions: {
+                          items: [
+                              {
+                              href: "doctor",
+                              text: "Change",
+                              visuallyHiddenText: "doctor's contact details"
+                              }
+                          ]
+                      }
+                  }
+                  ]
+              }) }}
+
+            {% endif %}
+
+            {% if data['proofOfLifeVerifiedOnline'] == 'Yes' %}
+
+            <h2 class="govuk-heading-m">Contact details</h2>
+
+            {% set customerEmailAddress = data["emailAddress"] or customer.contactDetails.emailAddress %}
+
+            {% set customerPhoneNumber %}
+                {% if data["mobile-national-number"] %}
+                    +{{ data["mobile-country-code"] }} {{ data["mobile-national-number"] }}
+                {% else %}
+                    +{{ customer.contactDetails.phone.countryCode }}
+                    {{ customer.contactDetails.phone.nationalNumber }}
+                {% endif %}
+            {% endset %}
+
+            {% set customerContactPreference = data["contactPreference"] or customer.contactDetails.contactPreference %}
+
+            {{ govukSummaryList({
+                classes: "govuk-!-margin-bottom-9",
+                rows: [
+                {
+                    key: {
+                        text: "Email address"
+                    },
+                    value: {
+                        text: customerEmailAddress
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-email",
+                            text: "Change",
+                            visuallyHiddenText: "email address"
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: {
+                        text: "Phone number"
+                    },
+                    value: {
+                        text: customerPhoneNumber
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-phone",
+                            text: "Change",
+                            visuallyHiddenText: "mobile number"
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: {
+                        text: "Preferred contact method"
+                    },
+                    value: {
+                        text: customerContactPreference
+                    },
+                    actions: {
+                        items: [
+                            {
+                            href: "review-phone",
+                            text: "Change",
+                            visuallyHiddenText: "preferred contact method"
+                            }
+                        ]
+                    }
+                }
+                ]
+            }) }}
+
+            {% endif %}
+
+            <h2 class="govuk-heading-m">Now send your proof of life</h2>
+
+            <p class="govuk-body">By sending this proof of life you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+
+            <form action="/form-handler" method="post" novalidate>
+
+                <input type="hidden" name="answers-checked" value="true">
+
+                {{ govukButton({
+                    text: "Accept and send",
+                    href: "confirmation"
+                }) }}
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

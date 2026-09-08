@@ -1,0 +1,50 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Are you sure you want to remove their lasting Power of Attorney?" %}
+
+{% set attorneyIndex = (data.attorney or 0) | int %}
+{% set attorney = customer.powerOfAttorney.registeredLPAs[attorneyIndex] %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+      {% call govukPanel({
+        titleText: pageName,
+        classes: "govuk-panel--interruption",
+        actions: {
+          items: [
+            {
+              text: "Yes, remove their lasting power of attorney",
+              href: "review-lpa?hasLPA=No",
+              type: "button"
+            }, {
+              text: "No, go back",
+              href: "review-lpa?hasLPA=Yes"
+            }
+          ]
+        }
+      }) %}
+        <p class="govuk-body">You selected to remove <strong>{{ attorney.attorney }}'s</strong> lasting power of attorney.</p>
+      {% endcall %}
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "components/app-phone-input/macro.njk" import appPhoneInput %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set pageName = "Contacting you by phone" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            <p class="govuk-body">We may need to speak to you by phone about your pension payments. Check your number is correct and update it if it has changed.</p>
+
+            <form class="form" action="check-phone" method="post">
+
+                {{ appPhoneInput({
+                    id: "phone",
+                    namePrefix: "phone",
+                    fieldset: {
+                        legend: {
+                        text: "Is your phone number correct?",
+                        isPageHeading: false,
+                        classes: "govuk-fieldset__legend--m"
+                        }
+                    },
+                    hint: {
+                        text: "Include the country code and phone number. For example, +44 7900900123."
+                    },
+                    countryCode: {
+                        value: data["phone-country-code"] or customer.contactDetails.phone.countryCode
+                    },
+                    nationalNumber: {
+                        value: data["phone-national-number"] or customer.contactDetails.phone.nationalNumber
+                    }
+                }) }}
+
+                {{ govukRadios({
+                    name: "mobilePhone",
+                    fieldset: {
+                        legend: {
+                            text: "Is this a mobile phone?"
+                        }
+                    },
+                    value: data["mobilePhone"] or (customer.contactDetails.phone.isMobile and "Yes") or "No",
+                    items: [
+                        {
+                            value: "Yes",
+                            text: "Yes"
+                        },
+                        {
+                            value: "No",
+                            text: "No"
+                        }
+                    ]
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

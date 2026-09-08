@@ -14,7 +14,7 @@ const appComponents = require('../data/app-components')
 // - homepage Current version section
 // - homepage Current journeys section
 // - /current redirects
-const currentVersion = '0.1'
+const currentVersion = '0.3'
 
 // Version definition files live in:
 //
