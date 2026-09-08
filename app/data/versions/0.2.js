@@ -1,5 +1,5 @@
 module.exports = {
-  number: '2',
+  number: '0.2',
 
   title: 'Support agent life certificate processing',
 
