@@ -1,5 +1,5 @@
 module.exports = {
-  number: '10.1',
+  number: '0.1',
 
   title: 'Baseline identity and proof of life service concept',
 
