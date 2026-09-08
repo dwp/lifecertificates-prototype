@@ -66,7 +66,7 @@ module.exports = function createCustomerRouter({ version }) {
   // Users move from verifying proof of life with their
   // camera to reviewing bank details held by DWP
   router.post('/review-and-change-info/verify-identity', function (req, res) {
-    res.redirect(`${baseUrl}/review-and-change-info/review-bank-details`)
+    res.redirect(`${baseUrl}/review-and-change-info/check-answers`)
   })
 
   // =====================================================

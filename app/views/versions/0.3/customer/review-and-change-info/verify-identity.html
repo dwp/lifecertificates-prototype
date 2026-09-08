@@ -4,7 +4,7 @@
 {% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
 
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
 {% set pageName = "Get ready to move your head" %}
 
 {% block pageTitle %}
@@ -32,26 +32,28 @@
                 </strong>
             </div>
 
-            {% call appLivenessChecker({
+            <form id="livenessForm" method="post" class="form app-liveness-checking">
+
+              {% call appLivenessChecker({
                 id: "liveness-check",
                 name: "livenessImage",
-                displayUntilCameraReady: displayUntilCameraReady,
-                form: {
-                    id: "livenessForm",
-                    action: "check-answers",
-                    method: "post"
-                }
-                }) %}
+                formId: "livenessForm",
+                errorSummaryId: "livenessErrorSummary",
+                displayUntilCameraReady: displayUntilCameraReady
+              }) %}
+
+                {{ govukButton({
+                  text: "Take photo and continue"
+                }) }}
+
+              {% endcall %}
 
               <input type="hidden" name="proofOfLifeVerifiedOnline" value="Yes">
 
-              {{ govukButton({
-                    text: "Take photo and continue"
-                }) }}
-
-                {% endcall %}
-
             </form>
+
+            <p><a class="govuk-link" href="unable-to-verify-identity">Not able to verify your identity?</a></p>
+
         </div>
     </div>
 

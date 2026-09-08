@@ -11,7 +11,7 @@
     {% include "_partials/status-banner.njk" %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-three-quarters">
 
           <span class="govuk-caption-xl">
             Version {{ version.number }}
@@ -78,7 +78,6 @@
 
             {% set variation1Path = "./customer/zero-knowledge" + "/" %}
             {% set variation2Path = "./customer/review-and-change-info" + "/" %}
-            {% set variation3Path = "./customer/tell-us-about-lpa" + "/" %}
 
             <h3 class="govuk-heading-m">Common start</h3>
             <p class="govuk-body">From variation 1 (zero knowledge of the customer)</p>
@@ -90,6 +89,7 @@
                 <li><a class="govuk-link" href="{{ variation1Path }}document-back-scan">Scan back of document</a></li>
                 <li><a class="govuk-link" href="{{ variation1Path }}document-back-check">Check back of document</a></li>
             </ul>
+
             <p class="govuk-body">Then the journey takes one of two paths:</p>
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-one-half">
@@ -103,47 +103,47 @@
                   <li><a class="govuk-link" href="{{ variation1Path }}contact-preference">Choose preferred contact method</a></li>
                   <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
                 </ul>
+
             <h3 class="govuk-heading-s">Variation 2</h3>
-            <p class="govuk-body">Customers can review and update the information we hold about them</p>
+            <p class="govuk-body">Customers review and update the information we hold about them</p>
 
             <ul class="govuk-list govuk-list--spaced">
-                <li><a class="govuk-link" href="{{ variation2Path }}verify-identity">Verify identity</a></li>
-                <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review pension payment bank details</a></li>
-                <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review email address</a></li>
-                <li><a class="govuk-link" href="{{ variation2Path }}review-phone">Review mobile number</a></li>
-                <li><a class="govuk-link" href="{{ variation2Path }}contact-preference">Review preferred contact method</a></li>
-                <li><a class="govuk-link" href="{{ variation2Path }}check-answers">Check your answers</a></li>
-            </ul>
-
-            <h3 class="govuk-heading-s">Variation 3</h3>
-            <p class="govuk-body">As variation 2 and customers can review their registered lasting power of attorney</p>
+              <li><a class="govuk-link" href="{{ variation2Path }}verify-identity">Verify identity</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}check-answers">Check answers</a></li>
+            <li><p class="govuk-body">Optionally, the customer may visit:</p>
             <ul class="govuk-list govuk-list--spaced">
-                <li><a class="govuk-link" href="{{ variation3Path }}review-lpa">Review registered lasting power of attorney</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}remove-lpa">Are you sure you want to remove your registered lasting power of attorney?</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}register-lpa">You cannot register power of attorney using this service</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}register-lpa-first">Are you sure you want to leave to register a power of attorney?</a></li>
-                <li><a class="govuk-link" href="{{ variation3Path }}check-answers">Check your answers</a></li>
+
+              <li><a class="govuk-link" href="{{ variation2Path }}review-bank-details">Review pension payment bank details</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}review-lpa">Review registered lasting power of attorney</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}remove-lpa">Are you sure you want to remove your registered lasting power of attorney?</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}register-lpa">You cannot register power of attorney using this service</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}register-lpa-first">Are you sure you want to leave to register a power of attorney?</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review email address</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}review-phone">Review mobile number</a></li>
+              <li><a class="govuk-link" href="{{ variation2Path }}contact-preference">Review preferred contact method</a></li>
             </ul>
+          </li>
+          </ul>
             <h3 class="govuk-heading-s">Journey end</h3>
-                <ul class="govuk-list govuk-list--spaced">
-                  <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
-                </ul>
-              </div>
-              <div class="govuk-grid-column-one-half">
-                <h3 class="govuk-heading-m">Doctor's letter path</h3>
-                <p class="govuk-body">Customers provide a letter from their doctor</p>
-                <ul class="govuk-list govuk-list--spaced">
-                  <li><a class="govuk-link" href="{{ variation1Path }}medical-verification">Enter doctor's details and upload letter</a></li>
-                  <li><a class="govuk-link" href="{{ variation1Path }}medical-contact-info">Enter doctor's contact information</a></li>
-                  <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
-                  <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
-                </ul>
-              </div>
-            </div>
+            <ul class="govuk-list govuk-list--spaced">
+              <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
+            </ul>
 
+          </div>
+          <div class="govuk-grid-column-one-half">
+            <h3 class="govuk-heading-m">Doctor's letter path</h3>
+            <p class="govuk-body">Customers provide a letter from their doctor</p>
+            <ul class="govuk-list govuk-list--spaced">
+              <li><a class="govuk-link" href="{{ variation1Path }}medical-verification">Enter doctor's details and upload letter</a></li>
+              <li><a class="govuk-link" href="{{ variation1Path }}medical-contact-info">Enter doctor's contact information</a></li>
+              <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
+              <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>
+            </ul>
+          </div>
         </div>
 
-      <div class="govuk-grid-column-one-third">
+      </div>
+      <div class="govuk-grid-column-one-quarter">
 
         {% include "_partials/app-subnav-version.njk" %}
 

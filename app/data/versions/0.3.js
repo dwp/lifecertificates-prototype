@@ -1,5 +1,5 @@
 module.exports = {
-  number: '3',
+  number: '0.3',
 
   title: 'Proof of life service concept',
 

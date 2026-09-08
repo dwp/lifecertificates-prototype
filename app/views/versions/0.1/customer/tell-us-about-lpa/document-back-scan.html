@@ -4,7 +4,7 @@
 {% from "components/app-document-scanner/macro.njk" import appDocumentScanner %}
 
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set serviceName = "Continue receiving state pension while living abroad (variation 3)" %}
 {% set pageName = "Scan the back of your ID document" %}
 
 {% block pageTitle %}
@@ -29,7 +29,7 @@
                     text: "We need to use your camera. Choose Allow to continue."
                 }) }}
             {% endset %}
-            
+
             {% call appDocumentScanner({
                 id: "identity-document-back",
                 name: "scannedDocumentBack",
