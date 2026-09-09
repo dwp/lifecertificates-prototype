@@ -35,8 +35,8 @@ module.exports = {
                 'No DWP-held information is shared directly with the customer.',
             },
             {
-              href: '/customer/review-and-change-info/start',
-              title: 'Variation 2: review and change information',
+              href: '/customer/prototype-data',
+              title: 'Variation 2: review and change information (with scenario picker)',
               description:
                 'After document scanning and proof of life, customers see a summary of information derived from their documents and held by DWP. They can change incorrect information, add missing details and choose how they prefer to be contacted.',
             },
@@ -74,6 +74,7 @@ module.exports = {
   changes: {
     added: [
       'A summary-led journey showing information derived from documents and held by DWP after document scanning and proof of life.',
+      'A configurable customer-data scenario picker for testing different paths through the journey, with the complete customer record used as the default happy path.',
       'Focused review sections that allow customers to change incorrect information or add missing details before returning to check answers.',
       'Contact preference journeys that allow customers to choose an existing contact method or add missing email, phone or address information.',
       'Support for selecting a contact address from information held by DWP, an identity document or a newly entered address.',
