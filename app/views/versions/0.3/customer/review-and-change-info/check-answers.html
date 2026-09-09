@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
-{% set pageName = "Check your answers" %}
+{% set pageName = "Check your details are up to date before continuing" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -12,30 +12,12 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-xl">{{ pageName }}</h1>
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-            <h2 class="govuk-heading-m">Identity document</h2>
+            <h2 class="govuk-heading-m">Your proof of identity</h2>
 
             {% set identityDocument = customer.identityDocument %}
             {% set extractedDetails = identityDocument.extractedDetails %}
-
-            {{ govukSummaryList({
-              rows: [
-              {
-                  key: { text: "Document" },
-                  value: { text: identityDocument.type },
-                  actions: {
-                      items: [
-                          {
-                          href: "document-front-scan",
-                          text: "Change",
-                          visuallyHiddenText: "or rescan ID document"
-                          }
-                      ]
-                  }
-              }
-              ]
-            }) }}
 
             {% set extractedAddressHtml %}
               {{ extractedDetails.address.line1 }}<br>
@@ -45,22 +27,32 @@
               {{ extractedDetails.address.postcode }}<br>
               {{ extractedDetails.address.country }}
             {% endset %}
+            <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
 
             {{ govukSummaryList({
               card: {
-                title: { text: "From your " + identityDocument.type | lower }
+                title: {
+                  text: identityDocument.type
+                },
+                actions: { items: [
+                  {
+                    href: "document-front-scan",
+                    text: "Change"
+                  }
+                ] },
+              classes: "govuk-!-margin-bottom-6"
               },
-              classes: "govuk-summary-list--no-border",
+              classes: "govuk-summary-list",
               rows: [
                 {
                   key: { text: "Name" },
                   value: { text: extractedDetails.fullName },
-                  classes: "govuk-summary-list__row--no-border"
+                  classes: "govuk-summary-list__row"
                 },
                 {
                   key: { text: "Date of birth" },
                   value: { text: extractedDetails.dateOfBirth },
-                  classes: "govuk-summary-list__row--no-border"
+                  classes: "govuk-summary-list__row"
                 },
                 {
                   key: { text: "Address" },
@@ -69,7 +61,6 @@
               ]
           }) }}
 
-          <p class="govuk-body">If you need to make any changes to your name, date of birth or address then change or rescan your ID document.</p>
 
           {% if data['proofOfLifeVerifiedOnline'] == 'No' %}
 
@@ -193,11 +184,13 @@
 
             {% if data['proofOfLifeVerifiedOnline'] == 'Yes' %}
 
-            <h2 class="govuk-heading-m">Pension payment details</h2>
+            <h2 class="govuk-heading-m">Receiving your pension payments</h2>
+            <p class="govuk-body">We are sending your UK State Pension payments to the following bank account.</p>
 
             {% set accountName = data["nameOnTheAccount"] or customer.paymentDetails.nameOnTheAccount %}
             {% set sortCode = data["sortCode"] or customer.paymentDetails.sortCode %}
             {% set accountNumber = data["accountNumber"] or customer.paymentDetails.accountNumber %}
+            {% set IBAN = data["IBAN"] or customer.paymentDetails.IBAN %}
             {# set rollNumber = data["rollNumber"] or customer.paymentDetails.rollNumber #}
 
             {% set paymentDetailsHtml %}
@@ -219,55 +212,78 @@
             {% endset %}
 
             {{ govukSummaryList({
-              classes: "govuk-!-margin-bottom-9",
+              card: {
+                title: {
+                  text: "Bank details"
+                },
+                actions: { items: [
+                  {
+                    href: "review-bank-details",
+                    text: "Change"
+                  }
+                ] },
+              classes: "govuk-!-margin-bottom-6"
+              },
               rows: [
                   {
-                      key: {
-                          text: "Bank or building society account"
-                      },
-                      value: {
-                          html: paymentDetailsHtml
-                      },
-                      actions: {
-                          items: [
-                              {
-                              href: "review-bank-details",
-                              text: "Change",
-                              visuallyHiddenText: "bank or building society account details"
-                              }
-                          ]
-                      }
+                      key: { text: "Recipient name" },
+                      value: { text: accountName }
                   },
                   {
-                      key: {
-                          text: "Lasting power of attorney"
-                      },
-                      value: {
-                          html: LPAValue
-                      },
-                      actions: {
-                          items: [
-                              {
-                              href: "review-lpa",
-                              text: "Change",
-                              visuallyHiddenText: "lasting power of attorney"
-                              }
-                          ]
-                      }
+                      key: { text: "Account number" },
+                      value: { text: accountNumber }
+                  },
+                  {
+                      key: { text: "Sort code" },
+                      value: { text: sortCode }
+                  },
+                  {
+                      key: { text: "IBAN" },
+                      value: { text: IBAN }
                   }
               ]
             }) }}
 
-            <h2 class="govuk-heading-m">Contact details</h2>
+
+            {% set lpas = customer.powerOfAttorney.registeredLPAs %}
+
+            {% if data["hasLPA"] == "Yes" or customer.powerOfAttorney %}
+              <table class="govuk-table govuk-!-margin-bottom-6">
+                <caption class="govuk-table__caption govuk-table__caption--m">
+                  Registered lasting power of attorney<br>
+                  <span style="display: block;" class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0">Your registered attorneys can collect, access and manage your UK State Pension on your behalf. For your protection we will notify them when you use this service.</span>
+                </caption>
+
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th class="govuk-table__header">Attorney</th>
+                    <th class="govuk-table__header">Date registered</th>
+                  </tr>
+                </thead>
+
+                <tbody class="govuk-table__body">
+                  {% for lpa in customer.powerOfAttorney.registeredLPAs %}
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">{{ lpa.attorney }}</td>
+                      <td class="govuk-table__cell">{{ lpa.registeredDate }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+            {% endif %}
+
+            <h2 class="govuk-heading-m">Contacting you</h2>
+            <p class="govuk-body">We use these details to contact you regarding your UK State Pension.</p>
 
             {% set customerAddressHtml %}
               {{ data["addressLine1"] or customer.contactDetails.address.line1 }}<br>
               {% if data["addressLine2"] or customer.contactDetails.address.line2 %}
-                  {{ data["addressLine2"] or customer.contactDetails.address.line2 }}<br>
+                {{ data["addressLine2"] or customer.contactDetails.address.line2 }}<br>
               {% endif %}
               {{ data["addressTown"] or customer.contactDetails.address.town }}<br>
               {% if data["addressCounty"] or customer.contactDetails.address.county %}
-                  {{ data["addressCounty"] or customer.contactDetails.address.county }}<br>
+                {{ data["addressCounty"] or customer.contactDetails.address.county }}<br>
               {% endif %}
               {{ data["addressPostcode"] or customer.contactDetails.address.postcode }}<br>
               {{ data["addressCountry"] or customer.contactDetails.address.country }}
@@ -275,96 +291,155 @@
 
             {% set customerEmailAddress = data["emailAddress"] or customer.contactDetails.emailAddress %}
 
+            {% set hasPhoneNumber =
+              data["phone-national-number"]
+              or customer.contactDetails.phone.nationalNumber
+            %}
+
             {% set customerPhoneNumber %}
-                {% if data["mobile-national-number"] %}
-                    +{{ data["mobile-country-code"] }} {{ data["mobile-national-number"] }}
+              {% if hasPhoneNumber %}
+                {% if data["phone-national-number"] %}
+                  +{{ data["phone-country-code"] }} {{ data["phone-national-number"] }}
                 {% else %}
-                    +{{ customer.contactDetails.phone.countryCode }}
-                    {{ customer.contactDetails.phone.nationalNumber }}
+                  +{{ customer.contactDetails.phone.countryCode }}
+                  {{ customer.contactDetails.phone.nationalNumber }}
                 {% endif %}
+              {% endif %}
             {% endset %}
 
             {% set customerContactPreference = data["contactPreference"] or customer.contactDetails.contactPreference %}
 
-            {{ govukSummaryList({
-                classes: "govuk-!-margin-bottom-9",
-                rows: [
-                    {
-                        key: {
-                            text: "Address"
-                        },
-                        value: {
-                            html: customerAddressHtml
-                        },
-                        actions: {
-                            items: [
-                                {
-                                href: "review-address",
-                                text: "Change",
-                                visuallyHiddenText: "doctor's address"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                    key: {
-                        text: "Email address"
-                    },
-                    value: {
-                        text: customerEmailAddress
-                    },
-                    actions: {
-                        items: [
-                            {
-                            href: "review-email",
-                            text: "Change",
-                            visuallyHiddenText: "email address"
-                            }
-                        ]
-                    }
+            {% set addressRow = {
+              key: {
+                text: "Address"
+              },
+              value: {
+                html: '<a href="review-address" class="govuk-link">Add address</a>'
+              }
+            } %}
+
+            {% if customerAddressHtml | trim %}
+              {% set addressRow = {
+                key: {
+                  text: "Address"
                 },
-                {
-                    key: {
-                        text: "Phone number"
-                    },
-                    value: {
-                        text: customerPhoneNumber
-                    },
-                    actions: {
-                        items: [
-                            {
-                            href: "review-phone",
-                            text: "Change",
-                            visuallyHiddenText: "mobile number"
-                            }
-                        ]
-                    }
+                value: {
+                  html: customerAddressHtml
                 },
-                {
-                    key: {
-                        text: "Preferred contact method"
-                    },
-                    value: {
-                        text: customerContactPreference
-                    },
-                    actions: {
-                        items: [
-                            {
-                            href: "review-phone",
-                            text: "Change",
-                            visuallyHiddenText: "preferred contact method"
-                            }
-                        ]
+                actions: {
+                  items: [
+                    {
+                      href: "review-address",
+                      text: "Change",
+                      visuallyHiddenText: "address"
                     }
+                  ]
                 }
-                ]
+              } %}
+            {% endif %}
+
+            {% set emailRow = {
+              key: {
+                text: "Email address"
+              },
+              value: {
+                html: '<a href="review-email" class="govuk-link">Add email address</a>'
+              }
+            } %}
+
+            {% if customerEmailAddress %}
+              {% set emailRow = {
+                key: {
+                  text: "Email address"
+                },
+                value: {
+                  text: customerEmailAddress
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "review-email",
+                      text: "Change",
+                      visuallyHiddenText: "email address"
+                    }
+                  ]
+                }
+              } %}
+            {% endif %}
+
+            {% set phoneRow = {
+              key: {
+                text: "Phone number"
+              },
+              value: {
+                html: '<a href="review-phone" class="govuk-link">Add phone number</a>'
+              }
+            } %}
+
+            {% if hasPhoneNumber %}
+              {% set phoneRow = {
+                key: {
+                  text: "Phone number"
+                },
+                value: {
+                  text: customerPhoneNumber
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "review-phone",
+                      text: "Change",
+                      visuallyHiddenText: "phone number"
+                    }
+                  ]
+                }
+              } %}
+            {% endif %}
+
+            {% set contactPreferenceRow = {
+              key: {
+                text: "Preferred contact method"
+              },
+              value: {
+                html: '<a href="review-contact-preference" class="govuk-link">Add preferred contact method</a>'
+              }
+            } %}
+
+            {% if customerContactPreference %}
+              {% set contactPreferenceRow = {
+                key: {
+                  text: "Preferred contact method"
+                },
+                value: {
+                  text: customerContactPreference
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "review-contact-preference",
+                      text: "Change",
+                      visuallyHiddenText: "preferred contact method"
+                    }
+                  ]
+                }
+              } %}
+            {% endif %}
+
+            {{ govukSummaryList({
+              classes: "govuk-!-margin-bottom-6",
+              rows: [
+                addressRow,
+                emailRow,
+                phoneRow,
+                contactPreferenceRow
+              ]
             }) }}
 
             {% endif %}
 
-            <h2 class="govuk-heading-m">Now send your proof of life</h2>
+            <h2 class="govuk-heading-m">Ready to continue?</h2>
 
-            <p class="govuk-body">By sending this proof of life you agree that the information you have given is complete and correct. If you deliberately give the wrong or incomplete information, or you do not report any changes, you may:</p>
+            <p class="govuk-body">By sending this information you agree that the information on this page is complete and correct. If you deliberately give the wrong or incomplete information, or you do not report any changes, you may:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>be prosecuted</li>
                 <li>need to pay a financial penalty</li>

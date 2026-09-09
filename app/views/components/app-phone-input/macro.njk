@@ -3,10 +3,10 @@
   {% set showCountryCode = true %}
 
   {% if params.countryCode and params.countryCode.show == false %}
-
     {% set showCountryCode = false %}
-
   {% endif %}
+
+  {% set namePrefix = params.namePrefix or params.id %}
 
   <div class="govuk-form-group
     {% if params.errorMessage %}
@@ -77,18 +77,21 @@
                 <div class="govuk-input__prefix app-phone-input-prefix"
                      id="{{ params.id }}-prefix"
                      aria-hidden="true">+</div>
-                <input class="govuk-input govuk-input--width-4
-                  {% if params.countryCode and params.countryCode.error %}
-                     govuk-input--error
-                  {% endif %}
-                   " id="{{ params.id }}-country-code" name="
-                  {% if params.namePrefix %}
-                     {{ params.namePrefix }}{% else %}{{ params.id }}
-                  {% endif %}
-                   -country-code" type="text" inputmode="numeric" autocomplete="tel-country-code" maxlength="4"
-                   value="{% if params.countryCode and params.countryCode.value %}{{ params.countryCode.value }}{% endif %}"
-                   data-phone-country-code data-prefix-id="{{ params.id }}-prefix">
-                </div>
+                  <input
+                    class="govuk-input govuk-input--width-4
+                    {% if params.countryCode and params.countryCode.error %}
+                      govuk-input--error
+                    {% endif %}"
+                    id="{{ params.id }}-country-code"
+                    name="{{ namePrefix }}-country-code"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="tel-country-code"
+                    maxlength="4"
+                    value="{% if params.countryCode and params.countryCode.value %}{{ params.countryCode.value }}{% endif %}"
+                    data-phone-country-code
+                    data-prefix-id="{{ params.id }}-prefix">
+                  </div>
               </div>
             </div>
 
@@ -108,20 +111,24 @@
                 {% endif %}
 
               </label>
-              <input class="govuk-input
+              <input
+                class="govuk-input
                 {% if params.nationalNumber and params.nationalNumber.classes %}
-                   {{ params.nationalNumber.classes }}{% else %}govuk-input--width-20
+                  {{ params.nationalNumber.classes }}
+                {% else %}
+                  govuk-input--width-20
                 {% endif %}
-
-                {% if params.nationalNumber and params.nationalNumber.error %}govuk-input--error{% endif %}
-                 " id="{{ params.id }}-national-number" name="
-                {% if params.namePrefix %}
-                   {{ params.namePrefix }}{% else %}{{ params.id }}
-                {% endif %}
-                 -national-number" type="text" inputmode="tel" autocomplete="tel-national" maxlength="20"
-                 value="{% if params.nationalNumber and params.nationalNumber.value %}{{ params.nationalNumber.value }}{% endif %}"
-                >
-              </div>
+                {% if params.nationalNumber and params.nationalNumber.error %}
+                  govuk-input--error
+                {% endif %}"
+                id="{{ params.id }}-national-number"
+                name="{{ namePrefix }}-national-number"
+                type="text"
+                inputmode="tel"
+                autocomplete="tel-national"
+                maxlength="20"
+                value="{% if params.nationalNumber and params.nationalNumber.value %}{{ params.nationalNumber.value }}{% endif %}">
+                </div>
             </div>
           </div>
         </fieldset>

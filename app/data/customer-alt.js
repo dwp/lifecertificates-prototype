@@ -34,13 +34,13 @@ module.exports = {
       postcode: '28013',
       country: 'Spain'
     },
-    emailAddress: '',
+    emailAddress: 'maria.fernandez78@example.com',
     phone: {
-      countryCode: '',
-      nationalNumber: '',
-      isMobile: null
+      countryCode: '34',
+      nationalNumber: '7900 900123',
+      isMobile: true
     },
-    contactPreference: ''
+    contactPreference: 'Post'
   },
 
   powerOfAttorney: {

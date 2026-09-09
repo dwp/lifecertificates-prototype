@@ -19,7 +19,7 @@
         <a href="mailto:mark.wilson@dwp.gov.uk">Mark Wilson</a> (content designer) or user researchers
         <a href="mailto:william.clarke@dwp.gov.uk">Will Clarke</a> and
         <a href="mailto:ellen.gresty@dwp.gov.uk">Ellen Gresty</a>
-        for further information about this prototype.</p>
+        for information about this prototype.</p>
 
     </div>
 </div>
@@ -139,52 +139,52 @@
     </caption>
 
     <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-        <th class="govuk-table__header">Version</th>
-        <th class="govuk-table__header">Status</th>
-        <th class="govuk-table__header">Last updated</th>
-        <th class="govuk-table__header">Summary</th>
-        <th class="govuk-table__header"><!-- Links --></th>
-        </tr>
+      <tr class="govuk-table__row">
+      <th class="govuk-table__header">Version</th>
+      <th class="govuk-table__header">Status</th>
+      <th class="govuk-table__header">Last updated</th>
+      <th class="govuk-table__header">Summary</th>
+      <th class="govuk-table__header"><!-- Links --></th>
+      </tr>
     </thead>
 
     <tbody class="govuk-table__body">
 
-        {% for prototypeVersion in versions %}
+      {% for prototypeVersion in versions %}
 
-        <tr class="govuk-table__row">
+      <tr class="govuk-table__row">
 
-            <td class="govuk-table__cell">
-            {{ prototypeVersion.data.number }}
-              {% if item.version == currentVersion %}
-                  <span class="govuk-hint"> (current)</span>
-              {% endif %}
-            </td>
+        <td class="govuk-table__cell">
+        {{ prototypeVersion.data.number }}
+          {% if item.version == currentVersion %}
+              <span class="govuk-hint"> (current)</span>
+          {% endif %}
+        </td>
 
-            {% set status = versionStatuses[prototypeVersion.data.status] %}
+        {% set status = versionStatuses[prototypeVersion.data.status] %}
 
-            <td class="govuk-table__cell">
-              {{ govukTag({
-                text: status.tag.text,
-                classes: status.tag.classes
-              }) }}
-            </td>
+        <td class="govuk-table__cell">
+          {{ govukTag({
+            text: status.tag.text,
+            classes: status.tag.classes
+          }) }}
+        </td>
 
-            <td class="govuk-table__cell">
-              {{ prototypeVersion.data.dateUpdated or prototypeVersion.data.dateCreated }}
-            </td>
+        <td class="govuk-table__cell">
+          {{ prototypeVersion.data.dateUpdated or prototypeVersion.data.dateCreated }}
+        </td>
 
-            <td class="govuk-table__cell">
-              {{ prototypeVersion.data.title }}
-            </td>
+        <td class="govuk-table__cell">
+          {{ prototypeVersion.data.title }}
+        </td>
 
-            <td class="govuk-table__cell">
-              <a class="govuk-link" href="/versions/{{ prototypeVersion.data.number }}">View</a>
-            </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" href="/versions/{{ prototypeVersion.data.number }}">View</a>
+        </td>
 
-        </tr>
+      </tr>
 
-        {% endfor %}
+      {% endfor %}
 
     </tbody>
 
@@ -226,7 +226,7 @@
 <h2 class="govuk-heading-l">Custom components and patterns</h2>
 
 <p class="govuk-body">
-  Reusable custom elements in this prototype.
+  Reusable custom elements created for this prototype.
 </p>
 
 <ul class="govuk-list govuk-list--spaced">

@@ -1,51 +1,114 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
+
+{#
+  Resolve the customer's email address.
+
+  Prefer information entered during the current journey,
+  then fall back to the stored customer value.
+#}
+
+{% set customerEmailAddress =
+  data["emailAddress"]
+  or customer.contactDetails.emailAddress
+%}
+
+{% set hasEmailAddress = customerEmailAddress | trim %}
+
+
+{#
+  Adapt the page content depending on whether the customer
+  is reviewing an existing email address or adding a new one.
+#}
+
+{% if hasEmailAddress %}
+
+  {% set pageName = "Contacting you by email" %}
+  {% set emailInputLabel = "Is your email address correct?" %}
+  {% set buttonText = "Continue" %}
+
+{% else %}
+
+  {% set pageName = "Add an email address" %}
+  {% set emailInputLabel = "What is your email address?" %}
+  {% set buttonText = "Add email address" %}
+
+{% endif %}
+
+
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
-{% set pageName = "Contacting you by email" %}
+
 
 {% block pageTitle %}
-    {{ pageName }} – {{ serviceName }}
+  {{ pageName }} – {{ serviceName }}
 {% endblock %}
+
 
 {% block containerStart %}
 
-    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
 
 {% endblock %}
 
+
 {% block content %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
 
-            <p class="govuk-body">We may need to write to you by phone about your pension payments. Check your email address is correct and update it if it has changed.</p>
+      {% if hasEmailAddress %}
 
-            <form class="form" action="review-phone" method="post">
+        <p class="govuk-body">
+          We may email you about your pension payments, including important
+          notifications and reminders. Check your email address is correct and
+          update it if it has changed.
+        </p>
 
-                {{ govukInput({
-                    id: "email-address",
-                    name: "emailAddress",
-                    label: {
-                        text: "Is your email address correct?",
-                        isPageHeading: true,
-                        classes: "govuk-label--m"
-                    },
-                    hint: {
-                        text: "For example, name@domain.com"
-                    },
-                    value: data["emailAddress"] or customer.contactDetails.emailAddress
-                }) }}
+      {% else %}
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+        <p class="govuk-body">
+          Enter an email address so we can contact you about your pension payments
+          and send you important notifications and reminders.
+        </p>
 
-            </form>
-        </div>
+      {% endif %}
+
+      <form method="post" action="verify-identity-again">
+
+        {{ govukInput({
+          id: "email-address",
+          name: "emailAddress",
+          type: "email",
+          spellcheck: false,
+          autocomplete: "email",
+          label: {
+            text: emailInputLabel,
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "For example, name@domain.com"
+          },
+          value: customerEmailAddress
+        }) }}
+
+        {{ govukButton({
+          text: buttonText
+        }) }}
+
+      </form>
+
     </div>
+  </div>
 
 {% endblock %}

@@ -1,79 +1,181 @@
 {% extends "layouts/main.html" %}
 
-{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/app-phone-input/macro.njk" import appPhoneInput %}
 
+
+{#
+  Resolve the customer's phone number.
+
+  Prefer information entered during the current journey,
+  then fall back to the stored customer values.
+#}
+
+{% set customerPhoneCountryCode =
+  data["phone-country-code"]
+  or customer.contactDetails.phone.countryCode
+%}
+
+{% set customerPhoneNationalNumber =
+  data["phone-national-number"]
+  or customer.contactDetails.phone.nationalNumber
+%}
+
+{% set hasPhoneNumber = customerPhoneNationalNumber | trim %}
+
+
+{#
+  Adapt the page content depending on whether the customer
+  is reviewing an existing number or adding a new one.
+#}
+
+{% if hasPhoneNumber %}
+
+  {% set pageName = "Contacting you by phone" %}
+  {% set phoneInputLegend = "Is your phone number correct?" %}
+  {% set buttonText = "Continue" %}
+
+{% else %}
+
+  {% set pageName = "Add a phone number" %}
+  {% set phoneInputLegend = "What is your phone number?" %}
+  {% set buttonText = "Add phone number" %}
+
+{% endif %}
+
+
+{#
+  Work out whether the mobile phone question should have
+  a preselected answer.
+
+  Prefer an answer entered during the current journey.
+
+  If there is an existing phone number and no session answer,
+  use the stored customer information.
+
+  If the customer is adding a new number, neither answer is
+  selected because we do not know whether it is a mobile.
+#}
+
+{% set mobilePhoneValue = data["mobilePhone"] %}
+
+{% if not mobilePhoneValue and hasPhoneNumber %}
+
+  {% if customer.contactDetails.phone.isMobile %}
+    {% set mobilePhoneValue = "Yes" %}
+  {% else %}
+    {% set mobilePhoneValue = "No" %}
+  {% endif %}
+
+{% endif %}
+
+
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
-{% set pageName = "Contacting you by phone" %}
+
 
 {% block pageTitle %}
-    {{ pageName }} – {{ serviceName }}
+  {{ pageName }} – {{ serviceName }}
 {% endblock %}
+
 
 {% block containerStart %}
 
-    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
 
 {% endblock %}
 
+
 {% block content %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
 
-            <p class="govuk-body">We may need to speak to you by phone about your pension payments. Check your number is correct and update it if it has changed.</p>
+      {% if hasPhoneNumber %}
 
-            <form class="form" action="check-phone" method="post">
+        <p class="govuk-body">
+          We may need to speak to you by phone about your pension payments.
+          Check your number is correct and update it if it has changed.
+        </p>
 
-                {{ appPhoneInput({
-                    id: "phone",
-                    namePrefix: "phone",
-                    fieldset: {
-                        legend: {
-                        text: "Is your phone number correct?",
-                        isPageHeading: false,
-                        classes: "govuk-fieldset__legend--m"
-                        }
-                    },
-                    hint: {
-                        text: "Include the country code and phone number. For example, +44 7900900123."
-                    },
-                    countryCode: {
-                        value: data["phone-country-code"] or customer.contactDetails.phone.countryCode
-                    },
-                    nationalNumber: {
-                        value: data["phone-national-number"] or customer.contactDetails.phone.nationalNumber
-                    }
-                }) }}
+        <p class="govuk-body">
+          If you have a mobile number, use that so we can also send you
+          important notifications and reminders about your pension.
+        </p>
 
-                {{ govukRadios({
-                    name: "mobilePhone",
-                    fieldset: {
-                        legend: {
-                            text: "Is this a mobile phone?"
-                        }
-                    },
-                    value: data["mobilePhone"] or (customer.contactDetails.phone.isMobile and "Yes") or "No",
-                    items: [
-                        {
-                            value: "Yes",
-                            text: "Yes"
-                        },
-                        {
-                            value: "No",
-                            text: "No"
-                        }
-                    ]
-                }) }}
+      {% else %}
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+        <p class="govuk-body">
+          Enter a number we can use to speak to you about your pension
+          payments.
+        </p>
 
-            </form>
-        </div>
+        <p class="govuk-body">
+          If you have a mobile number, use that so we can also send you
+          important notifications and reminders about your pension.
+        </p>
+
+      {% endif %}
+
+      <form method="post" action="check-phone">
+
+        {{ appPhoneInput({
+          id: "phone",
+          namePrefix: "phone",
+          fieldset: {
+            legend: {
+              text: phoneInputLegend,
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Include the country code and phone number. For example, +44 7900 900123."
+          },
+          countryCode: {
+            value: customerPhoneCountryCode
+          },
+          nationalNumber: {
+            value: customerPhoneNationalNumber
+          }
+        }) }}
+
+        {{ govukRadios({
+          name: "mobilePhone",
+          value: mobilePhoneValue,
+          fieldset: {
+            legend: {
+              text: "Is this a mobile phone?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes"
+            },
+            {
+              value: "No",
+              text: "No"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: buttonText
+        }) }}
+
+      </form>
+
     </div>
+  </div>
 
 {% endblock %}
