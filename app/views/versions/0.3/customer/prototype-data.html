@@ -92,13 +92,7 @@
       </h1>
 
       <p class="govuk-body">
-        Choose the how the customer evidences their identity and the information available
-        when they reach check answers.
-      </p>
-
-      <p class="govuk-body">
-        Applying a scenario will clear information entered during an earlier
-        test and start the selected journey.
+        Configure the customer's identity document and the information DWP holds about them.
       </p>
 
       <form method="post" action="prototype-data">
@@ -138,22 +132,19 @@
               classes: "govuk-fieldset__legend--m"
             }
           },
-          hint: {
-            text: "Choose the identity document used to prove the customer’s identity."
-          },
           items: [
             {
               value: "driver-licence",
               text: "Driver licence",
               hint: {
-                text: "Provides the customer’s name, date of birth and registered address."
+                text: "Includes name, date of birth and registered address."
               }
             },
             {
               value: "passport",
               text: "Passport",
               hint: {
-                text: "Provides the customer’s name and date of birth."
+                text: "Includes name and date of birth."
               }
             }
           ]
@@ -174,8 +165,7 @@
         </h2>
 
         <p class="govuk-body">
-          Choose the information shown when the customer completes proof of life
-          digitally.
+          Choose which information DWP already holds about the customer. It is only shown when they prove life using the camera.
         </p>
 
         {#
@@ -198,15 +188,12 @@
               classes: "govuk-fieldset__legend--s"
             }
           },
-          hint: {
-            text: "Choose the payment information already held for the customer."
-          },
           items: [
             {
               value: "ukBankAccount",
               text: "UK bank account",
               hint: {
-                text: "Includes the name on the account, account number and sort code."
+                text: "Name on the account, account number and sort code."
               },
               checked:
                 not scenarioConfigured
@@ -248,7 +235,7 @@
             value: selectedPhoneMobileStatus,
             fieldset: {
               legend: {
-                text: "Is the phone number a mobile?",
+                text: "Is it a mobile number?",
                 classes: "govuk-fieldset__legend--s"
               }
             },
@@ -277,9 +264,6 @@
               text: "Contact details",
               classes: "govuk-fieldset__legend--s"
             }
-          },
-          hint: {
-            text: "Choose the contact information already held for the customer."
           },
           items: [
             {
@@ -317,7 +301,7 @@
             },
             {
               value: "contactPreference",
-              text: "Preferred contact method",
+              text: "Contact preference",
               checked:
                 not scenarioConfigured
                 or (
@@ -342,18 +326,26 @@
           registered lasting power of attorney.
         #}
 
+        <h2 class="govuk-heading-m">
+          Power of attorney
+        </h2>
+
+        <p class="govuk-body">
+          This information is shown regardless of how the customer proves life.
+        </p>
+
         {{ govukCheckboxes({
           name: "customerScenarioPowerOfAttorney",
           fieldset: {
             legend: {
-              text: "Lasting power of attorney",
-              classes: "govuk-fieldset__legend--m"
+              text: "Registered attorneys",
+              classes: "govuk-fieldset__legend--s"
             }
           },
           items: [
             {
               value: "registeredLPAs",
-              text: "Customer has one or more registered lasting powers of attorney",
+              text: "Customer has one or more registered attorneys",
               checked:
                 not scenarioConfigured
                 or (
@@ -365,18 +357,22 @@
           ]
         }) }}
 
+        <div class="govuk-button-group">
 
-        {{ govukButton({
-          text: "Apply scenario"
-        }) }}
+          {{ govukButton({
+            text: "Start journey",
+            href: "review-and-change-info/start"
+          }) }}
+
+          {{ govukButton({
+            text: "Reset to all",
+            classes: "govuk-button--secondary",
+            href: "prototype-data/reset"
+          }) }}
+
+        </div>
 
       </form>
-
-      <p class="govuk-body">
-        <a class="govuk-link" href="prototype-data/reset">
-          Reset to the complete customer
-        </a>
-      </p>
 
     </div>
   </div>

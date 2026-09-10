@@ -61,6 +61,24 @@ module.exports = function createCustomerRouter({ version }) {
   }
 
 
+  // Return a supported mobile-phone status.
+  //
+  // Yes is used by default because it matches the complete
+  // customer fixture.
+  function normalisePhoneMobileStatus(value) {
+
+    if (value === 'no') {
+      return 'no'
+    }
+
+    if (value === 'unknown') {
+      return 'unknown'
+    }
+
+    return 'yes'
+  }
+
+
   // Create a new copy of the complete customer fixture.
   //
   // The fixture contains only plain objects, arrays and
@@ -108,8 +126,8 @@ module.exports = function createCustomerRouter({ version }) {
     // customer.identityDocument
     //
     // An identity document is mandatory for reaching check
-    // answers. The selected document type determines which
-    // extracted information is available.
+    // answers. Its type determines which extracted
+    // information is available.
     //
     // Driver licence:
     // - name
@@ -135,8 +153,8 @@ module.exports = function createCustomerRouter({ version }) {
     // The UK bank account selection represents:
     //
     // - name on the account
-    // - sort code
     // - account number
+    // - sort code
     //
     // IBAN is controlled separately because the customer
     // may have UK bank details, an IBAN or both.
@@ -148,8 +166,8 @@ module.exports = function createCustomerRouter({ version }) {
       )
     ) {
       customerData.paymentDetails.nameOnTheAccount = ''
-      customerData.paymentDetails.sortCode = ''
       customerData.paymentDetails.accountNumber = ''
+      customerData.paymentDetails.sortCode = ''
     }
 
     if (
@@ -195,12 +213,15 @@ module.exports = function createCustomerRouter({ version }) {
         isMobile: null,
       }
     } else if (
-      !includesProperty(
-        scenario.phoneDetails,
-        'isMobile',
-      )
+      scenario.phoneMobileStatus === 'no'
+    ) {
+      customerData.contactDetails.phone.isMobile = false
+    } else if (
+      scenario.phoneMobileStatus === 'unknown'
     ) {
       customerData.contactDetails.phone.isMobile = null
+    } else {
+      customerData.contactDetails.phone.isMobile = true
     }
 
     if (
@@ -217,14 +238,6 @@ module.exports = function createCustomerRouter({ version }) {
     //
     // Lasting power of attorney is represented as one
     // presence-or-absence choice.
-    //
-    // When selected:
-    // - hasLPA is true
-    // - all registered attorney records are retained
-    //
-    // When unselected:
-    // - hasLPA is false
-    // - the registered attorney records are removed
 
     if (
       includesProperty(
@@ -243,11 +256,7 @@ module.exports = function createCustomerRouter({ version }) {
     //
     // Doctor information is not configured at field level.
     // The complete doctor and uploaded-letter fixture remains
-    // available for the medical evidence route.
-    //
-    // Templates should use proofOfLifeVerifiedOnline to
-    // determine whether digital or medical evidence content
-    // is relevant.
+    // available for the medical-evidence route.
 
     return customerData
   }
@@ -257,8 +266,8 @@ module.exports = function createCustomerRouter({ version }) {
   //
   // Session data can take precedence over the filtered
   // customer fixture in Nunjucks. Clearing these fields
-  // ensures that applying a scenario produces a predictable
-  // starting state.
+  // ensures that applying or resetting a scenario produces
+  // a predictable starting state.
   function clearCustomerJourneyData(data) {
 
     const keys = [
@@ -271,8 +280,8 @@ module.exports = function createCustomerRouter({ version }) {
 
       // Payment information
       'nameOnTheAccount',
-      'sortCode',
       'accountNumber',
+      'sortCode',
       'IBAN',
 
       // Email information
@@ -311,6 +320,7 @@ module.exports = function createCustomerRouter({ version }) {
       // Doctor information entered during the journey
       'doctorFullName',
       'doctorPracticeName',
+      'doctorAddressPractice',
       'doctorAddressLine1',
       'doctorAddressLine2',
       'doctorAddressTown',
@@ -318,6 +328,8 @@ module.exports = function createCustomerRouter({ version }) {
       'doctorAddressPostcode',
       'doctorAddressCountry',
       'doctorEmailAddress',
+      'doctor-country-code',
+      'doctor-national-number',
       'doctorPhoneNumber',
       'doctorLetter',
     ]
@@ -328,10 +340,34 @@ module.exports = function createCustomerRouter({ version }) {
   }
 
 
+  // Remove the configured customer scenario.
+  //
+  // This restores the complete canonical customer fixture
+  // as the starting point for the journey.
+  function clearCustomerScenario(data) {
+
+    delete data.customerScenarioConfigured
+    delete data.customerScenario
+
+    delete data.customerScenarioIdentityDocumentType
+    delete data.customerScenarioPaymentDetails
+    delete data.customerScenarioContactDetails
+    delete data.customerScenarioPhoneMobileStatus
+    delete data.customerScenarioPowerOfAttorney
+
+    // Remove values from older versions of the controls if
+    // they remain in the current session.
+    delete data.customerScenarioProofOfLifeMethod
+    delete data.customerScenarioDoctor
+    delete data.customerScenarioIdentityDocument
+    delete data.customerScenarioPhoneDetails
+  }
+
+
   // Create the customer object used by the current request.
   //
-  // If no scenario has been configured, pages receive the
-  // complete customer fixture.
+  // If no scenario has been configured, pages receive a
+  // complete copy of the canonical customer fixture.
   //
   // If a scenario exists, pages receive a filtered copy.
   router.use((req, res, next) => {
@@ -370,11 +406,16 @@ module.exports = function createCustomerRouter({ version }) {
 
   // Apply the selected customer-data scenario.
   //
-  // The controls configure the information available if
-  // the customer completes proof of life digitally.
+  // The controls configure:
+  //
+  // - the identity document scanned by the customer
+  // - the information available if proof of life is
+  //   completed using the camera
+  // - registered lasting powers of attorney
   //
   // The journey itself determines whether proof of life is
-  // completed digitally or through medical evidence.
+  // completed using the camera or supported by medical
+  // evidence.
   router.post('/prototype-data', function (req, res) {
 
     const identityDocumentType =
@@ -390,9 +431,10 @@ module.exports = function createCustomerRouter({ version }) {
       req.body.customerScenarioContactDetails,
     )
 
-    const phoneDetails = asArray(
-      req.body.customerScenarioPhoneDetails,
-    )
+    const phoneMobileStatus =
+      normalisePhoneMobileStatus(
+        req.body.customerScenarioPhoneMobileStatus,
+      )
 
     const powerOfAttorney = asArray(
       req.body.customerScenarioPowerOfAttorney,
@@ -414,8 +456,8 @@ module.exports = function createCustomerRouter({ version }) {
     req.session.data.customerScenarioContactDetails =
       contactDetails
 
-    req.session.data.customerScenarioPhoneDetails =
-      phoneDetails
+    req.session.data.customerScenarioPhoneMobileStatus =
+      phoneMobileStatus
 
     req.session.data.customerScenarioPowerOfAttorney =
       powerOfAttorney
@@ -426,7 +468,7 @@ module.exports = function createCustomerRouter({ version }) {
       identityDocumentType,
       paymentDetails,
       contactDetails,
-      phoneDetails,
+      phoneMobileStatus,
       powerOfAttorney,
     }
 
@@ -435,7 +477,7 @@ module.exports = function createCustomerRouter({ version }) {
     // cannot override the new starting scenario.
     //
     // This also removes a previous proof-of-life result,
-    // allowing the selected journey to be tested again.
+    // allowing the journey to be tested again.
     clearCustomerJourneyData(
       req.session.data,
     )
@@ -443,9 +485,8 @@ module.exports = function createCustomerRouter({ version }) {
 
     // Start the review and change journey.
     //
-    // The customer still completes identity verification
-    // and follows the existing proof-of-life route before
-    // reaching check answers.
+    // The configured scenario remains active in the current
+    // session and will be applied throughout the journey.
     return res.redirect(
       `${baseUrl}/review-and-change-info/start`,
     )
@@ -455,36 +496,9 @@ module.exports = function createCustomerRouter({ version }) {
   // Reset the controls and restore the complete customer.
   router.get('/prototype-data/reset', function (req, res) {
 
-    delete req.session.data.customerScenarioConfigured
-    delete req.session.data.customerScenario
-
-    delete req.session.data
-      .customerScenarioIdentityDocumentType
-
-    delete req.session.data
-      .customerScenarioPaymentDetails
-
-    delete req.session.data
-      .customerScenarioContactDetails
-
-    delete req.session.data
-      .customerScenarioPhoneDetails
-
-    delete req.session.data
-      .customerScenarioPowerOfAttorney
-
-
-    // Remove values from obsolete versions of the scenario
-    // controls if they remain in the current session.
-    delete req.session.data
-      .customerScenarioProofOfLifeMethod
-
-    delete req.session.data
-      .customerScenarioDoctor
-
-    delete req.session.data
-      .customerScenarioIdentityDocument
-
+    clearCustomerScenario(
+      req.session.data,
+    )
 
     clearCustomerJourneyData(
       req.session.data,
@@ -508,6 +522,25 @@ module.exports = function createCustomerRouter({ version }) {
       baseUrl,
     })
   })
+
+
+  // Display the start page for the review and change
+  // information journey.
+  //
+  // If a custom scenario is active, it remains active.
+  // Otherwise, the complete customer fixture is used.
+  router.get(
+    '/review-and-change-info/start',
+    function (req, res) {
+      res.render(
+        `${viewPath}/review-and-change-info/start`,
+        {
+          version,
+          baseUrl,
+        },
+      )
+    },
+  )
 
 
   // Temporary routing path while the journey is being
@@ -536,16 +569,11 @@ module.exports = function createCustomerRouter({ version }) {
   // Verify identity (Variation 2)
   // =====================================================
   //
-  // Prototype routes used to action verified identity.
-
-  // The verify-identity page submits:
-  //
-  // proofOfLifeVerifiedOnline = "Yes"
-  //
-  // when proof of life is completed digitally.
+  // proofOfLifeVerifiedOnline is set to "Yes" when proof of
+  // life is completed using the camera.
   //
   // The value remains empty when the customer follows the
-  // medical evidence route.
+  // medical-evidence route.
   router.post(
     '/review-and-change-info/verify-identity',
     function (req, res) {
@@ -564,7 +592,7 @@ module.exports = function createCustomerRouter({ version }) {
   // power of attorney information.
 
   // Users move from reviewing their bank details to
-  // reviewing any lasting power of attorney.
+  // reviewing any lasting powers of attorney.
   router.post(
     '/review-and-change-info/review-bank-details',
     function (req, res) {
