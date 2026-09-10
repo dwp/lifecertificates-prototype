@@ -293,6 +293,42 @@
         }) }}
 
         {#
+          customer.powerOfAttorney
+
+          Lasting power of attorney is represented as one
+          scenario choice.
+
+          When selected, the customer has one or more registered
+          lasting powers of attorney and the registered attorney
+          records are available.
+
+          When not selected, the customer does not have a
+          registered lasting power of attorney.
+        #}
+        {{ govukCheckboxes({
+          name: "customerScenarioPowerOfAttorney",
+          fieldset: {
+            legend: {
+              text: "Power of attorney",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "registeredLPAs",
+              text: "Customer has one or more registered attorneys",
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedPowerOfAttorney
+                  and "registeredLPAs"
+                    in selectedPowerOfAttorney
+                )
+            }
+          ]
+        }) }}
+
+        {#
           customer.contactDetails
         #}
         {% set selectedPhoneMobileStatus =
@@ -380,50 +416,6 @@
                 or (
                   selectedContactDetails
                   and "contactPreference" in selectedContactDetails
-                )
-            }
-          ]
-        }) }}
-
-        {#
-          customer.powerOfAttorney
-
-          Lasting power of attorney is represented as one
-          scenario choice.
-
-          When selected, the customer has one or more registered
-          lasting powers of attorney and the registered attorney
-          records are available.
-
-          When not selected, the customer does not have a
-          registered lasting power of attorney.
-        #}
-        <h2 class="govuk-heading-m">
-          Power of attorney
-        </h2>
-
-        <p class="govuk-body">
-          This information is shown regardless of how the customer proves life.
-        </p>
-
-        {{ govukCheckboxes({
-          name: "customerScenarioPowerOfAttorney",
-          fieldset: {
-            legend: {
-              text: "Registered attorneys",
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-          items: [
-            {
-              value: "registeredLPAs",
-              text: "Customer has one or more registered attorneys",
-              checked:
-                not scenarioConfigured
-                or (
-                  selectedPowerOfAttorney
-                  and "registeredLPAs"
-                    in selectedPowerOfAttorney
                 )
             }
           ]
