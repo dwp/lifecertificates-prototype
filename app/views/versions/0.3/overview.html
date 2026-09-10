@@ -1,5 +1,7 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 {% set pageName = "Service overview" %}
 
 {% block pageTitle %}
@@ -94,8 +96,9 @@
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-one-half">
                 <h3 class="govuk-heading-m">Digital verification path</h3>
+                <h4 class="govuk-heading-s">Variation 1</h4>
+                <p class="govuk-body">Customers provide information using blank fields without seeing information held by DWP.</p>
                 <ul class="govuk-list govuk-list--spaced">
-                <p class="govuk-body">Customers share their information with us</p>
                   <li><a class="govuk-link" href="{{ variation1Path }}verify-identity">Verify identity</a></li>
                   <li><a class="govuk-link" href="{{ variation1Path }}contact-email">Provide email address</a></li>
                   <li><a class="govuk-link" href="{{ variation1Path }}contact-phone">Provide mobile number</a></li>
@@ -104,26 +107,34 @@
                   <li><a class="govuk-link" href="{{ variation1Path }}check-answers">Check your answers</a></li>
                 </ul>
 
-            <h3 class="govuk-heading-s">Variation 2</h3>
-            <p class="govuk-body">Customers review and update the information we hold about them</p>
+            <h4 class="govuk-heading-s">Variation 2</h4>
+            <p class="govuk-body">When they prove life using the camera, customers can review, change or add information held by DWP.</p>
 
             <ul class="govuk-list govuk-list--spaced">
               <li><a class="govuk-link" href="{{ variation2Path }}verify-identity">Verify identity</a></li>
               <li><a class="govuk-link" href="{{ variation2Path }}check-answers">Check answers</a></li>
-            <li><p class="govuk-body">Optionally, the customer may visit:</p>
-            <ul class="govuk-list govuk-list--spaced">
-
-              <li><a class="govuk-link" href="{{ variation2Path }}review-bank-details">Review pension payment bank details</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}review-lpa">Review registered lasting power of attorney</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}remove-lpa">Are you sure you want to remove your registered lasting power of attorney?</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}register-lpa">You cannot register power of attorney using this service</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}register-lpa-first">Are you sure you want to leave to register a power of attorney?</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review email address</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}review-phone">Review mobile number</a></li>
-              <li><a class="govuk-link" href="{{ variation2Path }}contact-preference">Review preferred contact method</a></li>
+              <li>
+                {% call govukInsetText() %}
+                  <p class="govuk-body">Optionally, the customer may visit:</p>
+                  <ul class="govuk-list govuk-list--spaced">
+                    <li><a class="govuk-link" href="{{ variation2Path }}review-bank-details">Review pension payment bank details</a></li>
+                    <li><a class="govuk-link" href="{{ variation2Path }}review-lpa">Review registered lasting power of attorney</a>
+                      {% call govukInsetText() %}
+                        <p class="govuk-body">They may then visit:</p>
+                        <ul class="govuk-list govuk-list--spaced">
+                          <li><a class="govuk-link" href="{{ variation2Path }}remove-lpa">Are you sure you want to remove your registered lasting power of attorney?</a></li>
+                          <li><a class="govuk-link" href="{{ variation2Path }}register-lpa">You cannot register power of attorney using this service</a></li>
+                          <li><a class="govuk-link" href="{{ variation2Path }}register-lpa-first">Are you sure you want to leave to register a power of attorney?</a></li>
+                        </ul>
+                      {% endcall %}
+                    </li>
+                    <li><a class="govuk-link" href="{{ variation2Path }}review-email">Review email address</a></li>
+                    <li><a class="govuk-link" href="{{ variation2Path }}review-phone">Review mobile number</a></li>
+                    <li><a class="govuk-link" href="{{ variation2Path }}contact-preference">Review preferred contact method</a></li>
+                  </ul>
+                {% endcall %}
+              </li>
             </ul>
-          </li>
-          </ul>
             <h3 class="govuk-heading-s">Journey end</h3>
             <ul class="govuk-list govuk-list--spaced">
               <li><a class="govuk-link" href="{{ variation1Path }}confirmation">Confirmation</a></li>

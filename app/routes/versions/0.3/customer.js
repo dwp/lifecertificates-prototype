@@ -389,15 +389,15 @@ module.exports = function createCustomerRouter({ version }) {
 
 
   // =====================================================
-  // Prototype data controls
+  // Customer data scenario setup
   // =====================================================
   //
   // Controls used to test different combinations of
   // customer information throughout the prototype.
 
   // Display the prototype data controls.
-  router.get('/prototype-data', function (req, res) {
-    res.render(`${viewPath}/prototype-data`, {
+  router.get('/review-and-change-info/scenario-setup', function (req, res) {
+    res.render(`${viewPath}/review-and-change-info/scenario-setup`, {
       version,
       baseUrl,
     })
@@ -416,7 +416,7 @@ module.exports = function createCustomerRouter({ version }) {
   // The journey itself determines whether proof of life is
   // completed using the camera or supported by medical
   // evidence.
-  router.post('/prototype-data', function (req, res) {
+  router.post('/review-and-change-info/scenario-setup', function (req, res) {
 
     const identityDocumentType =
       normaliseIdentityDocumentType(
@@ -494,7 +494,7 @@ module.exports = function createCustomerRouter({ version }) {
 
 
   // Reset the controls and restore the complete customer.
-  router.get('/prototype-data/reset', function (req, res) {
+  router.get('/review-and-change-info/scenario-setup/reset', function (req, res) {
 
     clearCustomerScenario(
       req.session.data,
@@ -505,7 +505,7 @@ module.exports = function createCustomerRouter({ version }) {
     )
 
     return res.redirect(
-      `${baseUrl}/prototype-data`,
+      `${baseUrl}/review-and-change-info/scenario-setup`,
     )
   })
 
