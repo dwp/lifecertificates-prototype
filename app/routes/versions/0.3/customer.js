@@ -46,6 +46,26 @@ module.exports = function createCustomerRouter({ version }) {
     return [value]
   }
 
+  // Return a supported journey starting point.
+  //
+  // Start is used by default so the customer follows the
+  // complete journey from the GOV.UK service information page.
+  function normaliseJourneyStartPoint(value) {
+
+    if (value === 'document-scanning') {
+      return 'document-scanning'
+    }
+
+    if (value === 'proof-of-life') {
+      return 'proof-of-life'
+    }
+
+    if (value === 'check-answers') {
+      return 'check-answers'
+    }
+
+    return 'start'
+  }
 
   // Return a supported identity-document type.
   //
@@ -60,6 +80,18 @@ module.exports = function createCustomerRouter({ version }) {
     return 'driver-licence'
   }
 
+  // Return a supported proof-of-life method.
+  //
+  // Camera is used by default when starting after proof of
+  // life.
+  function normaliseProofOfLifeMethod(value) {
+
+    if (value === 'medical') {
+      return 'medical'
+    }
+
+    return 'camera'
+  }
 
   // Return a supported mobile-phone status.
   //
@@ -272,7 +304,7 @@ module.exports = function createCustomerRouter({ version }) {
 
     const keys = [
       // Proof of life
-      'proofOfLifeVerifiedOnline',
+      'proofOfLifeMethod',
 
       // Identity information
       'fullName',
@@ -416,7 +448,15 @@ module.exports = function createCustomerRouter({ version }) {
   // The journey itself determines whether proof of life is
   // completed using the camera or supported by medical
   // evidence.
-  router.post('/review-and-change-info/scenario-setup', function (req, res) {
+// Apply the selected customer scenario.
+router.post(
+  '/review-and-change-info/scenario-setup',
+  function (req, res) {
+
+    const startPoint =
+      normaliseJourneyStartPoint(
+        req.body.customerScenarioStartPoint,
+      )
 
     const identityDocumentType =
       normaliseIdentityDocumentType(
@@ -441,11 +481,21 @@ module.exports = function createCustomerRouter({ version }) {
     )
 
 
-    // Store the values used to restore the controls page.
-    //
-    // Empty checkbox groups are stored as empty arrays so
-    // previous selections do not remain in session data.
+    // Only use the selected proof-of-life method when the
+    // journey starts after proof of life.
+    const proofOfLifeMethod =
+      startPoint === 'check-answers'
+        ? normaliseProofOfLifeMethod(
+            req.body.customerScenarioProofOfLifeMethod,
+          )
+        : null
+
+
+    // Store the values used to restore the setup page.
     req.session.data.customerScenarioConfigured = 'true'
+
+    req.session.data.customerScenarioStartPoint =
+      startPoint
 
     req.session.data.customerScenarioIdentityDocumentType =
       identityDocumentType
@@ -463,7 +513,18 @@ module.exports = function createCustomerRouter({ version }) {
       powerOfAttorney
 
 
-    // Store the normalised scenario.
+    // Retain the scenario proof-of-life method only when
+    // starting after proof of life.
+    if (proofOfLifeMethod) {
+      req.session.data.customerScenarioProofOfLifeMethod =
+        proofOfLifeMethod
+    } else {
+      delete req.session.data
+        .customerScenarioProofOfLifeMethod
+    }
+
+
+    // Store the customer-data scenario.
     req.session.data.customerScenario = {
       identityDocumentType,
       paymentDetails,
@@ -473,25 +534,48 @@ module.exports = function createCustomerRouter({ version }) {
     }
 
 
-    // Remove values entered during earlier tests so they
-    // cannot override the new starting scenario.
-    //
-    // This also removes a previous proof-of-life result,
-    // allowing the journey to be tested again.
+    // Clear answers and outcomes from previous tests.
     clearCustomerJourneyData(
       req.session.data,
     )
 
 
-    // Start the review and change journey.
-    //
-    // The configured scenario remains active in the current
-    // session and will be applied throughout the journey.
+    // Starting after proof of life requires an explicit
+    // completed proof-of-life method.
+    if (startPoint === 'check-answers') {
+      req.session.data.proofOfLifeMethod =
+        proofOfLifeMethod
+
+      return res.redirect(
+        `${baseUrl}/review-and-change-info/check-answers`,
+      )
+    }
+
+
+    // For all earlier starting points, the journey records
+    // the proof-of-life method when the step is completed.
+    delete req.session.data.proofOfLifeMethod
+
+
+    if (startPoint === 'proof-of-life') {
+      return res.redirect(
+        `${baseUrl}/review-and-change-info/${proofOfLifeStartPage}`,
+      )
+    }
+
+
+    if (startPoint === 'document-scanning') {
+      return res.redirect(
+        `${baseUrl}/review-and-change-info/${documentScanningStartPage}`,
+      )
+    }
+
+
     return res.redirect(
       `${baseUrl}/review-and-change-info/start`,
     )
-  })
-
+  },
+)
 
   // Reset the controls and restore the complete customer.
   router.get('/review-and-change-info/scenario-setup/reset', function (req, res) {
@@ -569,10 +653,10 @@ module.exports = function createCustomerRouter({ version }) {
   // Verify identity (Variation 2)
   // =====================================================
   //
-  // proofOfLifeVerifiedOnline is set to "Yes" when proof of
+  // proofOfLifeMethod is set to "camera" when proof of
   // life is completed using the camera.
   //
-  // The value remains empty when the customer follows the
+  // The value is set to "medical" when the customer follows the
   // medical-evidence route.
   router.post(
     '/review-and-change-info/verify-identity',

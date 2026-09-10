@@ -17,7 +17,34 @@
 
             <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-            <h2 class="govuk-heading-m">Your proof of identity</h2>
+{% if not data["proofOfLifeMethod"] %}
+
+    <div class="govuk-inset-text">
+        A proof of life method has not been recorded.
+    </div>
+
+    <p class="govuk-body">
+        Set up a customer scenario or start the journey to provide the information needed for this page.
+    </p>
+
+    <div class="govuk-button-group">
+
+        {{ govukButton({
+            text: "Update customer scenario",
+            href: "scenario-setup"
+        }) }}
+
+        {{ govukButton({
+            classes: "govuk-button--secondary",
+            text: "Return to start",
+            href: "start"
+        }) }}
+
+      </div>
+
+{% else %}
+
+      <h2 class="govuk-heading-m">Your proof of identity</h2>
 
             {% set identityDocument = customer.identityDocument %}
             {% set extractedDetails = identityDocument.extractedDetails %}
@@ -166,7 +193,7 @@
                 follows the medical evidence route.
             #}
 
-            {% if data["proofOfLifeVerifiedOnline"] != "Yes" %}
+            {% if data["proofOfLifeMethod"] == "medical" %}
 
                 <h2 class="govuk-heading-m">Proof of life provided by a doctor</h2>
 
@@ -336,7 +363,7 @@
                 Digital proof-of-life route
             #}
 
-            {% if data["proofOfLifeVerifiedOnline"] == "Yes" %}
+            {% if data["proofOfLifeMethod"] == "camera" %}
 
                 <h2 class="govuk-heading-m">Receiving your pension payments</h2>
 
@@ -517,7 +544,7 @@
                     Contact details
                 #}
 
-                <h2 class="govuk-heading-m">Contacting you</h2>
+                <h2 class="govuk-heading-m">Contacting you about your pension</h2>
 
                 <p class="govuk-body">
                     We use these details to contact you regarding your UK
@@ -862,6 +889,7 @@
 
             </form>
 
+{% endif %}
         </div>
     </div>
 

@@ -6,8 +6,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
-{% set pageName = "Customer data scenario setup" %}
-
+{% set pageName = "Customer scenario setup" %}
 
 {#
   Work out whether a scenario has already been configured.
@@ -18,11 +17,32 @@
   Once a scenario has been applied, the controls reflect the
   values stored in session data.
 #}
-
 {% set scenarioConfigured =
   data["customerScenarioConfigured"] == "true"
 %}
 
+{#
+  Choose where the configured journey starts.
+
+  The GOV.UK service information page is selected by default
+  so the customer follows the complete journey.
+#}
+{% set selectedJourneyStartPoint =
+  data["customerScenarioStartPoint"]
+  or "start"
+%}
+
+{#
+  Choose the proof-of-life outcome used when starting at
+  check answers.
+
+  Camera is the default because it enables the summary-led
+  review of DWP-held information.
+#}
+{% set selectedProofOfLifeMethod =
+  data["customerScenarioProofOfLifeMethod"]
+  or "camera"
+%}
 
 {#
   Choose the identity document used in the scenario.
@@ -30,47 +50,38 @@
   A driver licence is selected by default because it matches
   the complete customer fixture.
 #}
-
 {% set selectedIdentityDocumentType =
   data["customerScenarioIdentityDocumentType"]
   or "driver-licence"
 %}
 
-
 {#
   Restore the values previously selected in the payment
   details checkbox group.
 #}
-
 {% set selectedPaymentDetails =
   data["customerScenarioPaymentDetails"]
 %}
-
 
 {#
   Restore the values previously selected in the contact
   details checkbox group.
 #}
-
 {% set selectedContactDetails =
   data["customerScenarioContactDetails"]
 %}
-
 
 {#
   Restore the values previously selected in the lasting
   power of attorney checkbox group.
 #}
-
 {% set selectedPowerOfAttorney =
   data["customerScenarioPowerOfAttorney"]
 %}
 
-
 {% block pageTitle %}
   {{ pageName }} – {{ serviceName }}
 {% endblock %}
-
 
 {% block containerStart %}
 
@@ -81,7 +92,6 @@
 
 {% endblock %}
 
-
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -91,18 +101,86 @@
         {{ pageName }}
       </h1>
 
-      <p class="govuk-body">
-        Configure the customer's identity document and the information DWP holds about them.
-      </p>
+      {% set proofOfLifeMethodHtml %}
+
+        {{ govukRadios({
+          name: "customerScenarioProofOfLifeMethod",
+          value: selectedProofOfLifeMethod,
+          classes: "govuk-radios--small",
+          fieldset: {
+            legend: {
+              text: "How was proof of life completed?",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "camera",
+              text: "Using the camera"
+            },
+            {
+              value: "medical",
+              text: "Using a doctor's letter"
+            }
+          ]
+        }) }}
+
+      {% endset %}
 
       <form method="post" action="scenario-setup">
 
-        <input
-          type="hidden"
-          name="customerScenarioConfigured"
-          value="true"
-        >
+        <input type="hidden" name="customerScenarioConfigured" value="true" >
 
+        {{ govukRadios({
+          name: "customerScenarioStartPoint",
+          value: selectedJourneyStartPoint,
+          fieldset: {
+            legend: {
+              text: "Where should the journey start?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hintOFF: {
+            text: "Choose the first page you want to test."
+          },
+          items: [
+            {
+              value: "start",
+              text: "GOV.UK 'Before you start' page",
+              hintOFF: {
+                text: "Beginning of the journey."
+              }
+            },
+            {
+              value: "document-scanning",
+              text: "Identity document",
+              hintOFF: {
+                text: "Skip GOV.UK page."
+              }
+            },
+            {
+              value: "proof-of-life",
+              text: "Proof of life",
+              hintOFF: {
+                text: "Start after the identity document."
+              }
+            },
+            {
+              value: "check-answers",
+              text: "After proof of life",
+              hintOFF: {
+                text: "Start after the identity document and proof of life."
+              },
+              conditional: {
+                html: proofOfLifeMethodHtml
+              }
+            }
+          ]
+        }) }}
+
+        <p class="govuk-body">
+          Configure the customer's identity document and the information DWP holds about them.
+        </p>
 
         {#
           Identity document
@@ -122,7 +200,6 @@
           - full name
           - date of birth
         #}
-
         {{ govukRadios({
           name: "customerScenarioIdentityDocumentType",
           value: selectedIdentityDocumentType,
@@ -159,7 +236,6 @@
           The route will ignore these field-level controls when
           proof of life is provided by a doctor.
         #}
-
         <h2 class="govuk-heading-m">
           Information held about the customer
         </h2>
@@ -179,7 +255,6 @@
           IBAN is controlled separately because a customer may
           have UK bank details, an IBAN or both.
         #}
-
         {{ govukCheckboxes({
           name: "customerScenarioPaymentDetails",
           fieldset: {
@@ -217,11 +292,9 @@
           ]
         }) }}
 
-
         {#
           customer.contactDetails
         #}
-
         {% set selectedPhoneMobileStatus =
           data["customerScenarioPhoneMobileStatus"]
           or "yes"
@@ -325,7 +398,6 @@
           When not selected, the customer does not have a
           registered lasting power of attorney.
         #}
-
         <h2 class="govuk-heading-m">
           Power of attorney
         </h2>
@@ -360,8 +432,7 @@
         <div class="govuk-button-group">
 
           {{ govukButton({
-            text: "Start journey",
-            href: "review-and-change-info/start"
+            text: "Continue"
           }) }}
 
           {{ govukButton({
