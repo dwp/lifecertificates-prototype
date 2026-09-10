@@ -40,7 +40,7 @@ module.exports = {
       nationalNumber: '7900 900123',
       isMobile: true
     },
-    contactPreference: 'Post'
+    contactPreference: ''
   },
 
   powerOfAttorney: {
