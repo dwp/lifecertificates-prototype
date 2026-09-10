@@ -4,7 +4,18 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
-{% set pageName = "Check your details are up to date before continuing" %}
+
+{% if data["proofOfLifeMethod"] == "camera" %}
+  {% set pageName = "Check your details are up to date before continuing" %}
+{% endif %}
+{% if data["proofOfLifeMethod"] == "medical" %}
+  {% set pageName = "Check your answers before continuing" %}
+{% endif %}
+{% if not data["proofOfLifeMethod"] %}
+  {% set pageName = "Check your answers" %}
+{% endif %}
+
+
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
