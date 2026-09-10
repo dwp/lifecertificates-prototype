@@ -14,6 +14,16 @@ module.exports = function createCustomerRouter({ version }) {
   const baseUrl = `/versions/${version}/customer`
 
 
+  // Pages used by the scenario starting-point controls.
+  //
+  // These values are relative to the
+  // review-and-change-info journey.
+  const documentScanningStartPage =
+    'document-front-scan'
+
+  const proofOfLifeStartPage =
+    'verify-identity'
+
   // =====================================================
   // Set up the mock customer data
   // =====================================================
@@ -110,7 +120,6 @@ module.exports = function createCustomerRouter({ version }) {
     return 'yes'
   }
 
-
   // Create a new copy of the complete customer fixture.
   //
   // The fixture contains only plain objects, arrays and
@@ -122,13 +131,11 @@ module.exports = function createCustomerRouter({ version }) {
     )
   }
 
-
   // Return whether a property has been enabled in one of
   // the scenario checkbox groups.
   function includesProperty(group, property) {
     return asArray(group).includes(property)
   }
-
 
   // Return an empty address while preserving the structure
   // expected by the Nunjucks templates.
@@ -142,7 +149,6 @@ module.exports = function createCustomerRouter({ version }) {
       country: '',
     }
   }
-
 
   // Apply the configured scenario to a copy of the complete
   // customer fixture.
@@ -178,7 +184,6 @@ module.exports = function createCustomerRouter({ version }) {
     } else {
       customerData.identityDocument.type = 'Driver licence'
     }
-
 
     // customer.paymentDetails
     //
@@ -265,7 +270,6 @@ module.exports = function createCustomerRouter({ version }) {
       customerData.contactDetails.contactPreference = ''
     }
 
-
     // customer.powerOfAttorney
     //
     // Lasting power of attorney is represented as one
@@ -283,7 +287,6 @@ module.exports = function createCustomerRouter({ version }) {
       customerData.powerOfAttorney.registeredLPAs = []
     }
 
-
     // customer.doctor
     //
     // Doctor information is not configured at field level.
@@ -292,7 +295,6 @@ module.exports = function createCustomerRouter({ version }) {
 
     return customerData
   }
-
 
   // Clear answers entered during an earlier test.
   //
@@ -371,7 +373,6 @@ module.exports = function createCustomerRouter({ version }) {
     })
   }
 
-
   // Remove the configured customer scenario.
   //
   // This restores the complete canonical customer fixture
@@ -381,6 +382,8 @@ module.exports = function createCustomerRouter({ version }) {
     delete data.customerScenarioConfigured
     delete data.customerScenario
 
+    delete data.customerScenarioStartPoint
+    delete data.customerScenarioProofOfLifeMethod
     delete data.customerScenarioIdentityDocumentType
     delete data.customerScenarioPaymentDetails
     delete data.customerScenarioContactDetails
@@ -389,12 +392,10 @@ module.exports = function createCustomerRouter({ version }) {
 
     // Remove values from older versions of the controls if
     // they remain in the current session.
-    delete data.customerScenarioProofOfLifeMethod
     delete data.customerScenarioDoctor
     delete data.customerScenarioIdentityDocument
     delete data.customerScenarioPhoneDetails
   }
-
 
   // Create the customer object used by the current request.
   //
@@ -419,7 +420,6 @@ module.exports = function createCustomerRouter({ version }) {
     next()
   })
 
-
   // =====================================================
   // Customer data scenario setup
   // =====================================================
@@ -434,7 +434,6 @@ module.exports = function createCustomerRouter({ version }) {
       baseUrl,
     })
   })
-
 
   // Apply the selected customer-data scenario.
   //
@@ -480,7 +479,6 @@ router.post(
       req.body.customerScenarioPowerOfAttorney,
     )
 
-
     // Only use the selected proof-of-life method when the
     // journey starts after proof of life.
     const proofOfLifeMethod =
@@ -489,7 +487,6 @@ router.post(
             req.body.customerScenarioProofOfLifeMethod,
           )
         : null
-
 
     // Store the values used to restore the setup page.
     req.session.data.customerScenarioConfigured = 'true'
@@ -512,7 +509,6 @@ router.post(
     req.session.data.customerScenarioPowerOfAttorney =
       powerOfAttorney
 
-
     // Retain the scenario proof-of-life method only when
     // starting after proof of life.
     if (proofOfLifeMethod) {
@@ -523,7 +519,6 @@ router.post(
         .customerScenarioProofOfLifeMethod
     }
 
-
     // Store the customer-data scenario.
     req.session.data.customerScenario = {
       identityDocumentType,
@@ -533,12 +528,10 @@ router.post(
       powerOfAttorney,
     }
 
-
     // Clear answers and outcomes from previous tests.
     clearCustomerJourneyData(
       req.session.data,
     )
-
 
     // Starting after proof of life requires an explicit
     // completed proof-of-life method.
@@ -551,11 +544,9 @@ router.post(
       )
     }
 
-
     // For all earlier starting points, the journey records
     // the proof-of-life method when the step is completed.
     delete req.session.data.proofOfLifeMethod
-
 
     if (startPoint === 'proof-of-life') {
       return res.redirect(
@@ -593,7 +584,6 @@ router.post(
     )
   })
 
-
   // =====================================================
   // Journey entry points
   // =====================================================
@@ -606,7 +596,6 @@ router.post(
       baseUrl,
     })
   })
-
 
   // Display the start page for the review and change
   // information journey.
@@ -626,17 +615,6 @@ router.post(
     },
   )
 
-
-  // Temporary routing path while the journey is being
-  // developed. Users are redirected directly to the
-  // check answers page.
-  router.post('/start', function (req, res) {
-    res.redirect(
-      `${baseUrl}/check-answers`,
-    )
-  })
-
-
   // Users starting the zero-knowledge journey begin with
   // a clean set of answers.
   router.get('/zero-knowledge/start', function (req, res) {
@@ -647,7 +625,6 @@ router.post(
       baseUrl,
     })
   })
-
 
   // =====================================================
   // Verify identity (Variation 2)
@@ -667,7 +644,6 @@ router.post(
     },
   )
 
-
   // =====================================================
   // Power of attorney (Variation 2)
   // =====================================================
@@ -685,7 +661,6 @@ router.post(
       )
     },
   )
-
 
   // Allow hasLPA to be passed in the URL and stored in the
   // session for later pages.
@@ -707,7 +682,6 @@ router.post(
       )
     },
   )
-
 
   // Users who need to register a lasting power of attorney
   // are shown additional guidance before returning to the
@@ -731,7 +705,6 @@ router.post(
     },
   )
 
-
   // Users decide whether to continue with their life
   // certificate or leave the service to register a lasting
   // power of attorney first.
@@ -753,7 +726,6 @@ router.post(
       )
     },
   )
-
 
   // =====================================================
   // Contact preference (Variation 2)
