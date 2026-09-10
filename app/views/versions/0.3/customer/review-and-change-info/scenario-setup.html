@@ -407,20 +407,18 @@
               conditional: {
                 html: phoneMobileStatusHtml
               }
-            },
-            {
-              value: "contactPreference",
-              text: "Contact preference",
-              checked:
-                not scenarioConfigured
-                or (
-                  selectedContactDetails
-                  and "contactPreference" in selectedContactDetails
-                )
             }
           ]
         }) }}
-
+        {#
+            {
+              value: "contactPreference",
+              text: "Contact preference",
+              hint: { text: "DWP does not hold this information currently" },
+              disabled: true,
+              checked: false
+            }
+        #}
         <div class="govuk-button-group">
 
           {{ govukButton({
