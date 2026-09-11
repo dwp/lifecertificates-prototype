@@ -1,0 +1,559 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Scenario setup" %}
+
+
+{#
+  Work out whether a scenario has already been configured.
+
+  On the first visit, all optional customer information is
+  selected by default.
+
+  Once a scenario has been applied, the controls reflect the
+  values stored in session data.
+#}
+
+{% set scenarioConfigured =
+  data["customerScenarioConfigured"] == "true"
+%}
+
+
+{#
+  Choose where the configured journey starts.
+
+  The GOV.UK service information page is selected by default
+  so the customer follows the complete journey.
+#}
+
+{% set selectedJourneyStartPoint =
+  data["customerScenarioStartPoint"]
+  or "start"
+%}
+
+
+{#
+  Choose the proof-of-life outcome used when starting after
+  proof of life.
+
+  Camera is the default because it enables the summary-led
+  review of DWP-held information.
+#}
+
+{% set selectedProofOfLifeMethod =
+  data["customerScenarioProofOfLifeMethod"]
+  or "camera"
+%}
+
+
+{#
+  Choose the identity document used in the scenario.
+
+  A driver licence is selected by default because it matches
+  the complete customer fixture.
+#}
+
+{% set selectedIdentityDocumentType =
+  data["customerScenarioIdentityDocumentType"]
+  or "driver-licence"
+%}
+
+
+{#
+  Restore the driver licence contact-address scenario.
+
+  A matching contact address is selected by default because
+  it represents the complete customer fixture.
+#}
+
+{% set selectedDriverLicenceContactAddress =
+  data["customerScenarioDriverLicenceContactAddress"]
+  or "same-as-document"
+%}
+
+
+{#
+  Restore the passport contact-address scenario.
+
+  A held contact address is selected by default because DWP
+  will usually hold an address for an existing customer.
+#}
+
+{% set selectedPassportContactAddress =
+  data["customerScenarioPassportContactAddress"]
+  or "held"
+%}
+
+
+{#
+  Restore values previously selected in the payment details
+  checkbox group.
+#}
+
+{% set selectedPaymentDetails =
+  data["customerScenarioPaymentDetails"]
+%}
+
+
+{#
+  Restore values previously selected in the other contact
+  details checkbox group.
+#}
+
+{% set selectedContactDetails =
+  data["customerScenarioContactDetails"]
+%}
+
+
+{#
+  Restore the selected phone mobile status.
+#}
+
+{% set selectedPhoneMobileStatus =
+  data["customerScenarioPhoneMobileStatus"]
+  or "yes"
+%}
+
+
+{#
+  Restore values previously selected in the lasting power
+  of attorney checkbox group.
+#}
+
+{% set selectedPowerOfAttorney =
+  data["customerScenarioPowerOfAttorney"]
+%}
+
+
+{#
+  Define the proof-of-life choices shown when the tester
+  starts after proof of life.
+#}
+
+{% set proofOfLifeMethodHtml %}
+
+  {{ govukRadios({
+    name: "customerScenarioProofOfLifeMethod",
+    value: selectedProofOfLifeMethod,
+    classes: "govuk-radios--small",
+    fieldset: {
+      legend: {
+        text: "How was proof of life completed?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "camera",
+        text: "Using the camera"
+      },
+      {
+        value: "medical",
+        text: "Using a doctor's letter"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+
+{#
+  Define the contact-address scenarios available when the
+  customer uses a driver licence.
+
+  A driver licence provides an address, so the held contact
+  address can be the same, different or absent.
+#}
+
+{% set driverLicenceContactAddressHtml %}
+
+  {{ govukRadios({
+    idPrefix: "customer-scenario-driver-licence-contact-address",
+    name: "customerScenarioDriverLicenceContactAddress",
+    value: selectedDriverLicenceContactAddress,
+    classes: "govuk-radios--small",
+    fieldset: {
+      legend: {
+        text: "Does DWP already hold a contact address?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "same-as-document",
+        text: "Yes, same as driving licence"
+      },
+      {
+        value: "different-from-document",
+        text: "Yes, different to driving licence"
+      },
+      {
+        value: "none",
+        text: "No"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+
+{#
+  Define the contact-address scenarios available when the
+  customer uses a passport.
+
+  A passport does not provide an address, so DWP either
+  holds a contact address or does not.
+#}
+
+{% set passportContactAddressHtml %}
+
+  {{ govukRadios({
+    idPrefix: "customer-scenario-passport-contact-address",
+    name: "customerScenarioPassportContactAddress",
+    value: selectedPassportContactAddress,
+    classes: "govuk-radios--small",
+    fieldset: {
+      legend: {
+        text: "Does DWP already hold a contact address?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "held",
+        text: "Yes"
+      },
+      {
+        value: "none",
+        text: "No"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+
+{#
+  Define the mobile-status question shown when DWP holds a
+  phone number.
+#}
+
+{% set phoneMobileStatusHtml %}
+
+  {{ govukRadios({
+    name: "customerScenarioPhoneMobileStatus",
+    classes: "govuk-radios--small",
+    value: selectedPhoneMobileStatus,
+    fieldset: {
+      legend: {
+        text: "Is it a mobile number?",
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    items: [
+      {
+        value: "yes",
+        text: "Yes"
+      },
+      {
+        value: "no",
+        text: "No"
+      },
+      {
+        value: "unknown",
+        text: "Unknown"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+
+{% block pageTitle %}
+  {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+
+{% block containerStart %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      {% call govukInsetText() %}
+        <p class="govuk-body">
+          This configuration page is not part of the customer journey.
+        </p>
+        <p class="govuk-body">
+          This journey shows the customer information held by DWP.
+          Use this page to control which information is available.
+        </p>
+        <p class="govuk-body">
+          All customer data is fictional.
+        </p>
+      {% endcall %}
+
+        <form method="post" action="setup-scenario">
+
+        <input type="hidden" name="customerScenarioConfigured" value="true">
+
+
+        {#
+          Journey starting point
+        #}
+
+        {{ govukRadios({
+          name: "customerScenarioStartPoint",
+          value: selectedJourneyStartPoint,
+          hint: {
+            text: "Choose 'After proof of life' to skip ahead to the summary."
+          },
+          fieldset: {
+            legend: {
+              text: "Where do you want to start the journey?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "start",
+              text: "Arriving on GOV.UK 'Before you start' page"
+            },
+            {
+              value: "document-scanning",
+              text: "Scanning identity document"
+            },
+            {
+              value: "proof-of-life",
+              text: "Providing proof of life"
+            },
+            {
+              value: "check-answers",
+              text: "After providing proof of life",
+              conditional: {
+                html: proofOfLifeMethodHtml
+              }
+            }
+          ]
+        }) }}
+
+
+        <p class="govuk-body">
+          Choose the simulated identity document presented by the customer and the information DWP holds about them.
+        </p>
+
+
+        {#
+          Identity document and contact-address relationship
+
+          The contact-address choices are specific to the
+          selected document type.
+
+          Separate submitted field names avoid contradictory
+          values when JavaScript is unavailable.
+        #}
+
+        {{ govukRadios({
+          name: "customerScenarioIdentityDocumentType",
+          value: selectedIdentityDocumentType,
+          fieldset: {
+            legend: {
+              text: "Identity document",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "driver-licence",
+              text: "Driver licence",
+              hint: {
+                text: "Includes name, date of birth and address."
+              },
+              conditional: {
+                html: driverLicenceContactAddressHtml
+              }
+            },
+            {
+              value: "passport",
+              text: "Passport",
+              hint: {
+                text: "Includes name and date of birth."
+              },
+              conditional: {
+                html: passportContactAddressHtml
+              }
+            }
+          ]
+        }) }}
+
+
+        {#
+          Information shown after camera-based proof of life
+        #}
+
+        <h2 class="govuk-heading-m">
+          Other information held by DWP
+        </h2>
+
+        <p class="govuk-body">
+          Choose what other information DWP holds about the customer.
+          It is only shown when they prove life using the camera.
+        </p>
+
+
+        {#
+          customer.paymentDetails
+        #}
+
+        {{ govukCheckboxes({
+          name: "customerScenarioPaymentDetails",
+          fieldset: {
+            legend: {
+              text: "Payment details",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "ukBankAccount",
+              text: "UK bank account",
+              hint: {
+                text: "Name on the account, account number and sort code."
+              },
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedPaymentDetails
+                  and "ukBankAccount"
+                    in selectedPaymentDetails
+                )
+            },
+            {
+              value: "IBAN",
+              text: "International bank account number (IBAN)",
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedPaymentDetails
+                  and "IBAN"
+                    in selectedPaymentDetails
+                )
+            }
+          ]
+        }) }}
+
+
+        {#
+          customer.powerOfAttorney
+        #}
+
+        {{ govukCheckboxes({
+          name: "customerScenarioPowerOfAttorney",
+          fieldset: {
+            legend: {
+              text: "Power of attorney",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "registeredLPAs",
+              text: "Customer has one or more registered attorneys",
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedPowerOfAttorney
+                  and "registeredLPAs"
+                    in selectedPowerOfAttorney
+                )
+            }
+          ]
+        }) }}
+
+
+        {#
+          customer.contactDetails
+
+          The contact address is configured above because its
+          available states depend on the identity document.
+
+          This section controls the remaining contact details.
+        #}
+
+        {{ govukCheckboxes({
+          name: "customerScenarioContactDetails",
+          fieldset: {
+            legend: {
+              text: "Other contact details",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "emailAddress",
+              text: "Email address",
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedContactDetails
+                  and "emailAddress"
+                    in selectedContactDetails
+                )
+            },
+            {
+              value: "phone",
+              text: "Phone number",
+              checked:
+                not scenarioConfigured
+                or (
+                  selectedContactDetails
+                  and "phone"
+                    in selectedContactDetails
+                ),
+              conditional: {
+                html: phoneMobileStatusHtml
+              }
+            }
+          ]
+        }) }}
+
+
+        <div class="govuk-button-group">
+
+          {{ govukButton({
+            text: "Continue"
+          }) }}
+
+          {{ govukButton({
+            text: "Reset",
+            classes: "govuk-button--secondary",
+            href: "setup-scenario/reset"
+          }) }}
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

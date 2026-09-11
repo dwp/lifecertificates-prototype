@@ -24,6 +24,7 @@ module.exports = function createCustomerRouter({ version }) {
   const proofOfLifeStartPage =
     'verify-identity'
 
+
   // =====================================================
   // Set up the mock customer data
   // =====================================================
@@ -56,6 +57,7 @@ module.exports = function createCustomerRouter({ version }) {
     return [value]
   }
 
+
   // Return a supported journey starting point.
   //
   // Start is used by default so the customer follows the
@@ -77,6 +79,7 @@ module.exports = function createCustomerRouter({ version }) {
     return 'start'
   }
 
+
   // Return a supported identity-document type.
   //
   // A driver licence is used by default if the submitted
@@ -90,6 +93,7 @@ module.exports = function createCustomerRouter({ version }) {
     return 'driver-licence'
   }
 
+
   // Return a supported proof-of-life method.
   //
   // Camera is used by default when starting after proof of
@@ -102,6 +106,39 @@ module.exports = function createCustomerRouter({ version }) {
 
     return 'camera'
   }
+
+
+  // Return a supported driver licence contact-address state.
+  //
+  // A matching address is used by default because it
+  // represents the complete customer scenario.
+  function normaliseDriverLicenceContactAddress(value) {
+
+    if (value === 'different-from-document') {
+      return 'different-from-document'
+    }
+
+    if (value === 'none') {
+      return 'none'
+    }
+
+    return 'same-as-document'
+  }
+
+
+  // Return a supported passport contact-address state.
+  //
+  // A held contact address is used by default because DWP
+  // will usually hold one for an existing customer.
+  function normalisePassportContactAddress(value) {
+
+    if (value === 'none') {
+      return 'none'
+    }
+
+    return 'held'
+  }
+
 
   // Return a supported mobile-phone status.
   //
@@ -120,6 +157,7 @@ module.exports = function createCustomerRouter({ version }) {
     return 'yes'
   }
 
+
   // Create a new copy of the complete customer fixture.
   //
   // The fixture contains only plain objects, arrays and
@@ -131,11 +169,13 @@ module.exports = function createCustomerRouter({ version }) {
     )
   }
 
+
   // Return whether a property has been enabled in one of
   // the scenario checkbox groups.
   function includesProperty(group, property) {
     return asArray(group).includes(property)
   }
+
 
   // Return an empty address while preserving the structure
   // expected by the Nunjucks templates.
@@ -149,6 +189,7 @@ module.exports = function createCustomerRouter({ version }) {
       country: '',
     }
   }
+
 
   // Apply the configured scenario to a copy of the complete
   // customer fixture.
@@ -170,7 +211,7 @@ module.exports = function createCustomerRouter({ version }) {
     // Driver licence:
     // - name
     // - date of birth
-    // - registered address
+    // - address
     //
     // Passport:
     // - name
@@ -184,6 +225,56 @@ module.exports = function createCustomerRouter({ version }) {
     } else {
       customerData.identityDocument.type = 'Driver licence'
     }
+
+
+    // customer.contactDetails.address
+    //
+    // The available contact-address states depend on the
+    // identity document.
+    //
+    // Driver licence:
+    //
+    // same-as-document:
+    // - copy the driving licence address into the contact
+    //   address held by DWP
+    //
+    // different-from-document:
+    // - retain the contact address from the customer fixture
+    //
+    // none:
+    // - remove the contact address held by DWP
+    //
+    // Passport:
+    //
+    // held:
+    // - retain the contact address from the customer fixture
+    //
+    // none:
+    // - remove the contact address held by DWP
+
+    if (scenario.identityDocumentType === 'passport') {
+
+      if (scenario.contactAddressState === 'none') {
+        customerData.contactDetails.address =
+          emptyAddress()
+      }
+
+    } else if (
+      scenario.contactAddressState === 'same-as-document'
+    ) {
+      customerData.contactDetails.address =
+        cloneCustomer(
+          customerData.identityDocument
+            .extractedDetails
+            .address,
+        )
+    } else if (
+      scenario.contactAddressState === 'none'
+    ) {
+      customerData.contactDetails.address =
+        emptyAddress()
+    }
+
 
     // customer.paymentDetails
     //
@@ -222,16 +313,6 @@ module.exports = function createCustomerRouter({ version }) {
     if (
       !includesProperty(
         scenario.contactDetails,
-        'address',
-      )
-    ) {
-      customerData.contactDetails.address =
-        emptyAddress()
-    }
-
-    if (
-      !includesProperty(
-        scenario.contactDetails,
         'emailAddress',
       )
     ) {
@@ -261,14 +342,12 @@ module.exports = function createCustomerRouter({ version }) {
       customerData.contactDetails.phone.isMobile = true
     }
 
-    if (
-      !includesProperty(
-        scenario.contactDetails,
-        'contactPreference',
-      )
-    ) {
-      customerData.contactDetails.contactPreference = ''
-    }
+
+    // Contact preference is not held by DWP.
+    //
+    // It is selected by the customer later in the journey.
+    customerData.contactDetails.contactPreference = ''
+
 
     // customer.powerOfAttorney
     //
@@ -287,6 +366,7 @@ module.exports = function createCustomerRouter({ version }) {
       customerData.powerOfAttorney.registeredLPAs = []
     }
 
+
     // customer.doctor
     //
     // Doctor information is not configured at field level.
@@ -295,6 +375,7 @@ module.exports = function createCustomerRouter({ version }) {
 
     return customerData
   }
+
 
   // Clear answers entered during an earlier test.
   //
@@ -307,6 +388,10 @@ module.exports = function createCustomerRouter({ version }) {
     const keys = [
       // Proof of life
       'proofOfLifeMethod',
+
+      // Deprecated proof-of-life values
+      'proofOfLifeVerifiedOnline',
+      'medicalExemption',
 
       // Identity information
       'fullName',
@@ -373,6 +458,7 @@ module.exports = function createCustomerRouter({ version }) {
     })
   }
 
+
   // Remove the configured customer scenario.
   //
   // This restores the complete canonical customer fixture
@@ -385,6 +471,13 @@ module.exports = function createCustomerRouter({ version }) {
     delete data.customerScenarioStartPoint
     delete data.customerScenarioProofOfLifeMethod
     delete data.customerScenarioIdentityDocumentType
+
+    delete data
+      .customerScenarioDriverLicenceContactAddress
+
+    delete data
+      .customerScenarioPassportContactAddress
+
     delete data.customerScenarioPaymentDetails
     delete data.customerScenarioContactDetails
     delete data.customerScenarioPhoneMobileStatus
@@ -396,6 +489,7 @@ module.exports = function createCustomerRouter({ version }) {
     delete data.customerScenarioIdentityDocument
     delete data.customerScenarioPhoneDetails
   }
+
 
   // Create the customer object used by the current request.
   //
@@ -420,169 +514,204 @@ module.exports = function createCustomerRouter({ version }) {
     next()
   })
 
+
   // =====================================================
-  // Customer data scenario setup
+  // Customer scenario setup
   // =====================================================
   //
-  // Controls used to test different combinations of
-  // customer information throughout the prototype.
+  // Controls used to test different customer records and
+  // journey starting points.
 
-  // Display the prototype data controls.
-  router.get('/review-and-change-info/scenario-setup', function (req, res) {
-    res.render(`${viewPath}/review-and-change-info/scenario-setup`, {
-      version,
-      baseUrl,
-    })
-  })
+  // Display the scenario setup page.
+  router.get(
+    '/review-and-change-info/setup-scenario',
+    function (req, res) {
+      res.render(
+        `${viewPath}/review-and-change-info/setup-scenario`,
+        {
+          version,
+          baseUrl,
+        },
+      )
+    },
+  )
 
-  // Apply the selected customer-data scenario.
-  //
-  // The controls configure:
-  //
-  // - the identity document scanned by the customer
-  // - the information available if proof of life is
-  //   completed using the camera
-  // - registered lasting powers of attorney
-  //
-  // The journey itself determines whether proof of life is
-  // completed using the camera or supported by medical
-  // evidence.
-// Apply the selected customer scenario.
-router.post(
-  '/review-and-change-info/scenario-setup',
-  function (req, res) {
 
-    const startPoint =
-      normaliseJourneyStartPoint(
-        req.body.customerScenarioStartPoint,
+  // Apply the selected customer scenario.
+  router.post(
+    '/review-and-change-info/setup-scenario',
+    function (req, res) {
+
+      const startPoint =
+        normaliseJourneyStartPoint(
+          req.body.customerScenarioStartPoint,
+        )
+
+      const identityDocumentType =
+        normaliseIdentityDocumentType(
+          req.body.customerScenarioIdentityDocumentType,
+        )
+
+      const driverLicenceContactAddress =
+        normaliseDriverLicenceContactAddress(
+          req.body
+            .customerScenarioDriverLicenceContactAddress,
+        )
+
+      const passportContactAddress =
+        normalisePassportContactAddress(
+          req.body
+            .customerScenarioPassportContactAddress,
+        )
+
+      const contactAddressState =
+        identityDocumentType === 'passport'
+          ? passportContactAddress
+          : driverLicenceContactAddress
+
+      const paymentDetails = asArray(
+        req.body.customerScenarioPaymentDetails,
       )
 
-    const identityDocumentType =
-      normaliseIdentityDocumentType(
-        req.body.customerScenarioIdentityDocumentType,
+      const contactDetails = asArray(
+        req.body.customerScenarioContactDetails,
       )
 
-    const paymentDetails = asArray(
-      req.body.customerScenarioPaymentDetails,
-    )
+      const phoneMobileStatus =
+        normalisePhoneMobileStatus(
+          req.body.customerScenarioPhoneMobileStatus,
+        )
 
-    const contactDetails = asArray(
-      req.body.customerScenarioContactDetails,
-    )
-
-    const phoneMobileStatus =
-      normalisePhoneMobileStatus(
-        req.body.customerScenarioPhoneMobileStatus,
+      const powerOfAttorney = asArray(
+        req.body.customerScenarioPowerOfAttorney,
       )
 
-    const powerOfAttorney = asArray(
-      req.body.customerScenarioPowerOfAttorney,
-    )
 
-    // Only use the selected proof-of-life method when the
-    // journey starts after proof of life.
-    const proofOfLifeMethod =
-      startPoint === 'check-answers'
-        ? normaliseProofOfLifeMethod(
-            req.body.customerScenarioProofOfLifeMethod,
-          )
-        : null
+      // Only use the selected proof-of-life method when the
+      // journey starts after proof of life.
+      const proofOfLifeMethod =
+        startPoint === 'check-answers'
+          ? normaliseProofOfLifeMethod(
+              req.body.customerScenarioProofOfLifeMethod,
+            )
+          : null
 
-    // Store the values used to restore the setup page.
-    req.session.data.customerScenarioConfigured = 'true'
 
-    req.session.data.customerScenarioStartPoint =
-      startPoint
+      // Store the values used to restore the setup page.
+      req.session.data.customerScenarioConfigured = 'true'
 
-    req.session.data.customerScenarioIdentityDocumentType =
-      identityDocumentType
+      req.session.data.customerScenarioStartPoint =
+        startPoint
 
-    req.session.data.customerScenarioPaymentDetails =
-      paymentDetails
+      req.session.data.customerScenarioIdentityDocumentType =
+        identityDocumentType
 
-    req.session.data.customerScenarioContactDetails =
-      contactDetails
+      req.session.data
+        .customerScenarioDriverLicenceContactAddress =
+          driverLicenceContactAddress
 
-    req.session.data.customerScenarioPhoneMobileStatus =
-      phoneMobileStatus
+      req.session.data
+        .customerScenarioPassportContactAddress =
+          passportContactAddress
 
-    req.session.data.customerScenarioPowerOfAttorney =
-      powerOfAttorney
+      req.session.data.customerScenarioPaymentDetails =
+        paymentDetails
 
-    // Retain the scenario proof-of-life method only when
-    // starting after proof of life.
-    if (proofOfLifeMethod) {
-      req.session.data.customerScenarioProofOfLifeMethod =
-        proofOfLifeMethod
-    } else {
-      delete req.session.data
-        .customerScenarioProofOfLifeMethod
-    }
+      req.session.data.customerScenarioContactDetails =
+        contactDetails
 
-    // Store the customer-data scenario.
-    req.session.data.customerScenario = {
-      identityDocumentType,
-      paymentDetails,
-      contactDetails,
-      phoneMobileStatus,
-      powerOfAttorney,
-    }
+      req.session.data.customerScenarioPhoneMobileStatus =
+        phoneMobileStatus
 
-    // Clear answers and outcomes from previous tests.
-    clearCustomerJourneyData(
-      req.session.data,
-    )
+      req.session.data.customerScenarioPowerOfAttorney =
+        powerOfAttorney
 
-    // Starting after proof of life requires an explicit
-    // completed proof-of-life method.
-    if (startPoint === 'check-answers') {
-      req.session.data.proofOfLifeMethod =
-        proofOfLifeMethod
+
+      // Retain the scenario proof-of-life method only when
+      // starting after proof of life.
+      if (proofOfLifeMethod) {
+        req.session.data.customerScenarioProofOfLifeMethod =
+          proofOfLifeMethod
+      } else {
+        delete req.session.data
+          .customerScenarioProofOfLifeMethod
+      }
+
+
+      // Store the customer-data scenario.
+      req.session.data.customerScenario = {
+        identityDocumentType,
+        contactAddressState,
+        paymentDetails,
+        contactDetails,
+        phoneMobileStatus,
+        powerOfAttorney,
+      }
+
+
+      // Clear answers and outcomes from previous tests.
+      clearCustomerJourneyData(
+        req.session.data,
+      )
+
+
+      // Starting after proof of life requires an explicit
+      // completed proof-of-life method.
+      if (startPoint === 'check-answers') {
+        req.session.data.proofOfLifeMethod =
+          proofOfLifeMethod
+
+        return res.redirect(
+          `${baseUrl}/review-and-change-info/check-answers`,
+        )
+      }
+
+
+      // For all earlier starting points, the journey records
+      // the proof-of-life method when the step is completed.
+      delete req.session.data.proofOfLifeMethod
+
+
+      if (startPoint === 'proof-of-life') {
+        return res.redirect(
+          `${baseUrl}/review-and-change-info/${proofOfLifeStartPage}`,
+        )
+      }
+
+
+      if (startPoint === 'document-scanning') {
+        return res.redirect(
+          `${baseUrl}/review-and-change-info/${documentScanningStartPage}`,
+        )
+      }
+
 
       return res.redirect(
-        `${baseUrl}/review-and-change-info/check-answers`,
+        `${baseUrl}/review-and-change-info/start`,
       )
-    }
+    },
+  )
 
-    // For all earlier starting points, the journey records
-    // the proof-of-life method when the step is completed.
-    delete req.session.data.proofOfLifeMethod
-
-    if (startPoint === 'proof-of-life') {
-      return res.redirect(
-        `${baseUrl}/review-and-change-info/${proofOfLifeStartPage}`,
-      )
-    }
-
-
-    if (startPoint === 'document-scanning') {
-      return res.redirect(
-        `${baseUrl}/review-and-change-info/${documentScanningStartPage}`,
-      )
-    }
-
-
-    return res.redirect(
-      `${baseUrl}/review-and-change-info/start`,
-    )
-  },
-)
 
   // Reset the controls and restore the complete customer.
-  router.get('/review-and-change-info/scenario-setup/reset', function (req, res) {
+  router.get(
+    '/review-and-change-info/setup-scenario/reset',
+    function (req, res) {
 
-    clearCustomerScenario(
-      req.session.data,
-    )
+      clearCustomerScenario(
+        req.session.data,
+      )
 
-    clearCustomerJourneyData(
-      req.session.data,
-    )
+      clearCustomerJourneyData(
+        req.session.data,
+      )
 
-    return res.redirect(
-      `${baseUrl}/review-and-change-info/scenario-setup`,
-    )
-  })
+      return res.redirect(
+        `${baseUrl}/review-and-change-info/setup-scenario`,
+      )
+    },
+  )
+
 
   // =====================================================
   // Journey entry points
@@ -596,6 +725,7 @@ router.post(
       baseUrl,
     })
   })
+
 
   // Display the start page for the review and change
   // information journey.
@@ -615,6 +745,7 @@ router.post(
     },
   )
 
+
   // Users starting the zero-knowledge journey begin with
   // a clean set of answers.
   router.get('/zero-knowledge/start', function (req, res) {
@@ -626,6 +757,7 @@ router.post(
     })
   })
 
+
   // =====================================================
   // Verify identity (Variation 2)
   // =====================================================
@@ -633,8 +765,8 @@ router.post(
   // proofOfLifeMethod is set to "camera" when proof of
   // life is completed using the camera.
   //
-  // The value is set to "medical" when the customer follows the
-  // medical-evidence route.
+  // The value is set to "medical" when the customer follows
+  // the medical-evidence route.
   router.post(
     '/review-and-change-info/verify-identity',
     function (req, res) {
@@ -643,6 +775,7 @@ router.post(
       )
     },
   )
+
 
   // =====================================================
   // Power of attorney (Variation 2)
@@ -661,6 +794,7 @@ router.post(
       )
     },
   )
+
 
   // Allow hasLPA to be passed in the URL and stored in the
   // session for later pages.
@@ -682,6 +816,7 @@ router.post(
       )
     },
   )
+
 
   // Users who need to register a lasting power of attorney
   // are shown additional guidance before returning to the
@@ -705,6 +840,7 @@ router.post(
     },
   )
 
+
   // Users decide whether to continue with their life
   // certificate or leave the service to register a lasting
   // power of attorney first.
@@ -726,6 +862,7 @@ router.post(
       )
     },
   )
+
 
   // =====================================================
   // Contact preference (Variation 2)

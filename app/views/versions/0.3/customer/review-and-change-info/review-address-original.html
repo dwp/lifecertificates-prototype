@@ -50,8 +50,12 @@
 {#
   Resolve the customer's current contact address.
 
-  Prefer information updated during the current journey,
-  then fall back to the address held in the customer record.
+  Prefer contact-address information updated during the
+  current journey, then fall back to the address held in
+  the customer record.
+
+  These values are kept separate from any new address
+  entered using the "Use a different address" option.
 #}
 
 {% set contactAddressLine1 =
@@ -117,7 +121,8 @@
   Compare the identity-document address with the current
   contact address.
 
-  Ignore capitalisation and surrounding whitespace.
+  The comparison ignores capitalisation and surrounding
+  whitespace but otherwise requires each field to match.
 #}
 
 {% set addressesMatch =
@@ -139,32 +144,41 @@
 
 
 {#
-  Restore the selected address source.
+  Restore the customer's previously selected address source.
 
-  Where two different addresses exist, leave the radios
-  unselected on the first visit.
-
-  Where only the identity-document address exists, select
-  it by default.
-
-  Other states display address fields directly and use a
-  hidden address-source value.
+  When two different addresses exist, leave the radios
+  unselected on the first visit so the customer makes an
+  explicit choice.
 #}
 
-{% set selectedAddressSource =
-  data["contactAddressSource"]
-%}
+{% set selectedAddressSource = data["contactAddressSource"] %}
 
-{% if not selectedAddressSource and hasIdentityAddress and not hasContactAddress %}
-  {% set selectedAddressSource = "identity-document" %}
+{% if not selectedAddressSource %}
+
+  {% if hasIdentityAddress and hasContactAddress and addressesMatch %}
+    {% set selectedAddressSource = "contact-address" %}
+
+  {% elif hasContactAddress and not hasIdentityAddress %}
+    {% set selectedAddressSource = "contact-address" %}
+
+  {% elif hasIdentityAddress and not hasContactAddress %}
+    {% set selectedAddressSource = "identity-document" %}
+
+  {% elif not hasIdentityAddress and not hasContactAddress %}
+    {% set selectedAddressSource = "different-address" %}
+  {% endif %}
+
 {% endif %}
 
 
 {#
-  Restore a wholly new address.
+  Resolve a wholly new address.
 
-  These fields are used only when no contact address exists
-  and the customer chooses to enter a different address.
+  These fields are separate from the current contact address.
+
+  They start empty when the customer first chooses to use a
+  different address. If they previously submitted a different
+  address and return to this page, restore their answers.
 #}
 
 {% set newAddressLine1 = "" %}
@@ -176,55 +190,39 @@
 
 {% if selectedAddressSource == "different-address" %}
 
-  {% set newAddressLine1 =
-    data["newAddressLine1"]
-  %}
-
-  {% set newAddressLine2 =
-    data["newAddressLine2"]
-  %}
-
-  {% set newAddressTown =
-    data["newAddressTown"]
-  %}
-
-  {% set newAddressCounty =
-    data["newAddressCounty"]
-  %}
-
-  {% set newAddressPostcode =
-    data["newAddressPostcode"]
-  %}
-
-  {% set newAddressCountry =
-    data["newAddressCountry"]
-  %}
+  {% set newAddressLine1 = data["newAddressLine1"] %}
+  {% set newAddressLine2 = data["newAddressLine2"] %}
+  {% set newAddressTown = data["newAddressTown"] %}
+  {% set newAddressCounty = data["newAddressCounty"] %}
+  {% set newAddressPostcode = data["newAddressPostcode"] %}
+  {% set newAddressCountry = data["newAddressCountry"] %}
 
 {% endif %}
 
 
 {#
-  Set the page heading and button text.
+  Set the page heading and button content.
 
-  A contact address is being changed when one is already
-  held. Otherwise, one is being added.
+  Follow the same naming pattern as the email and phone
+  review pages.
 #}
 
-{% if hasContactAddress %}
+{% if hasIdentityAddress or hasContactAddress %}
 
-  {% set pageName = "Change your contact address" %}
-  {% set buttonText = "Save changes" %}
+  {% set pageName = "Contacting you by post" %}
+  {% set buttonText = "Continue" %}
 
 {% else %}
 
-  {% set pageName = "Add a contact address" %}
+  {% set pageName = "Add an address" %}
   {% set buttonText = "Add address" %}
 
 {% endif %}
 
 
 {#
-  Define identity-document content.
+  Define content relating to the customer's identity
+  document.
 #}
 
 {% set identityDocumentName =
@@ -237,20 +235,102 @@
 
 
 {#
-  Define fields for editing the current contact address.
+  Define the fields used to enter a wholly new address.
 
-  The fields are populated with the address held by DWP or
-  values entered earlier in the current journey.
+  These fields use newAddress names and never fall back to
+  either the contact address or identity-document address.
+#}
 
-  The customer can leave the address unchanged, correct it
-  or replace it completely.
+{% set newAddressFieldsHtml %}
+
+  {% call govukFieldset({
+    legend: {
+      text: "Enter a different address",
+      classes: "govuk-fieldset__legend--m"
+    }
+  }) %}
+
+    {{ govukInput({
+      label: {
+        text: "Address line 1"
+      },
+      id: "new-address-line-1",
+      name: "newAddressLine1",
+      autocomplete: "address-line1",
+      value: newAddressLine1
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Address line 2 (optional)"
+      },
+      id: "new-address-line-2",
+      name: "newAddressLine2",
+      autocomplete: "address-line2",
+      value: newAddressLine2
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Town or city"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "new-address-town",
+      name: "newAddressTown",
+      autocomplete: "address-level2",
+      value: newAddressTown
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "County, state or province (optional)"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "new-address-county",
+      name: "newAddressCounty",
+      autocomplete: "address-level1",
+      value: newAddressCounty
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Postcode or postal code"
+      },
+      classes: "govuk-input--width-10",
+      id: "new-address-postcode",
+      name: "newAddressPostcode",
+      autocomplete: "postal-code",
+      value: newAddressPostcode
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Country"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "new-address-country",
+      name: "newAddressCountry",
+      autocomplete: "country-name",
+      value: newAddressCountry
+    }) }}
+
+  {% endcall %}
+
+{% endset %}
+
+
+{#
+  Define editable fields for the current contact address.
+
+  These are used only when no identity-document address is
+  available and the page is acting as a normal review page.
 #}
 
 {% set contactAddressFieldsHtml %}
 
   {% call govukFieldset({
     legend: {
-      text: "What address should we use to write to you?",
+      text: "Is your address correct?",
       classes: "govuk-fieldset__legend--m"
     }
   }) %}
@@ -325,100 +405,17 @@
 
 
 {#
-  Define fields for entering a new address.
+  Define address fields for the add-address state.
 
-  These fields are blank on the first visit and do not
-  fall back to either known address.
-#}
-
-{% set newAddressFieldsHtml %}
-
-  {% call govukFieldset({
-    legend: {
-      text: "Enter a different address",
-      classes: "govuk-fieldset__legend--s"
-    }
-  }) %}
-
-    {{ govukInput({
-      label: {
-        text: "Address line 1"
-      },
-      id: "new-address-line-1",
-      name: "newAddressLine1",
-      autocomplete: "address-line1",
-      value: newAddressLine1
-    }) }}
-
-    {{ govukInput({
-      label: {
-        text: "Address line 2 (optional)"
-      },
-      id: "new-address-line-2",
-      name: "newAddressLine2",
-      autocomplete: "address-line2",
-      value: newAddressLine2
-    }) }}
-
-    {{ govukInput({
-      label: {
-        text: "Town or city"
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "new-address-town",
-      name: "newAddressTown",
-      autocomplete: "address-level2",
-      value: newAddressTown
-    }) }}
-
-    {{ govukInput({
-      label: {
-        text: "County, state or province (optional)"
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "new-address-county",
-      name: "newAddressCounty",
-      autocomplete: "address-level1",
-      value: newAddressCounty
-    }) }}
-
-    {{ govukInput({
-      label: {
-        text: "Postcode or postal code"
-      },
-      classes: "govuk-input--width-10",
-      id: "new-address-postcode",
-      name: "newAddressPostcode",
-      autocomplete: "postal-code",
-      value: newAddressPostcode
-    }) }}
-
-    {{ govukInput({
-      label: {
-        text: "Country"
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "new-address-country",
-      name: "newAddressCountry",
-      autocomplete: "country-name",
-      value: newAddressCountry
-    }) }}
-
-  {% endcall %}
-
-{% endset %}
-
-
-{#
-  Define blank fields for adding a contact address where
-  neither DWP nor the identity document provides one.
+  These use newAddress fields because the customer does not
+  have an existing contact address to update.
 #}
 
 {% set addAddressFieldsHtml %}
 
   {% call govukFieldset({
     legend: {
-      text: "What is your contact address?",
+      text: "What is your address?",
       classes: "govuk-fieldset__legend--m"
     }
   }) %}
@@ -520,33 +517,19 @@
 
 
         {#
-          Both addresses exist but are different.
+          Both addresses exist and match.
 
-          Ask whether the customer wants to use the address
-          from their identity document or use or change the
-          contact address held by DWP.
-
-          Editing the populated contact-address fields allows
-          the customer to correct or replace that address.
+          Show the address once and allow the customer to
+          use it or enter a wholly new address.
         #}
 
-        {% if hasIdentityAddress and hasContactAddress and not addressesMatch %}
+        {% if hasIdentityAddress and hasContactAddress and addressesMatch %}
 
           <p class="govuk-body">
-            You previously told us to use this address when we write to you:
+            We may need to write to you about your pension payments. The
+            contact address we hold matches the address from your
+            {{ identityDocumentName }}.
           </p>
-
-          <div class="govuk-inset-text">
-            {{ contactAddressHtml | safe }}
-          </div>
-
-          <p class="govuk-body">
-            The address on your {{ identityDocumentName }} is:
-          </p>
-
-          <div class="govuk-inset-text">
-            {{ identityAddressHtml | safe }}
-          </div>
 
           {{ govukRadios({
             idPrefix: "contact-address-source",
@@ -554,20 +537,74 @@
             value: selectedAddressSource,
             fieldset: {
               legend: {
-                text: "Which address should we use to write to you?",
+                text: "Which address do you want us to use?",
                 classes: "govuk-fieldset__legend--m"
               }
             },
             items: [
               {
-                value: "identity-document",
-                text: identityAddressOptionText
+                value: "contact-address",
+                text: "Use this address",
+                hint: {
+                  html: contactAddressHtml
+                }
               },
               {
-                value: "contact-address",
-                text: "Use or change my current contact address",
+                value: "different-address",
+                text: "Use a different address",
                 conditional: {
-                  html: contactAddressFieldsHtml
+                  html: newAddressFieldsHtml
+                }
+              }
+            ]
+          }) }}
+
+
+        {#
+          Both addresses exist but differ.
+
+          Present both existing addresses as separate choices.
+          "Use a different address" always reveals fields for
+          a wholly new address.
+        #}
+
+        {% elif hasIdentityAddress and hasContactAddress %}
+
+          <p class="govuk-body">
+            We may need to write to you about your pension payments. Choose
+            which address you want us to use, or add a different one.
+          </p>
+
+          {{ govukRadios({
+            idPrefix: "contact-address-source",
+            name: "contactAddressSource",
+            value: selectedAddressSource,
+            fieldset: {
+              legend: {
+                text: "Which address do you want us to use?",
+                classes: "govuk-fieldset__legend--m"
+              }
+            },
+            items: [
+              {
+                value: "contact-address",
+                text: "Use my current contact address",
+                hint: {
+                  html: contactAddressHtml
+                }
+              },
+              {
+                value: "identity-document",
+                text: identityAddressOptionText,
+                hint: {
+                  html: identityAddressHtml
+                }
+              },
+              {
+                value: "different-address",
+                text: "Use a different address",
+                conditional: {
+                  html: newAddressFieldsHtml
                 }
               }
             ]
@@ -577,14 +614,16 @@
         {#
           Only the identity-document address exists.
 
-          Allow the customer to use the document address or
-          enter a wholly new contact address.
+          Allow the customer to use it or enter a wholly
+          new address.
         #}
 
-        {% elif hasIdentityAddress and not hasContactAddress %}
+        {% elif hasIdentityAddress %}
 
           <p class="govuk-body">
-            We may need to write to you about your pension payments.
+            We may need to write to you about your pension payments. You can
+            use the address from your {{ identityDocumentName }} or add a
+            different address.
           </p>
 
           {{ govukRadios({
@@ -593,7 +632,7 @@
             value: selectedAddressSource,
             fieldset: {
               legend: {
-                text: "Which address should we use to write to you?",
+                text: "Which address do you want us to use?",
                 classes: "govuk-fieldset__legend--m"
               }
             },
@@ -617,34 +656,32 @@
 
 
         {#
-          A contact address exists and either:
+          Only the current contact address exists.
 
-          - there is no identity-document address
-          - the identity-document address matches it
-
-          Show the populated fields directly. The customer
-          has already selected Change on check answers.
-
-          They can leave the address unchanged, correct it or
-          replace it completely.
+          Follow the standard review pattern used by the
+          email and phone pages.
         #}
 
         {% elif hasContactAddress %}
 
           <p class="govuk-body">
-            Update your address if it is incorrect or has changed.
+            We may need to write to you about your pension payments. Check
+            your address is correct and update it if it has changed.
           </p>
 
-          <input type="hidden" name="contactAddressSource" value="contact-address">
+          <input
+            type="hidden"
+            name="contactAddressSource"
+            value="contact-address"
+          >
 
           {{ contactAddressFieldsHtml | safe }}
 
 
         {#
-          Neither source provides an address.
+          Neither address exists.
 
-          Show blank fields so the customer can add a contact
-          address.
+          Add a wholly new address using the newAddress fields.
         #}
 
         {% else %}
@@ -654,7 +691,11 @@
             payments.
           </p>
 
-          <input type="hidden" name="contactAddressSource" value="different-address">
+          <input
+            type="hidden"
+            name="contactAddressSource"
+            value="different-address"
+          >
 
           {{ addAddressFieldsHtml | safe }}
 
@@ -666,7 +707,6 @@
         }) }}
 
       </form>
-
     </div>
   </div>
 

@@ -35,8 +35,8 @@ module.exports = {
                 'Customers provide information using blank fields without seeing information held by DWP.',
             },
             {
-              href: '/customer/review-and-change-info/scenario-setup',
-              title: 'Variation 2: review and change information (with scenario setup)',
+              href: '/customer/review-and-change-info/setup-scenario',
+              title: 'Variation 2: review customer info (with scenario setup)',
               description:
                 'When they prove life using the camera, customers can review, change or add information held by DWP.',
             },
