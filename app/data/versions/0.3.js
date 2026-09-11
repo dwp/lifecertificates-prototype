@@ -1,4 +1,5 @@
 module.exports = {
+
   number: '0.3',
 
   title: 'Summary-led proof of life journey',
@@ -9,14 +10,17 @@ module.exports = {
 
   status: 'Draft',
 
-  dateUpdated: '9 September 2026',
+  designTrack: 'Core',
+
+  researchStatus: 'Not tested',
+
+  dateUpdated: '11 September 2026',
 
   about: [
-    'This prototype develops the DWP-held information journey into a shorter, summary-led proof of life journey.',
+    'This prototype explores a shorter, summary-led proof of life journey.',
     'When customers prove life using the camera, they review information from their identity document and DWP records in one summary.',
-    'Customers only visit additional sections to change incorrect information or add missing details.',
-    'Customers whose information is up to date can complete the journey in 8 screens, including the GOV.UK guidance page.',
-    'The prototype also explores alternative evidence, contact preferences, lasting power of attorney, assisted journeys, confirmation messaging and deterrents for potential bad actors.',
+    'They only visit additional sections to change incorrect information or add missing details.',
+    'The prototype also covers alternative evidence, contact preferences, lasting power of attorney and assisted journeys.',
   ],
 
   users: [
@@ -30,15 +34,15 @@ module.exports = {
           journeys: [
             {
               href: '/customer/zero-knowledge/start',
-              title: 'Variation 1: zero knowledge of the customer',
+              title: '1: zero knowledge of the customer',
               description:
-                'Customers provide information using blank fields without seeing information held by DWP.',
+                'Customers enter information into blank fields without seeing information held by DWP.',
             },
             {
               href: '/customer/review-and-change-info/setup-scenario',
-              title: 'Variation 2: review customer info (with scenario setup)',
+              title: '2: review customer info (with scenario setup)',
               description:
-                'When they prove life using the camera, customers can review, change or add information held by DWP.',
+                'When life is proved using the camera, customers review and update their information held by DWP.',
             },
           ],
         },

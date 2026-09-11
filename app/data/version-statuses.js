@@ -10,9 +10,26 @@
  */
 
 module.exports = {
+  Draft: {
+    label: 'Draft',
+    description:
+      'A design that is still being developed and has not been approved as the current baseline.',
+    tag: {
+      text: 'Draft',
+      classes: 'govuk-tag--blue',
+    },
+    banner: {
+      titleText: 'Draft',
+      html:
+        '<p class="govuk-notification-banner__heading">This version is still being developed.</p>' +
+        '<p class="govuk-notification-banner__body">Use <a class="govuk-link" href="/current">/current</a> for the latest version.</p>',
+    },
+  },
+
   Current: {
     label: 'Current',
-    description: 'The recommended prototype version and current design baseline.',
+    description:
+      'The approved prototype version and current design baseline.',
     tag: {
       text: 'Current',
       classes: 'govuk-tag--green',
@@ -21,43 +38,14 @@ module.exports = {
       type: 'success',
       titleText: 'Current',
       html:
-        '<p class="govuk-notification-banner__heading">This is the current design.</p>',
-    },
-  },
-
-  Draft: {
-    label: 'Draft',
-    description: 'An early design that is still being explored and may change significantly.',
-    tag: {
-      text: 'Draft',
-      classes: 'govuk-tag--teal',
-    },
-    banner: {
-      titleText: 'Draft',
-      html:
-      '<p class="govuk-notification-banner__heading">This version is an early draft and may change significantly.</p>' +
-      '<p class="govuk-notification-banner__body">Use <a class="govuk-link" href="/current">/current</a> for the latest design.</p>',
-    },
-  },
-
-  InProgress: {
-    label: 'Testing',
-    description: 'A version that is currently being designed and tested.',
-    tag: {
-      text: 'Testing',
-      classes: 'govuk-tag--blue',
-    },
-    banner: {
-      titleText: 'Work in progress',
-      html:
-      '<p class="govuk-notification-banner__heading">This version is actively being designed and tested.</p>' +
-      '<p class="govuk-notification-banner__body">Use <a class="govuk-link" href="/current">/current</a> for the latest design.</p>',
+        '<p class="govuk-notification-banner__heading">This is the current design baseline.</p>',
     },
   },
 
   Previous: {
     label: 'Previous',
-    description: 'A superseded version retained to show how the design has evolved.',
+    description:
+      'A previous design baseline replaced by a newer approved version.',
     tag: {
       text: 'Previous',
       classes: 'govuk-tag--grey',
@@ -65,33 +53,21 @@ module.exports = {
     banner: {
       titleText: 'Previous',
       html:
-        '<p class="govuk-notification-banner__heading">This version has been superseded by a newer design and is retained for reference.</p>' +
-        '<p class="govuk-notification-banner__body">Use <a class="govuk-link" href="/current">/current</a> for the latest design.</p>',
+        '<p class="govuk-notification-banner__heading">This version has been replaced by a newer approved design.</p>' +
+        '<p class="govuk-notification-banner__body">Use <a class="govuk-link" href="/current">/current</a> for the latest version.</p>',
     },
   },
 
   Archived: {
     label: 'Archived',
-    description: 'A historic version retained for reference and context only.',
+    description:
+      'A historic or discontinued version retained for context.',
     tag: {
       text: 'Archived',
       classes: 'govuk-tag--grey',
     },
     warning: {
-      text: 'This version is archived. It is kept for context and is not part of the agreed service design.',
-      iconFallbackText: 'Warning',
-    },
-  },
-
-  Exploratory: {
-    label: 'Exploratory',
-    description: 'Concept work that sits outside the agreed service design.',
-    tag: {
-      text: 'Exploratory',
-      classes: 'govuk-tag--orange',
-    },
-    warning: {
-      text: 'This version is exploratory and includes journeys that have not yet been agreed as part of the current service design.',
+      text: 'This version is archived and is not part of the current service design.',
       iconFallbackText: 'Warning',
     },
   },

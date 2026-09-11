@@ -145,10 +145,6 @@ res.render('index')
 })
 
 // Convenience redirects to the current version
-router.get('/versions', function (req, res) {
-res.redirect('/')
-})
-
 router.get('/current', function (req, res) {
 res.redirect(`/versions/${currentVersion}`)
 })

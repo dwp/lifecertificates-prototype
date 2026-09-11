@@ -35,18 +35,46 @@
             {% endset %}
 
             {{ govukSummaryList({
-              "rows": [
+              rows: [
                 {
-                  "key": { "text": "Status" },
-                  "value": { "html": statusHtml }
+                  key: {
+                    text: "Status"
+                  },
+                  value: {
+                    html: statusHtml
+                  }
                 },
                 {
-                  "key": { "text": "Created" },
-                  "value": { "text": version.dateCreated }
+                  key: {
+                    text: "Design track"
+                  },
+                  value: {
+                    text: version.designTrack or "Not recorded"
+                  }
                 },
                 {
-                  "key": { "text": "Last updated" },
-                  "value": { "text": lastUpdatedText }
+                  key: {
+                    text: "Research"
+                  },
+                  value: {
+                    text: version.researchStatus or "Not recorded"
+                  }
+                },
+                {
+                  key: {
+                    text: "Created"
+                  },
+                  value: {
+                    text: version.dateCreated
+                  }
+                },
+                {
+                  key: {
+                    text: "Last updated"
+                  },
+                  value: {
+                    text: lastUpdatedText
+                  }
                 }
               ]
             }) }}

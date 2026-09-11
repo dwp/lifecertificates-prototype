@@ -7,7 +7,11 @@ module.exports = {
 
   visible: true,
 
-  status: 'Exploratory',
+  status: 'Draft',
+
+  designTrack: 'Exploratory',
+
+  researchStatus: 'Not tested',
 
   dateUpdated: '',
 

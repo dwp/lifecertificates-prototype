@@ -9,6 +9,10 @@ module.exports = {
 
   status: 'Previous',
 
+  designTrack: 'Exploratory',
+
+  researchStatus: 'Not tested',
+
   dateUpdated: '7 September 2026',
 
   about: [

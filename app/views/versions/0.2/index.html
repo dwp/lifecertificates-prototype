@@ -35,18 +35,38 @@
             {% endset %}
 
             {{ govukSummaryList({
-              "rows": [
+              rows: [
                 {
-                  "key": { "text": "Status" },
-                  "value": { "html": statusHtml }
+                  key: {
+                    text: "Status"
+                  },
+                  value: {
+                    html: statusHtml
+                  }
                 },
                 {
-                  "key": { "text": "Created" },
-                  "value": { "text": version.dateCreated }
+                  key: {
+                    text: "Research"
+                  },
+                  value: {
+                    text: version.researchStatus or "Not recorded"
+                  }
                 },
                 {
-                  "key": { "text": "Last updated" },
-                  "value": { "text": lastUpdatedText }
+                  key: {
+                    text: "Created"
+                  },
+                  value: {
+                    text: version.dateCreated
+                  }
+                },
+                {
+                  key: {
+                    text: "Last updated"
+                  },
+                  value: {
+                    text: lastUpdatedText
+                  }
                 }
               ]
             }) }}
@@ -211,11 +231,11 @@
 
         </div>
 
-        <div class="govuk-grid-column-one-third">
+      <div class="govuk-grid-column-one-third">
 
-            {% include "_partials/app-subnav-version.njk" %}
+        {% include "_partials/app-subnav-version.njk" %}
 
-        </div>
+      </div>
 
     </div>
 

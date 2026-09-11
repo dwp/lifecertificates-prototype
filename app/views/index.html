@@ -32,44 +32,60 @@
         {{ govukSummaryList({
             rows: [
                 {
-                    key: {
-                        text: "Version"
-                    },
-                    value: {
-                        text: currentVersionData.number
-                    }
+                  key: {
+                    text: "Version"
+                  },
+                  value: {
+                    text: currentVersionData.number
+                  }
                 },
                 {
-                    key: {
-                        text: "Title"
-                    },
-                    value: {
-                        text: currentVersionData.title
-                    }
+                  key: {
+                    text: "Title"
+                  },
+                  value: {
+                    text: currentVersionData.title
+                  }
                 },
                 {
-                    key: {
-                        text: "Purpose"
-                    },
-                    value: {
-                        text: currentVersionData.about[0]
-                    }
+                  key: {
+                    text: "Purpose"
+                  },
+                  value: {
+                    text: currentVersionData.about[0]
+                  }
                 },
                 {
-                    key: {
-                        text: "Last updated"
-                    },
-                    value: {
-                        text: currentVersionData.dateUpdated
-                    }
+                  key: {
+                    text: "Status"
+                  },
+                  value: {
+                    text: currentVersionData.status
+                  }
                 },
                 {
-                    key: {
-                        text: "Notes"
-                    },
-                    value: {
-                        html: "<a class=\"govuk-link\" href=\"/versions/" + currentVersionData.number + "\">View version notes</a>"
-                    }
+                  key: {
+                    text: "Research"
+                  },
+                  value: {
+                    text: currentVersionData.researchStatus or "Not recorded"
+                  }
+                },
+                {
+                  key: {
+                    text: "Last updated"
+                  },
+                  value: {
+                    text: currentVersionData.dateUpdated
+                  }
+                },
+                {
+                  key: {
+                    text: "Notes"
+                  },
+                  value: {
+                    html: "<a class=\"govuk-link\" href=\"/versions/" + currentVersionData.number + "\">View version notes</a>"
+                  }
                 }
             ]
         }) }}
@@ -155,9 +171,10 @@
       <tr class="govuk-table__row">
 
         <td class="govuk-table__cell">
-        {{ prototypeVersion.data.number }}
-          {% if item.version == currentVersion %}
-              <span class="govuk-hint"> (current)</span>
+          {{ prototypeVersion.data.number }}
+
+          {% if prototypeVersion.data.number == currentVersion %}
+            <span class="govuk-hint">(current)</span>
           {% endif %}
         </td>
 
@@ -219,7 +236,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-three-quarters">
         <p class="govuk-body">
-        Versions represent material changes to the prototype that affect the service meaning or behaviour, for example where a new journey is added or an existing journey is changed.
+        <a class="govuk-link" href="versions">Versions</a> represent material changes to the prototype that affect the service meaning or behaviour, for example where a new journey is added or an existing journey is changed.
         </p>
 
 

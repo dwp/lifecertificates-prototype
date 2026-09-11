@@ -1,0 +1,341 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% set pageName = "Prototype versions" %}
+
+{% block pageTitle %}
+  {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body-l">
+        Versions record material changes to the prototype and show how the service design has developed.
+      </p>
+
+
+      <h2 class="govuk-heading-l">
+        Version numbers
+      </h2>
+
+      <h3 class="govuk-heading-m">
+        Minor versions
+      </h3>
+
+      <p class="govuk-body">
+        Minor versions are used while a design is being developed.
+      </p>
+
+      <p class="govuk-body">
+        For example:
+      </p>
+
+      <p class="govuk-body">
+        <strong>0.1 → 0.2 → 0.3</strong>
+      </p>
+
+      <p class="govuk-body">
+        They may include changes to journeys, content, interactions and service behaviour.
+      </p>
+
+
+      <h3 class="govuk-heading-m">
+        Major versions
+      </h3>
+
+      <p class="govuk-body">
+        A major version is created when a design becomes the approved baseline.
+      </p>
+
+      <p class="govuk-body">
+        For example:
+      </p>
+
+      <p class="govuk-body">
+        <strong>Draft 0.3 → Current 1.0</strong>
+      </p>
+
+      <p class="govuk-body">
+        Further development continues through minor versions until the next design baseline is approved.
+      </p>
+
+      <p class="govuk-body">
+        <strong>Draft 1.1 → Draft 1.2 → Current 2.0</strong>
+      </p>
+
+
+      <h2 class="govuk-heading-l">
+        Version status
+      </h2>
+
+      <p class="govuk-body">
+        Version status shows where a version sits in the design lifecycle.
+      </p>
+
+      <dl class="govuk-summary-list">
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ govukTag({
+              text: "Draft",
+              classes: "govuk-tag--blue"
+            }) }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            A design that is still being developed and has not been approved as the current baseline.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ govukTag({
+              text: "Current",
+              classes: "govuk-tag--green"
+            }) }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            The approved prototype version and current design baseline.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ govukTag({
+              text: "Previous",
+              classes: "govuk-tag--grey"
+            }) }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            A previous design baseline replaced by a newer approved version.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            {{ govukTag({
+              text: "Archived",
+              classes: "govuk-tag--grey"
+            }) }}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            A historic or discontinued version retained for context.
+          </dd>
+        </div>
+
+      </dl>
+
+
+      <h2 class="govuk-heading-l">
+        Design track
+      </h2>
+
+      <p class="govuk-body">
+        Design track describes the type of work represented by the version.
+      </p>
+
+      <dl class="govuk-summary-list">
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Core
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Work intended to contribute to the agreed service design.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Exploratory
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Concept work that tests a different direction or assumption.
+          </dd>
+        </div>
+
+      </dl>
+
+      <p class="govuk-body">
+        Exploratory work can move into the core design or be archived if it is not taken forward.
+      </p>
+
+
+      <h2 class="govuk-heading-l">
+        Research status
+      </h2>
+
+      <p class="govuk-body">
+        Research status shows whether a version has been tested with customers.
+      </p>
+
+      <dl class="govuk-summary-list">
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Not tested
+          </dt>
+          <dd class="govuk-summary-list__value">
+            No customer research has been completed for this version.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Planned
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Customer research is planned.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            In testing
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Customer research is in progress.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Tested
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Customer research has been completed.
+          </dd>
+        </div>
+
+      </dl>
+
+
+      <h2 class="govuk-heading-l">
+        How the fields work together
+      </h2>
+
+      <p class="govuk-body">
+        Version status, design track and research status describe different aspects of a version.
+      </p>
+
+      <dl class="govuk-summary-list">
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Version status
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Where the version sits in the design lifecycle.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Design track
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Whether the work supports the core design or explores another direction.
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Research status
+          </dt>
+          <dd class="govuk-summary-list__value">
+            How far the version has progressed through customer research.
+          </dd>
+        </div>
+
+      </dl>
+
+      <h3 class="govuk-heading-m">
+        Example
+      </h3>
+
+      <dl class="govuk-summary-list">
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Version
+          </dt>
+          <dd class="govuk-summary-list__value">
+            0.3
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Status
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Draft
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Design track
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Core
+          </dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Research status
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Not tested
+          </dd>
+        </div>
+
+      </dl>
+
+
+      <h2 class="govuk-heading-l">
+        Version lifecycle
+      </h2>
+
+      <p class="govuk-body">
+        A design normally moves through these lifecycle states:
+      </p>
+
+      <p class="govuk-body">
+        <strong>Draft → Current → Previous → Archived</strong>
+      </p>
+
+      <p class="govuk-body">
+        Draft work can move directly to Archived if it is not taken forward.
+      </p>
+
+      <p class="govuk-body">
+        Research runs alongside the version lifecycle:
+      </p>
+
+      <p class="govuk-body">
+        <strong>Not tested → Planned → In testing → Tested</strong>
+      </p>
+
+    </div>
+  </div>
+
+{% endblock %}
