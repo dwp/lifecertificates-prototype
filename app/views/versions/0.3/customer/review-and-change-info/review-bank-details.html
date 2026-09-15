@@ -1,101 +1,454 @@
 {% extends "layouts/main.html" %}
 
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
 {% set pageName = "Receiving your UK State Pension" %}
 
+
+{#
+  Resolve the account details entered during the journey.
+
+  Fall back to the information held in the customer record.
+#}
+
+{% set accountName =
+  data["nameOnTheAccount"]
+  or customer.paymentDetails.nameOnTheAccount
+%}
+
+{% set sortCode =
+  data["sortCode"]
+  or customer.paymentDetails.sortCode
+%}
+
+{% set accountNumber =
+  data["accountNumber"]
+  or customer.paymentDetails.accountNumber
+%}
+
+{% set IBAN =
+  data["IBAN"]
+  or customer.paymentDetails.IBAN
+%}
+
+
+{#
+  Restore the selected account type.
+
+  Prefer a choice made during the journey, then the scenario
+  setup value.
+
+  If neither value exists, infer the type from the available
+  account details.
+#}
+
+{% set selectedBankAccountType =
+  data["bankAccountType"]
+  or data["customerScenarioBankAccountType"]
+%}
+
+{% if not selectedBankAccountType %}
+
+  {% if IBAN and not accountNumber and not sortCode %}
+    {% set selectedBankAccountType = "international" %}
+  {% else %}
+    {% set selectedBankAccountType = "uk" %}
+  {% endif %}
+
+{% endif %}
+
+
+{#
+  Define the fields used for a UK bank account.
+#}
+
+{% set ukBankAccountHtml %}
+
+  {{ govukInput({
+    label: {
+      text: "Account number"
+    },
+    hint: {
+      text: "Must be between 6 and 8 digits long"
+    },
+    classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
+    id: "account-number",
+    name: "accountNumber",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: accountNumber
+  }) }}
+
+  {{ govukInput({
+    label: {
+      text: "Sort code"
+    },
+    hint: {
+      text: "Must be 6 digits long"
+    },
+    classes: "govuk-input--width-5 govuk-input--extra-letter-spacing",
+    id: "sort-code",
+    name: "sortCode",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: sortCode
+  }) }}
+
+{% endset %}
+
+
+{#
+  Define the field used for an international bank account.
+#}
+
+{% set internationalBankAccountHtml %}
+
+  {{ govukInput({
+    label: {
+      text: "International bank account number (IBAN)"
+    },
+    hint: {
+      text: "You can find this on your bank statement or ask your bank."
+    },
+    classes: "govuk-input--width-20 govuk-input--extra-letter-spacing",
+    id: "iban",
+    name: "IBAN",
+    inputmode: "text",
+    spellcheck: false,
+    autocomplete: "off",
+    autocapitalize: "characters",
+    value: IBAN
+  }) }}
+
+{% endset %}
+
+
 {% block pageTitle %}
-    {{ pageName }} – {{ serviceName }}
+  {{ pageName }} – {{ serviceName }}
 {% endblock %}
+
 
 {% block containerStart %}
 
-    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
 
 {% endblock %}
 
+
 {% block content %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
 
-            <p class="govuk-body">We pay your UK state pension into this bank or building society account.</p>
+      <p class="govuk-body">
+        We pay your UK State Pension into this bank or building society account.
+      </p>
 
-            <form method="post"><!-- form action to review-lpa handled by routing -->
+      <form method="post">
 
-              {% call govukFieldset({
-                legend: {
-                  text: "Bank or building society account details",
-                  classes: "govuk-fieldset__legend--m"
-                  }
-                }) %}
+        {{ govukInput({
+          label: {
+            text: "Name on the account",
+            classes: "govuk-label--m"
+          },
+          id: "name-on-the-account",
+          name: "nameOnTheAccount",
+          autocomplete: "name",
+          spellcheck: false,
+          value: accountName
+        }) }}
 
-                {{ govukInput({
-                  label: {
-                    text: "Name on the account"
-                    },
-                  id: "name-on-the-account",
-                  name: "nameOnTheAccount",
-                  autocomplete: "name",
-                  spellcheck: false,
-                  value: data["nameOnTheAccount"] or customer.paymentDetails.nameOnTheAccount
-                }) }}
+        {{ govukRadios({
+          name: "bankAccountType",
+          value: selectedBankAccountType,
+          fieldset: {
+            legend: {
+              text: "What type of account is it?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "uk",
+              text: "UK bank account",
+              conditional: {
+                html: ukBankAccountHtml
+              }
+            },
+            {
+              value: "international",
+              text: "International bank account",
+              conditional: {
+                html: internationalBankAccountHtml
+              }
+            }
+          ]
+        }) }}
 
-                {{ govukInput({
-                  label: {
-                    text: "Sort code"
-                    },
-                  classes: "govuk-input--width-5 govuk-input--extra-letter-spacing",
-                  hint: {
-                    text: "Must be 6 digits long"
-                    },
-                  id: "sort-code",
-                  name: "sortCode",
-                  inputmode: "numeric",
-                  spellcheck: false,
-                  value: data["sortCode"] or customer.paymentDetails.sortCode
-                }) }}
+        {{ govukButton({
+          text: "Continue"
+        }) }}
 
-                {{ govukInput({
-                  label: {
-                    text: "Account number"
-                    },
-                  classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
-                  hint: {
-                    text: "Must be between 6 and 8 digits long"
-                    },
-                  id: "account-number",
-                  name: "accountNumber",
-                  inputmode: "numeric",
-                  spellcheck: false,
-                  value: data["accountNumber"] or customer.paymentDetails.accountNumber
-                }) }}
+      </form>
 
-                {# govukInput({
-                  label: {
-                    text: "Building society roll number (if you have one)"
-                    },
-                  classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
-                  hint: {
-                    text: "You can find it on your card, statement or passbook"
-                    },
-                  id: "roll-number",
-                  name: "rollNumber",
-                  spellcheck: false,
-                  value: data["rollNumber"] or customer.paymentDetails.rollNumber
-                }) #}
-
-              {% endcall %}
-
-              {{ govukButton({
-                text: "Continue"
-              }) }}
-
-            </form>
-        </div>
     </div>
+  </div>
+
+{% endblock %}
+
+
+{% block containerEnd %}
+
+  {{ super() }}
+
+  <script>
+    // Find the bank-details form and formatted inputs.
+    const bankDetailsForm =
+      document.querySelector("form")
+
+    const ibanInput =
+      document.querySelector("#iban")
+
+    const sortCodeInput =
+      document.querySelector("#sort-code")
+
+    const accountNumberInput =
+      document.querySelector("#account-number")
+
+
+    // Remove IBAN formatting and unsupported characters.
+    function normaliseIBAN(value) {
+      return value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 34)
+    }
+
+
+    // Display an IBAN in groups of 4 characters.
+    function formatIBAN(value) {
+      const normalisedValue =
+        normaliseIBAN(value)
+
+      return normalisedValue
+        .match(/.{1,4}/g)
+        ?.join(" ") || ""
+    }
+
+
+    // Remove sort code formatting and non-numeric characters.
+    function normaliseSortCode(value) {
+      return value
+        .replace(/\D/g, "")
+        .slice(0, 6)
+    }
+
+
+    // Display a sort code in 3 groups of 2 digits.
+    function formatSortCode(value) {
+      const normalisedValue =
+        normaliseSortCode(value)
+
+      return normalisedValue
+        .match(/.{1,2}/g)
+        ?.join("-") || ""
+    }
+
+
+    // Copy selected text without spaces or hyphens.
+    function copyWithoutSeparators(
+      event,
+      input,
+      normaliseValue,
+    ) {
+      const selectionStart =
+        input.selectionStart
+
+      const selectionEnd =
+        input.selectionEnd
+
+      // Keep normal copy behaviour if nothing is selected.
+      if (
+        selectionStart === null
+        || selectionEnd === null
+        || selectionStart === selectionEnd
+      ) {
+        return
+      }
+
+      const selectedValue =
+        input.value.slice(
+          selectionStart,
+          selectionEnd,
+        )
+
+      event.preventDefault()
+
+      event.clipboardData.setData(
+        "text/plain",
+        normaliseValue(selectedValue),
+      )
+    }
+
+
+    // Format typed input while preserving native paste,
+    // undo and redo behaviour.
+    function formatTypedInput(
+      event,
+      input,
+      formatValue,
+    ) {
+      if (
+        event.inputType === "insertFromPaste"
+        || event.inputType === "insertFromDrop"
+        || event.inputType === "historyUndo"
+        || event.inputType === "historyRedo"
+      ) {
+        return
+      }
+
+      if (
+        event.inputType === "insertText"
+        || event.inputType ===
+          "insertCompositionText"
+        || event.inputType ===
+          "deleteContentBackward"
+        || event.inputType ===
+          "deleteContentForward"
+      ) {
+        input.value =
+          formatValue(input.value)
+      }
+    }
+
+
+    // Add formatting and copy behaviour to the IBAN.
+    if (ibanInput) {
+      // Format a value restored from session data.
+      ibanInput.value =
+        formatIBAN(ibanInput.value)
+
+      // Format characters entered by the customer.
+      ibanInput.addEventListener(
+        "input",
+        function (event) {
+          formatTypedInput(
+            event,
+            this,
+            formatIBAN,
+          )
+        },
+      )
+
+      // Format pasted content after leaving the field.
+      ibanInput.addEventListener(
+        "blur",
+        function () {
+          this.value =
+            formatIBAN(this.value)
+        },
+      )
+
+      // Copy the IBAN without spaces.
+      ibanInput.addEventListener(
+        "copy",
+        function (event) {
+          copyWithoutSeparators(
+            event,
+            this,
+            normaliseIBAN,
+          )
+        },
+      )
+    }
+
+
+    // Add formatting and copy behaviour to the sort code.
+    if (sortCodeInput) {
+      // Format a value restored from session data.
+      sortCodeInput.value =
+        formatSortCode(
+          sortCodeInput.value,
+        )
+
+      // Format digits entered by the customer.
+      sortCodeInput.addEventListener(
+        "input",
+        function (event) {
+          formatTypedInput(
+            event,
+            this,
+            formatSortCode,
+          )
+        },
+      )
+
+      // Format pasted content after leaving the field.
+      sortCodeInput.addEventListener(
+        "blur",
+        function () {
+          this.value =
+            formatSortCode(this.value)
+        },
+      )
+
+      // Copy the sort code without hyphens.
+      sortCodeInput.addEventListener(
+        "copy",
+        function (event) {
+          copyWithoutSeparators(
+            event,
+            this,
+            normaliseSortCode,
+          )
+        },
+      )
+    }
+
+
+    // Remove details belonging to the unselected account
+    // type before the form is submitted.
+    if (bankDetailsForm) {
+      bankDetailsForm.addEventListener(
+        "submit",
+        function () {
+          const selectedAccountType =
+            document.querySelector(
+              'input[name="bankAccountType"]:checked',
+            )
+
+          if (!selectedAccountType) {
+            return
+          }
+
+          if (
+            selectedAccountType.value ===
+            "international"
+          ) {
+            if (accountNumberInput) {
+              accountNumberInput.value = ""
+            }
+
+            if (sortCodeInput) {
+              sortCodeInput.value = ""
+            }
+          } else if (ibanInput) {
+            ibanInput.value = ""
+          }
+        },
+      )
+    }
+  </script>
 
 {% endblock %}

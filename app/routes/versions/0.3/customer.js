@@ -107,6 +107,22 @@ module.exports = function createCustomerRouter({ version }) {
     return 'camera'
   }
 
+  // Return a supported bank-account type.
+  //
+  // A UK bank account is used by default because it matches
+  // the complete customer fixture.
+  function normaliseBankAccountType(value) {
+
+    if (value === 'international') {
+      return 'international'
+    }
+
+    if (value === 'none') {
+      return 'none'
+    }
+
+    return 'uk'
+  }
 
   // Return a supported driver licence contact-address state.
   //
@@ -275,38 +291,27 @@ module.exports = function createCustomerRouter({ version }) {
         emptyAddress()
     }
 
-
     // customer.paymentDetails
     //
-    // The UK bank account selection represents:
+    // The customer receives their pension through either:
     //
-    // - name on the account
-    // - account number
-    // - sort code
+    // - a UK bank account
+    // - an international bank account
+    // - no account held by DWP
     //
-    // IBAN is controlled separately because the customer
-    // may have UK bank details, an IBAN or both.
+    // The name on the account applies to both account types.
 
-    if (
-      !includesProperty(
-        scenario.paymentDetails,
-        'ukBankAccount',
-      )
-    ) {
+    if (scenario.bankAccountType === 'international') {
+      customerData.paymentDetails.accountNumber = ''
+      customerData.paymentDetails.sortCode = ''
+    } else if (scenario.bankAccountType === 'none') {
       customerData.paymentDetails.nameOnTheAccount = ''
       customerData.paymentDetails.accountNumber = ''
       customerData.paymentDetails.sortCode = ''
-    }
-
-    if (
-      !includesProperty(
-        scenario.paymentDetails,
-        'IBAN',
-      )
-    ) {
+      customerData.paymentDetails.IBAN = ''
+    } else {
       customerData.paymentDetails.IBAN = ''
     }
-
 
     // customer.contactDetails
 
@@ -478,13 +483,14 @@ module.exports = function createCustomerRouter({ version }) {
     delete data
       .customerScenarioPassportContactAddress
 
-    delete data.customerScenarioPaymentDetails
+    delete data.customerScenarioBankAccountType
     delete data.customerScenarioContactDetails
     delete data.customerScenarioPhoneMobileStatus
     delete data.customerScenarioPowerOfAttorney
 
     // Remove values from older versions of the controls if
     // they remain in the current session.
+    delete data.customerScenarioPaymentDetails
     delete data.customerScenarioDoctor
     delete data.customerScenarioIdentityDocument
     delete data.customerScenarioPhoneDetails
@@ -569,9 +575,10 @@ module.exports = function createCustomerRouter({ version }) {
           ? passportContactAddress
           : driverLicenceContactAddress
 
-      const paymentDetails = asArray(
-        req.body.customerScenarioPaymentDetails,
-      )
+      const bankAccountType =
+        normaliseBankAccountType(
+          req.body.customerScenarioBankAccountType,
+        )
 
       const contactDetails = asArray(
         req.body.customerScenarioContactDetails,
@@ -586,7 +593,6 @@ module.exports = function createCustomerRouter({ version }) {
         req.body.customerScenarioPowerOfAttorney,
       )
 
-
       // Only use the selected proof-of-life method when the
       // journey starts after proof of life.
       const proofOfLifeMethod =
@@ -595,7 +601,6 @@ module.exports = function createCustomerRouter({ version }) {
               req.body.customerScenarioProofOfLifeMethod,
             )
           : null
-
 
       // Store the values used to restore the setup page.
       req.session.data.customerScenarioConfigured = 'true'
@@ -614,8 +619,8 @@ module.exports = function createCustomerRouter({ version }) {
         .customerScenarioPassportContactAddress =
           passportContactAddress
 
-      req.session.data.customerScenarioPaymentDetails =
-        paymentDetails
+      req.session.data.customerScenarioBankAccountType =
+        bankAccountType
 
       req.session.data.customerScenarioContactDetails =
         contactDetails
@@ -642,7 +647,7 @@ module.exports = function createCustomerRouter({ version }) {
       req.session.data.customerScenario = {
         identityDocumentType,
         contactAddressState,
-        paymentDetails,
+        bankAccountType,
         contactDetails,
         phoneMobileStatus,
         powerOfAttorney,
@@ -777,24 +782,31 @@ module.exports = function createCustomerRouter({ version }) {
   )
 
 
-  // =====================================================
-  // Power of attorney (Variation 2)
-  // =====================================================
-  //
-  // Prototype routes used to review and manage lasting
-  // power of attorney information.
+  // // Save bank details and return to check answers.
+router.post(
+  '/review-and-change-info/review-bank-details',
+  function (req, res) {
 
-  // Users move from reviewing their bank details to
-  // reviewing any lasting powers of attorney.
-  router.post(
-    '/review-and-change-info/review-bank-details',
-    function (req, res) {
-      res.redirect(
-        `${baseUrl}/review-and-change-info/review-lpa`,
+    const bankAccountType =
+      normaliseBankAccountType(
+        req.body.bankAccountType,
       )
-    },
-  )
 
+    req.session.data.bankAccountType =
+      bankAccountType
+
+    if (bankAccountType === 'international') {
+      delete req.session.data.accountNumber
+      delete req.session.data.sortCode
+    } else {
+      delete req.session.data.IBAN
+    }
+
+    return res.redirect(
+      `${baseUrl}/review-and-change-info/check-answers`,
+    )
+  },
+)
 
   // Allow hasLPA to be passed in the URL and stored in the
   // session for later pages.

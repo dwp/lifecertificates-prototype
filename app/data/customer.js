@@ -44,7 +44,7 @@ module.exports = {
   },
 
   powerOfAttorney: {
-    hasLPA: false,
+    hasLPA: true,
 
     registeredLPAs: [
       {

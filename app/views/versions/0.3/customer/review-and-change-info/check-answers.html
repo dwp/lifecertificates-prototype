@@ -379,7 +379,7 @@
                 <h2 class="govuk-heading-m">Receiving your pension payments</h2>
 
                 <p class="govuk-body">
-                    We are sending your UK State Pension payments using the
+                    We are sending your UK State Pension payments to the
                     payment details shown here.
                 </p>
 
@@ -404,112 +404,111 @@
                 %}
 
                 {% set hasUkBankAccount =
-                    accountName
+                    accountNumber
                     or sortCode
-                    or accountNumber
                 %}
 
-                {% set hasIBAN = IBAN | trim %}
+                {% set hasInternationalBankAccount =
+                    IBAN | trim
+                %}
 
 
                 {#
-                    UK bank-account row
+                    Show one payment account.
+
+                    UK bank accounts use an account number and sort code.
+
+                    International bank accounts use an international bank
+                    account number.
                 #}
 
-                {% set ukBankAccountRow = {
-                    key: {
-                        text: "UK bank account"
-                    },
-                    value: {
-                        html: '<a href=\"review-bank-details\">Add UK bank account details</a>'
-                    }
-                } %}
+                {% set bankAccountTitle =
+                    "Bank account"
+                %}
 
-                {% if hasUkBankAccount %}
+                {% if hasInternationalBankAccount %}
 
-                    {% set ukBankAccountHtml %}
-                        {% if accountName %}
-                            {{ accountName }}<br>
-                        {% endif %}
-
-                        {% if accountNumber %}
-                            Account number: {{ accountNumber }}<br>
-                        {% endif %}
-
-                        {% if sortCode %}
-                            Sort code: {{ sortCode }}
-                        {% endif %}
-                    {% endset %}
-
-                    {% set ukBankAccountRow = {
-                        key: {
-                            text: "UK bank account"
+                    {% set bankAccountRows = [
+                        {
+                            key: {
+                                text: "Name on the account"
+                            },
+                            value: {
+                                text: accountName
+                            }
                         },
-                        value: {
-                            html: ukBankAccountHtml
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: "review-bank-details",
-                                    text: "Change",
-                                    visuallyHiddenText: "UK bank account"
-                                }
-                            ]
+                        {
+                            key: {
+                                text: "International bank account number (IBAN)"
+                            },
+                            value: {
+                                text: IBAN
+                            }
                         }
-                    } %}
+                    ] %}
 
-                {% endif %}
+                {% elif hasUkBankAccount %}
 
-
-                {#
-                    IBAN row
-                #}
-
-                {% set ibanRow = {
-                    key: {
-                        text: "International bank account number (IBAN)"
-                    },
-                    value: {
-                        html: '<a href=\"review-bank-details\">Add IBAN</a>'
-                    }
-                } %}
-
-                {% if hasIBAN %}
-
-                    {% set ibanRow = {
-                        key: {
-                            text: "International bank account number (IBAN)"
+                    {% set bankAccountRows = [
+                        {
+                            key: {
+                                text: "Name on the account"
+                            },
+                            value: {
+                                text: accountName
+                            }
                         },
-                        value: {
-                            text: IBAN
+                        {
+                            key: {
+                                text: "Account number"
+                            },
+                            value: {
+                                text: accountNumber
+                            }
                         },
-                        actions: {
-                            items: [
-                                {
-                                    href: "review-bank-details",
-                                    text: "Change",
-                                    visuallyHiddenText: "IBAN"
-                                }
-                            ]
+                        {
+                            key: {
+                                text: "Sort code"
+                            },
+                            value: {
+                                text: sortCode
+                            }
                         }
-                    } %}
+                    ] %}
+
+                {% else %}
+
+                    {% set bankAccountRows = [
+                        {
+                            key: {
+                                text: "Bank details"
+                            },
+                            value: {
+                                html: '<a href=\"review-bank-details\">Add bank account</a>'
+                            }
+                        }
+                    ] %}
 
                 {% endif %}
 
                 {{ govukSummaryList({
                     card: {
                         title: {
-                            text: "Payment details"
+                            text: bankAccountTitle
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "review-bank-details",
+                                    text: "Change",
+                                    visuallyHiddenText: "bank details"
+                                }
+                            ]
                         },
                         classes: "govuk-!-margin-bottom-6"
                     },
-                    rows: [
-                        ukBankAccountRow,
-                        ibanRow
-                    ]
+                    rows: bankAccountRows
                 }) }}
-
 
                 {#
                     Registered lasting powers of attorney

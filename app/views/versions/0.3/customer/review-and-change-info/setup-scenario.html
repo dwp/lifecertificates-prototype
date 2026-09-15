@@ -13,8 +13,8 @@
 {#
   Work out whether a scenario has already been configured.
 
-  On the first visit, all optional customer information is
-  selected by default.
+  On the first visit, the controls show the default customer
+  scenario.
 
   Once a scenario has been applied, the controls reflect the
   values stored in session data.
@@ -69,7 +69,7 @@
   Restore the driver licence contact-address scenario.
 
   A matching contact address is selected by default because
-  it represents the complete customer fixture.
+  it represents the default scenario.
 #}
 
 {% set selectedDriverLicenceContactAddress =
@@ -92,14 +92,16 @@
 
 
 {#
-  Restore values previously selected in the payment details
-  checkbox group.
+  Restore the selected bank-account type.
+
+  A UK bank account is selected by default because it
+  it represents the default scenario.
 #}
 
-{% set selectedPaymentDetails =
-  data["customerScenarioPaymentDetails"]
+{% set selectedBankAccountType =
+  data["customerScenarioBankAccountType"]
+  or "uk"
 %}
-
 
 {#
   Restore values previously selected in the other contact
@@ -424,43 +426,39 @@
           customer.paymentDetails
         #}
 
-        {{ govukCheckboxes({
-          name: "customerScenarioPaymentDetails",
+        {{ govukRadios({
+          name: "customerScenarioBankAccountType",
+          value: selectedBankAccountType,
           fieldset: {
             legend: {
-              text: "Payment details",
+              text: "Bank account",
               classes: "govuk-fieldset__legend--s"
             }
           },
           items: [
             {
-              value: "ukBankAccount",
+              value: "uk",
               text: "UK bank account",
               hint: {
                 text: "Name on the account, account number and sort code."
-              },
-              checked:
-                not scenarioConfigured
-                or (
-                  selectedPaymentDetails
-                  and "ukBankAccount"
-                    in selectedPaymentDetails
-                )
+              }
             },
             {
-              value: "IBAN",
-              text: "International bank account number (IBAN)",
-              checked:
-                not scenarioConfigured
-                or (
-                  selectedPaymentDetails
-                  and "IBAN"
-                    in selectedPaymentDetails
-                )
+              value: "international",
+              text: "International bank account",
+              hint: {
+                text: "Name on the account and international bank account number (IBAN)."
+              }
+            },
+            {
+              divider: "or"
+            },
+            {
+              value: "none",
+              text: "No bank account details"
             }
           ]
         }) }}
-
 
         {#
           customer.powerOfAttorney
