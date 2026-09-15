@@ -10,53 +10,83 @@
 
 
 {#
-  Resolve the account details entered during the journey.
+  Resolve the account type.
 
-  Fall back to the information held in the customer record.
+  A choice made during the journey takes precedence over
+  the value selected on the scenario setup page.
 #}
 
-{% set accountName =
-  data["nameOnTheAccount"]
-  or customer.paymentDetails.nameOnTheAccount
-%}
-
-{% set sortCode =
-  data["sortCode"]
-  or customer.paymentDetails.sortCode
-%}
-
-{% set accountNumber =
-  data["accountNumber"]
-  or customer.paymentDetails.accountNumber
-%}
-
-{% set IBAN =
-  data["IBAN"]
-  or customer.paymentDetails.IBAN
-%}
-
-
-{#
-  Restore the selected account type.
-
-  Prefer a choice made during the journey, then the scenario
-  setup value.
-
-  If neither value exists, infer the type from the available
-  account details.
-#}
-
-{% set selectedBankAccountType =
+{% set configuredBankAccountType =
   data["bankAccountType"]
   or data["customerScenarioBankAccountType"]
 %}
 
-{% if not selectedBankAccountType %}
 
-  {% if IBAN and not accountNumber and not sortCode %}
-    {% set selectedBankAccountType = "international" %}
-  {% else %}
-    {% set selectedBankAccountType = "uk" %}
+{#
+  Resolve the account details shown on the page.
+
+  When scenario setup specifies that DWP holds no bank
+  details, do not fall back to the complete customer fixture.
+
+  This leaves the account name blank and both account-type
+  radios unselected.
+
+  Otherwise, prefer information entered during the journey
+  and fall back to the customer record.
+#}
+
+{% if configuredBankAccountType == "none" %}
+
+  {% set accountName = "" %}
+  {% set sortCode = "" %}
+  {% set accountNumber = "" %}
+  {% set IBAN = "" %}
+  {% set selectedBankAccountType = "" %}
+
+{% else %}
+
+  {% set accountName =
+    data["nameOnTheAccount"]
+    or customer.paymentDetails.nameOnTheAccount
+  %}
+
+  {% set sortCode =
+    data["sortCode"]
+    or customer.paymentDetails.sortCode
+  %}
+
+  {% set accountNumber =
+    data["accountNumber"]
+    or customer.paymentDetails.accountNumber
+  %}
+
+  {% set IBAN =
+    data["IBAN"]
+    or customer.paymentDetails.IBAN
+  %}
+
+  {% set selectedBankAccountType =
+    configuredBankAccountType
+  %}
+
+
+  {#
+    Infer the account type only when no explicit journey or
+    scenario value exists.
+
+    Leave the options unselected if there are no details from
+    which to infer the account type.
+  #}
+
+  {% if not selectedBankAccountType %}
+
+    {% if IBAN and not accountNumber and not sortCode %}
+      {% set selectedBankAccountType = "international" %}
+
+    {% elif accountNumber or sortCode %}
+      {% set selectedBankAccountType = "uk" %}
+    {% endif %}
+
   {% endif %}
 
 {% endif %}
@@ -213,18 +243,12 @@
   {{ super() }}
 
   <script>
-    // Find the bank-details form and formatted inputs.
-    const bankDetailsForm =
-      document.querySelector("form")
-
+    // Find the formatted bank-detail inputs.
     const ibanInput =
       document.querySelector("#iban")
 
     const sortCodeInput =
       document.querySelector("#sort-code")
-
-    const accountNumberInput =
-      document.querySelector("#account-number")
 
 
     // Remove IBAN formatting and unsupported characters.
@@ -247,7 +271,7 @@
     }
 
 
-    // Remove sort code formatting and non-numeric characters.
+    // Remove sort-code formatting and non-numeric characters.
     function normaliseSortCode(value) {
       return value
         .replace(/\D/g, "")
@@ -320,12 +344,9 @@
 
       if (
         event.inputType === "insertText"
-        || event.inputType ===
-          "insertCompositionText"
-        || event.inputType ===
-          "deleteContentBackward"
-        || event.inputType ===
-          "deleteContentForward"
+        || event.inputType === "insertCompositionText"
+        || event.inputType === "deleteContentBackward"
+        || event.inputType === "deleteContentForward"
       ) {
         input.value =
           formatValue(input.value)
@@ -412,40 +433,6 @@
             this,
             normaliseSortCode,
           )
-        },
-      )
-    }
-
-
-    // Remove details belonging to the unselected account
-    // type before the form is submitted.
-    if (bankDetailsForm) {
-      bankDetailsForm.addEventListener(
-        "submit",
-        function () {
-          const selectedAccountType =
-            document.querySelector(
-              'input[name="bankAccountType"]:checked',
-            )
-
-          if (!selectedAccountType) {
-            return
-          }
-
-          if (
-            selectedAccountType.value ===
-            "international"
-          ) {
-            if (accountNumberInput) {
-              accountNumberInput.value = ""
-            }
-
-            if (sortCodeInput) {
-              sortCodeInput.value = ""
-            }
-          } else if (ibanInput) {
-            ibanInput.value = ""
-          }
         },
       )
     }

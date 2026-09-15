@@ -403,6 +403,7 @@ module.exports = function createCustomerRouter({ version }) {
       'dateOfBirth',
 
       // Payment information
+      'bankAccountType',
       'nameOnTheAccount',
       'accountNumber',
       'sortCode',

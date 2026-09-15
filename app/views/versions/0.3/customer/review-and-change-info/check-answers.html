@@ -412,7 +412,6 @@
                     IBAN | trim
                 %}
 
-
                 {#
                     Show one payment account.
 
@@ -420,13 +419,35 @@
 
                     International bank accounts use an international bank
                     account number.
+
+                    When no details exist, the row provides the only action,
+                    so the card does not also show Change.
                 #}
 
-                {% set bankAccountTitle =
-                    "Bank account"
-                %}
+                {% set bankAccountCard = {
+                    title: {
+                        text: "Bank account"
+                    },
+                    classes: "govuk-!-margin-bottom-6"
+                } %}
 
                 {% if hasInternationalBankAccount %}
+
+                    {% set bankAccountCard = {
+                        title: {
+                            text: "International bank account"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "review-bank-details",
+                                    text: "Change",
+                                    visuallyHiddenText: "international bank account"
+                                }
+                            ]
+                        },
+                        classes: "govuk-!-margin-bottom-6"
+                    } %}
 
                     {% set bankAccountRows = [
                         {
@@ -448,6 +469,22 @@
                     ] %}
 
                 {% elif hasUkBankAccount %}
+
+                    {% set bankAccountCard = {
+                        title: {
+                            text: "UK bank account"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "review-bank-details",
+                                    text: "Change",
+                                    visuallyHiddenText: "UK bank account"
+                                }
+                            ]
+                        },
+                        classes: "govuk-!-margin-bottom-6"
+                    } %}
 
                     {% set bankAccountRows = [
                         {
@@ -492,21 +529,7 @@
                 {% endif %}
 
                 {{ govukSummaryList({
-                    card: {
-                        title: {
-                            text: bankAccountTitle
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: "review-bank-details",
-                                    text: "Change",
-                                    visuallyHiddenText: "bank details"
-                                }
-                            ]
-                        },
-                        classes: "govuk-!-margin-bottom-6"
-                    },
+                    card: bankAccountCard,
                     rows: bankAccountRows
                 }) }}
 

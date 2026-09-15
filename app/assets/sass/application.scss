@@ -12,6 +12,11 @@
 @import "partials/app-subnav";
 @import "partials/app-subnav-version";
 
+
+.app-phone-input-prefix {
+  border-color: var(--govuk-border-colour);
+}
+
 // Guidance styles
 
 // nunjucks and code examples
