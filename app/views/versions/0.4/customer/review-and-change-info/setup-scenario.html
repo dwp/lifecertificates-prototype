@@ -341,6 +341,13 @@
               text: "Arriving on GOV.UK 'Before you start' page"
             },
             {
+              value: "authentication",
+              text: "Authenticating",
+              hint: {
+                text: "After reading 'Before you start'"
+              }
+            },
+            {
               value: "document-scanning",
               text: "Scanning identity document"
             },
@@ -350,7 +357,7 @@
             },
             {
               value: "check-answers",
-              text: "After providing proof of life",
+              text: "Summary after providing proof of life",
               conditional: {
                 html: proofOfLifeMethodHtml
               }
@@ -358,11 +365,9 @@
           ]
         }) }}
 
-
         <p class="govuk-body">
           Choose the simulated identity document presented by the customer and the information DWP holds about them.
         </p>
-
 
         {#
           Identity document and contact-address relationship

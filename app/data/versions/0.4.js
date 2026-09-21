@@ -2,7 +2,7 @@ module.exports = {
 
   number: '0.4',
 
-  title: 'One Login/Letter hybrid authentication',
+  title: 'One Login or Letter hybrid authentication',
 
   dateCreated: '16 September 2026',
 
@@ -14,7 +14,7 @@ module.exports = {
 
   researchStatus: 'Not tested',
 
-  dateUpdated: 'Not applicable',
+  dateUpdated: '21 September 2026',
 
   about: [
     'This prototype explores how customers authenticate into a proof of life service.',

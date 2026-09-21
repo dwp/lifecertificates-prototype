@@ -62,6 +62,10 @@ module.exports = function createCustomerRouter({
   }
 
   function normaliseJourneyStartPoint(value) {
+    if (value === 'authentication') {
+      return 'authentication'
+    }
+
     if (value === 'document-scanning') {
       return 'document-scanning'
     }
@@ -343,6 +347,27 @@ module.exports = function createCustomerRouter({
     return res.redirect(destination)
   }
 
+  // Mark authentication as complete and enter the configured
+  // journey at its post-authentication destination.
+  function skipAuthentication(req, res, journeyId) {
+    const journey = findJourney(journeyId)
+
+    const destination = getVersionedPath(
+      journey?.authentication?.returnTo,
+    )
+
+    if (!destination) {
+      clearAuthenticationData(req.session.data)
+
+      return res.redirect(`${baseUrl}/`)
+    }
+
+    req.session.data.authenticationJourney = journey.id
+    req.session.data.authenticationMethod = 'scenario'
+    req.session.data.authenticated = true
+
+    return res.redirect(destination)
+  }
   // Make the current customer record available to templates.
   router.use((req, res, next) => {
     const scenarioCustomer = cloneCustomer(customer)
@@ -460,31 +485,37 @@ module.exports = function createCustomerRouter({
 
       clearCustomerJourneyData(req.session.data)
 
-      if (startPoint === 'check-answers') {
-        req.session.data.proofOfLifeMethod = proofOfLifeMethod
+        if (startPoint === 'check-answers') {
+          req.session.data.proofOfLifeMethod = proofOfLifeMethod
+
+          return res.redirect(
+            `${baseUrl}/review-and-change-info/check-answers`,
+          )
+        }
+
+        delete req.session.data.proofOfLifeMethod
+
+        if (startPoint === 'authentication') {
+          return res.redirect(
+            `${baseUrl}/authenticate/start?journey=review-and-change-info`,
+          )
+        }
+
+        if (startPoint === 'proof-of-life') {
+          return res.redirect(
+            `${baseUrl}/review-and-change-info/${proofOfLifeStartPage}`,
+          )
+        }
+
+        if (startPoint === 'document-scanning') {
+          return res.redirect(
+            `${baseUrl}/review-and-change-info/${documentScanningStartPage}`,
+          )
+        }
 
         return res.redirect(
-          `${baseUrl}/review-and-change-info/check-answers`,
+          `${baseUrl}/review-and-change-info/start`,
         )
-      }
-
-      delete req.session.data.proofOfLifeMethod
-
-      if (startPoint === 'proof-of-life') {
-        return res.redirect(
-          `${baseUrl}/review-and-change-info/${proofOfLifeStartPage}`,
-        )
-      }
-
-      if (startPoint === 'document-scanning') {
-        return res.redirect(
-          `${baseUrl}/review-and-change-info/${documentScanningStartPage}`,
-        )
-      }
-
-      return res.redirect(
-        `${baseUrl}/review-and-change-info/start`,
-      )
     },
   )
 
