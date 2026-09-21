@@ -1,0 +1,127 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Create a GOV.UK One Login or sign in" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+
+        <h1 class="govuk-heading-l">
+          {{ pageName }}
+        </h1>
+
+        <p class="govuk-body">
+          You can use your GOV.UK One Login to access some government services.
+        </p>
+
+        <p class="govuk-body">
+          In the future, you’ll be able to use it to access all services on GOV.UK.
+        </p>
+
+        <p class="govuk-body">
+          You’ll need:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>an email address</li>
+          <li>
+            a way to get security codes - this can be a UK mobile phone number or an authenticator app
+          </li>
+        </ul>
+
+        <p class="govuk-body">
+          You can prove your identity after you’ve created your GOV.UK One Login. You only need to do this for some services.
+        </p>
+
+        <div class="govuk-inset-text">
+          You can also
+          <a href="#" class="govuk-link govuk-link--no-visited-state">
+            use GOV.UK One Login in Welsh (Cymraeg)
+          </a>.
+        </div>
+
+        {{ govukButton({
+          text: "Create your GOV.UK One Login",
+          name: "optionSelected",
+          value: "create",
+          classes: "govuk-!-margin-right-3"
+        }) }}
+
+        <div>
+          {{ govukButton({
+            text: "Sign in",
+            name: "optionSelected",
+            value: "sign-in",
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
+
+        <p class="govuk-body">
+          <a
+            href="https://www.gov.uk/using-your-gov-uk-one-login/services"
+            class="govuk-link govuk-link--no-visited-state"
+            target="_blank"
+            rel="noreferrer noopener">
+            Services you can use with GOV.UK One Login (opens in new tab)
+          </a>
+        </p>
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

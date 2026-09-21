@@ -182,6 +182,7 @@ module.exports = function createVersionRouter({ version }) {
           // rather than user input.
           require(`./versions/${version}/${routeName}`)({
             version,
+            versionConfig: versionData,
           }),
         )
       })

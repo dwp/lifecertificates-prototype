@@ -1,0 +1,93 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Enter your email address" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+
+        {{ govukInput({
+          id: "email",
+          name: "email",
+          label: {
+            text: pageName,
+            isPageHeading: true,
+            classes: "govuk-label--l"
+          },
+          value: data["oneLoginEmail"]
+        }) }}
+
+        <h2 class="govuk-heading-m">Agree to the GOV.UK One Login terms and conditions</h2>
+
+        <p class="govuk-body">
+          By continuing, you confirm that you agree to our  <a href="https://signin.account.gov.uk/terms-and-conditions" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">terms and conditions (opens in new tab)</a>.
+        </p>
+        <p class="govuk-body">
+          To find out how we use your personal information, see our <a href="https://www.gov.uk/government/publications/govuk-one-login-privacy-notice" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">privacy notice (opens in new tab)</a>.
+        </p>
+
+        {{ govukButton({
+          text: "Continue",
+          href: "one-login-create-account-check-email"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

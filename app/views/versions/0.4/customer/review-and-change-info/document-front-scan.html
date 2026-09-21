@@ -1,0 +1,79 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "components/app-document-scanner/macro.njk" import appDocumentScanner %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Scan the front of your ID document" %}
+
+{% block pageTitle %}
+    {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+    {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+                {
+                text: "There is a problem with the camera.",
+                href: "#app-document-scanner-identity-document-front"
+                }
+            ],
+            attributes: {
+                id: "documentScannerErrorSummary",
+                hidden: "hidden",
+                tabindex: "-1"
+            }
+            }) }}
+
+            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+            {% set displayUntilCameraReady %}
+            {{ govukWarningText({
+                text: "We need to use your camera. Choose Allow to continue."
+            }) }}
+            {% endset %}
+            
+            <form
+                id="documentScan"
+                action="document-front-check"
+                method="post"
+                class="form app-document-scanning app-document-scanning--front">
+
+
+            {% call appDocumentScanner({
+                id: "identity-document-front",
+                name: "scannedDocumentFront",
+                side: "front",
+                formId: "documentScan",
+                errorSummaryId: "documentScannerErrorSummary",
+                displayUntilCameraReady: displayUntilCameraReady,
+                classes: "app-document-scanner-wrapper--identity-document",
+                scannerClasses: "app-document-scanner--front"
+            }) %}
+
+            {{ govukButton({
+                id: "captureButton",
+                text: "Take photo and continue",
+                classes: "app-document-scanning__button"
+            }) }}
+            {% endcall %}
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

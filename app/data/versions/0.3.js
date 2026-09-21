@@ -2,19 +2,19 @@ module.exports = {
 
   number: '0.3',
 
-  title: 'Summary-led proof of life journey',
+  title: 'Summary-led proof of life',
 
   dateCreated: '8 September 2026',
 
   visible: true,
 
-  status: 'Draft',
+  status: 'Previous',
 
   designTrack: 'Core',
 
   researchStatus: 'Not tested',
 
-  dateUpdated: '11 September 2026',
+  dateUpdated: '15 September 2026',
 
   about: [
     'This prototype explores a shorter, summary-led proof of life journey.',

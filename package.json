@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@dwp/dwp-frontend": "^4.1.0",
-    "@govuk-prototype-kit/common-templates": "3.0.0",
+    "@govuk-prototype-kit/common-templates": "3.0.1",
     "govuk-frontend": "6.4.0",
     "govuk-prototype-kit": "13.20.2"
   }

@@ -1,0 +1,106 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Check your email" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {{ govukInsetText({
+          html: "We have sent an email to: <strong>email@address.com</strong>"
+        }) }}
+
+        <p class="govuk-body">The email contains a 6 digit security code.</p>
+
+        <p class="govuk-body">Your email might take a few minutes to arrive. If you do not get an email, check your spam folder.</p>
+
+        <p class="govuk-body">The code will expire after one hour.</p>
+
+        {{ govukInput({
+          id: "email",
+          name: "email",
+          label: {
+            text: "Enter the 6 digit code",
+            isPageHeading: false
+          },
+          classes: "govuk-input--width-10"
+        }) }}
+
+        {{ govukButton({
+          text: "Continue",
+          href: "one-login-create-account-password"
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "Problems with the code?",
+          html: '
+            <p class="govuk-body">
+              We can
+            <a href="/page-index/authentication/create-account/resend-code" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener">send the code again</a>
+              or you can
+            <a href="/page-index/authentication/create-account/enter-email" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener">use a different email address</a>.
+          </p>'
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

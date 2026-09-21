@@ -1,0 +1,101 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Check your phone" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        {{ govukInsetText({
+          html: "We have sent a code to your phone number ending with <strong>137</strong>"
+        }) }}
+
+        <p class="govuk-body">It might take a few minutes to arrive. The code will expire after 15 minutes.</p>
+
+        {{ govukInput({
+          id: "email",
+          name: "email",
+          label: {
+            text: "Enter the 6 digit code",
+            isPageHeading: false
+          },
+          classes: "govuk-input--width-10"
+        }) }}
+
+        {{ govukButton({
+          text: "Continue",
+          href: "one-login-return-to-service"
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "Problems with the code?",
+          html: '
+          <p class="govuk-body">
+            We can <a href="/page-index/authentication/sign-in/resend-code-sms" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener">send the code again</a> if the code is not working or you did not receive it.
+          </p>
+          <p class="govuk-body">
+            If you no longer have access to this phone number, <a href="/journey-transition/security-codes" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">check if you can change how you get security codes</a>.
+          </p>'
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

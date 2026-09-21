@@ -1,0 +1,354 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "How would you prefer to be contacted about your UK State Pension?" %}
+
+
+{% block pageTitle %}
+  {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+
+{% block containerStart %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post" action="review-contact-preference">
+
+        {#
+          Resolve the customer's email address.
+
+          Prefer information entered during the current journey,
+          then fall back to the stored customer value.
+        #}
+
+        {% set customerEmailAddress =
+          data["emailAddress"]
+          or customer.contactDetails.emailAddress
+        %}
+
+
+        {#
+          Resolve the customer's phone number.
+
+          Prefer information entered during the current journey,
+          then fall back to the stored customer values.
+        #}
+
+        {% set customerPhoneCountryCode =
+          data["phone-country-code"]
+          or customer.contactDetails.phone.countryCode
+        %}
+
+        {% set customerPhoneNationalNumber =
+          data["phone-national-number"]
+          or customer.contactDetails.phone.nationalNumber
+        %}
+
+        {% set customerPhoneNumber %}
+          {% if customerPhoneNationalNumber %}
+            {% if customerPhoneCountryCode %}
+              +{{ customerPhoneCountryCode }}
+            {% endif %}
+            {{ customerPhoneNationalNumber }}
+          {% endif %}
+        {% endset %}
+
+
+        {#
+          Resolve the customer's postal address.
+
+          Prefer information entered during the current journey,
+          then fall back to the stored customer values.
+        #}
+
+        {% set customerAddressHtml %}
+          {% if data["addressLine1"] or customer.contactDetails.address.line1 %}
+            {{ data["addressLine1"] or customer.contactDetails.address.line1 }}<br>
+          {% endif %}
+
+          {% if data["addressLine2"] or customer.contactDetails.address.line2 %}
+            {{ data["addressLine2"] or customer.contactDetails.address.line2 }}<br>
+          {% endif %}
+
+          {% if data["addressTown"] or customer.contactDetails.address.town %}
+            {{ data["addressTown"] or customer.contactDetails.address.town }}<br>
+          {% endif %}
+
+          {% if data["addressCounty"] or customer.contactDetails.address.county %}
+            {{ data["addressCounty"] or customer.contactDetails.address.county }}<br>
+          {% endif %}
+
+          {% if data["addressPostcode"] or customer.contactDetails.address.postcode %}
+            {{ data["addressPostcode"] or customer.contactDetails.address.postcode }}<br>
+          {% endif %}
+
+          {% if data["addressCountry"] or customer.contactDetails.address.country %}
+            {{ data["addressCountry"] or customer.contactDetails.address.country }}
+          {% endif %}
+        {% endset %}
+
+
+        {#
+          Work out which contact details are available.
+        #}
+
+        {% set hasEmailAddress = customerEmailAddress | trim %}
+        {% set hasPhoneNumber = customerPhoneNationalNumber | trim %}
+        {% set hasAddress = customerAddressHtml | trim %}
+
+
+        {#
+          Define the email item.
+
+          The data-contact-status attribute is added to the generated
+          radio input and used by the progressive enhancement.
+        #}
+
+        {% if hasEmailAddress %}
+
+          {% set emailItem = {
+            value: "Email",
+            text: "Email",
+            classes: "contact-option contact-option--existing",
+            attributes: {
+              "data-contact-status": "existing"
+            },
+            hint: {
+              text: customerEmailAddress
+            }
+          } %}
+
+        {% else %}
+
+          {% set emailItem = {
+            value: "add-email",
+            text: "Add an email address",
+            classes: "contact-option contact-option--missing",
+            attributes: {
+              "data-contact-status": "missing"
+            }
+          } %}
+
+        {% endif %}
+
+
+        {#
+          Define the phone item.
+        #}
+
+        {% if hasPhoneNumber %}
+
+          {% set phoneItem = {
+            value: "Phone",
+            text: "Phone",
+            classes: "contact-option contact-option--existing",
+            attributes: {
+              "data-contact-status": "existing"
+            },
+            hint: {
+              text: customerPhoneNumber | trim
+            }
+          } %}
+
+        {% else %}
+
+          {% set phoneItem = {
+            value: "add-phone",
+            text: "Add a phone number",
+            classes: "contact-option contact-option--missing",
+            attributes: {
+              "data-contact-status": "missing"
+            }
+          } %}
+
+        {% endif %}
+
+
+        {#
+          Define the postal address item.
+        #}
+
+        {% if hasAddress %}
+
+          {% set postItem = {
+            value: "Post",
+            text: "Post",
+            classes: "contact-option contact-option--existing",
+            attributes: {
+              "data-contact-status": "existing"
+            },
+            hint: {
+              html: customerAddressHtml
+            }
+          } %}
+
+        {% else %}
+
+          {% set postItem = {
+            value: "add-address",
+            text: "Add a postal address",
+            classes: "contact-option contact-option--missing",
+            attributes: {
+              "data-contact-status": "missing"
+            }
+          } %}
+
+        {% endif %}
+
+
+        {#
+          Render all three items in a usable default order.
+
+          JavaScript progressively enhances the component by placing
+          existing details first, followed by an "or" divider and then
+          options for missing details.
+        #}
+
+        <div data-contact-preference>
+
+          {{ govukRadios({
+            idPrefix: "contactPreference",
+            name: "contactPreference",
+            value: data["contactPreference"],
+            fieldset: {
+              legend: {
+                text: pageName,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            hint: {
+              text: "Select one preference. We may sometimes use a different method depending what we need to contact you about."
+            },
+            items: [
+              emailItem,
+              phoneItem,
+              postItem
+            ]
+          }) }}
+
+        </div>
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block pageScripts %}
+
+  {{ super() }}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var component = document.querySelector(
+        '[data-contact-preference] .govuk-radios'
+      )
+
+      if (!component) {
+        return
+      }
+
+      var inputs = component.querySelectorAll(
+        'input[data-contact-status]'
+      )
+
+      var existingItems = []
+      var missingItems = []
+
+      /*
+       * The custom data attribute is added to the radio input.
+       * Find the complete GOV.UK radio item containing each input.
+       */
+      Array.prototype.forEach.call(inputs, function (input) {
+        var item = input.closest('.govuk-radios__item')
+        var status = input.getAttribute('data-contact-status')
+
+        if (!item) {
+          return
+        }
+
+        if (status === 'existing') {
+          existingItems.push(item)
+        }
+
+        if (status === 'missing') {
+          missingItems.push(item)
+        }
+      })
+
+      /*
+       * Only enhance the component if all three items were found.
+       */
+      if (existingItems.length + missingItems.length !== 3) {
+        return
+      }
+
+      /*
+       * Remove a divider previously added by this enhancement.
+       * This protects against the script being initialised twice.
+       */
+      var existingDivider = component.querySelector(
+        '[data-contact-preference-divider]'
+      )
+
+      if (existingDivider) {
+        existingDivider.remove()
+      }
+
+      /*
+       * Put existing contact methods first.
+       */
+      existingItems.forEach(function (item) {
+        component.appendChild(item)
+      })
+
+      /*
+       * Insert the divider when there are both existing and
+       * missing contact methods.
+       */
+      if (existingItems.length > 0 && missingItems.length > 0) {
+        var divider = document.createElement('div')
+
+        divider.className = 'govuk-radios__divider'
+        divider.setAttribute(
+          'data-contact-preference-divider',
+          ''
+        )
+        divider.textContent = 'or'
+
+        component.appendChild(divider)
+      }
+
+      /*
+       * Put options for missing contact methods after the divider.
+       */
+      missingItems.forEach(function (item) {
+        component.appendChild(item)
+      })
+    })
+  </script>
+
+{% endblock %}

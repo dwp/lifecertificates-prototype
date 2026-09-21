@@ -1,0 +1,68 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% set serviceName = "Continue receiving state pension while living abroad" %}
+{% set pageName = "Enter your date of birth" %}
+
+{% block pageTitle %}
+  {{ pageName }} - {{ serviceName }}
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+
+        {{ govukDateInput({
+          id: "authenticationDateOfBirth",
+          namePrefix: "authenticationDateOfBirth",
+          fieldset: {
+            legend: {
+              text: pageName,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "For example, 31 3 1950"
+          },
+          items: [
+            {
+              name: "day",
+              classes: "govuk-input--width-2",
+              value: data.authenticationDateOfBirth.day
+            },
+            {
+              name: "month",
+              classes: "govuk-input--width-2",
+              value: data.authenticationDateOfBirth.month
+            },
+            {
+              name: "year",
+              classes: "govuk-input--width-4",
+              value: data.authenticationDateOfBirth.year
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

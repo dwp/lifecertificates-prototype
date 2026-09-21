@@ -1,0 +1,124 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Choose how to get security codes" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if error %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+            {
+              text: error.text,
+              href: "#securityCodesMethod"
+            }
+          ]
+        }) }}
+      {% endif %}
+
+      <form class="form" method="post">
+
+        {{ govukRadios({
+            name: "securityCodesMethod",
+            errorMessage: error if error,
+            fieldset: {
+                legend: {
+                    text: pageName,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+            },
+            hint: { text: "You'll need to enter a security code when you sign in to GOV.UK One Login." },
+            value: data["contactPreference"],
+            items: [
+                {
+                    value: "one-login-create-account-phone",
+                    text: "Text message"
+                },
+                {
+                    value: "one-login-create-account-authenticator",
+                    text: "Authenticator app",
+                    hint: { text: "You can use any authenticator app to create security codes when you sign in" }
+                }
+            ]
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "Problems with the code?",
+          html: '
+          <p class="govuk-body">
+            An authenticator app creates a security code that helps confirm it’s you when you sign in.
+          </p>
+          <p class="govuk-body">
+            You can use an authenticator app on your smartphone, tablet or desktop computer.
+          </p>
+          <p class="govuk-body">
+            Download an authenticator app from your app store or search online for one you can use on your computer.
+          </p>'
+        }) }}
+
+        {{ govukButton({
+          text: "Continue",
+          value: "submit"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

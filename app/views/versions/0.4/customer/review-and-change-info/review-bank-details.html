@@ -1,0 +1,441 @@
+{% extends "layouts/main.html" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set serviceName = "Continue receiving state pension while living abroad (variation 2)" %}
+{% set pageName = "Receiving your UK State Pension" %}
+
+
+{#
+  Resolve the account type.
+
+  A choice made during the journey takes precedence over
+  the value selected on the scenario setup page.
+#}
+
+{% set configuredBankAccountType =
+  data["bankAccountType"]
+  or data["customerScenarioBankAccountType"]
+%}
+
+
+{#
+  Resolve the account details shown on the page.
+
+  When scenario setup specifies that DWP holds no bank
+  details, do not fall back to the complete customer fixture.
+
+  This leaves the account name blank and both account-type
+  radios unselected.
+
+  Otherwise, prefer information entered during the journey
+  and fall back to the customer record.
+#}
+
+{% if configuredBankAccountType == "none" %}
+
+  {% set accountName = "" %}
+  {% set sortCode = "" %}
+  {% set accountNumber = "" %}
+  {% set IBAN = "" %}
+  {% set selectedBankAccountType = "" %}
+
+{% else %}
+
+  {% set accountName =
+    data["nameOnTheAccount"]
+    or customer.paymentDetails.nameOnTheAccount
+  %}
+
+  {% set sortCode =
+    data["sortCode"]
+    or customer.paymentDetails.sortCode
+  %}
+
+  {% set accountNumber =
+    data["accountNumber"]
+    or customer.paymentDetails.accountNumber
+  %}
+
+  {% set IBAN =
+    data["IBAN"]
+    or customer.paymentDetails.IBAN
+  %}
+
+  {% set selectedBankAccountType =
+    configuredBankAccountType
+  %}
+
+
+  {#
+    Infer the account type only when no explicit journey or
+    scenario value exists.
+
+    Leave the options unselected if there are no details from
+    which to infer the account type.
+  #}
+
+  {% if not selectedBankAccountType %}
+
+    {% if IBAN and not accountNumber and not sortCode %}
+      {% set selectedBankAccountType = "international" %}
+
+    {% elif accountNumber or sortCode %}
+      {% set selectedBankAccountType = "uk" %}
+    {% endif %}
+
+  {% endif %}
+
+{% endif %}
+
+
+{#
+  Define the fields used for a UK bank account.
+#}
+
+{% set ukBankAccountHtml %}
+
+  {{ govukInput({
+    label: {
+      text: "Account number"
+    },
+    hint: {
+      text: "Must be between 6 and 8 digits long"
+    },
+    classes: "govuk-input--width-10 govuk-input--extra-letter-spacing",
+    id: "account-number",
+    name: "accountNumber",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: accountNumber
+  }) }}
+
+  {{ govukInput({
+    label: {
+      text: "Sort code"
+    },
+    hint: {
+      text: "Must be 6 digits long"
+    },
+    classes: "govuk-input--width-5 govuk-input--extra-letter-spacing",
+    id: "sort-code",
+    name: "sortCode",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: sortCode
+  }) }}
+
+{% endset %}
+
+
+{#
+  Define the field used for an international bank account.
+#}
+
+{% set internationalBankAccountHtml %}
+
+  {{ govukInput({
+    label: {
+      text: "International bank account number (IBAN)"
+    },
+    hint: {
+      text: "You can find this on your bank statement or ask your bank."
+    },
+    classes: "govuk-input--width-20 govuk-input--extra-letter-spacing",
+    id: "iban",
+    name: "IBAN",
+    inputmode: "text",
+    spellcheck: false,
+    autocomplete: "off",
+    autocapitalize: "characters",
+    value: IBAN
+  }) }}
+
+{% endset %}
+
+
+{% block pageTitle %}
+  {{ pageName }} – {{ serviceName }}
+{% endblock %}
+
+
+{% block containerStart %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "javascript:window.history.back()"
+  }) }}
+
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        {{ pageName }}
+      </h1>
+
+      <p class="govuk-body">
+        We pay your UK State Pension into this bank or building society account.
+      </p>
+
+      <form method="post">
+
+        {{ govukInput({
+          label: {
+            text: "Name on the account",
+            classes: "govuk-label--m"
+          },
+          id: "name-on-the-account",
+          name: "nameOnTheAccount",
+          autocomplete: "name",
+          spellcheck: false,
+          value: accountName
+        }) }}
+
+        {{ govukRadios({
+          name: "bankAccountType",
+          value: selectedBankAccountType,
+          fieldset: {
+            legend: {
+              text: "What type of account is it?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "uk",
+              text: "UK bank account",
+              conditional: {
+                html: ukBankAccountHtml
+              }
+            },
+            {
+              value: "international",
+              text: "International bank account",
+              conditional: {
+                html: internationalBankAccountHtml
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block containerEnd %}
+
+  {{ super() }}
+
+  <script>
+    // Find the formatted bank-detail inputs.
+    const ibanInput =
+      document.querySelector("#iban")
+
+    const sortCodeInput =
+      document.querySelector("#sort-code")
+
+
+    // Remove IBAN formatting and unsupported characters.
+    function normaliseIBAN(value) {
+      return value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 34)
+    }
+
+
+    // Display an IBAN in groups of 4 characters.
+    function formatIBAN(value) {
+      const normalisedValue =
+        normaliseIBAN(value)
+
+      return normalisedValue
+        .match(/.{1,4}/g)
+        ?.join(" ") || ""
+    }
+
+
+    // Remove sort-code formatting and non-numeric characters.
+    function normaliseSortCode(value) {
+      return value
+        .replace(/\D/g, "")
+        .slice(0, 6)
+    }
+
+
+    // Display a sort code in 3 groups of 2 digits.
+    function formatSortCode(value) {
+      const normalisedValue =
+        normaliseSortCode(value)
+
+      return normalisedValue
+        .match(/.{1,2}/g)
+        ?.join("-") || ""
+    }
+
+
+    // Copy selected text without spaces or hyphens.
+    function copyWithoutSeparators(
+      event,
+      input,
+      normaliseValue,
+    ) {
+      const selectionStart =
+        input.selectionStart
+
+      const selectionEnd =
+        input.selectionEnd
+
+      // Keep normal copy behaviour if nothing is selected.
+      if (
+        selectionStart === null
+        || selectionEnd === null
+        || selectionStart === selectionEnd
+      ) {
+        return
+      }
+
+      const selectedValue =
+        input.value.slice(
+          selectionStart,
+          selectionEnd,
+        )
+
+      event.preventDefault()
+
+      event.clipboardData.setData(
+        "text/plain",
+        normaliseValue(selectedValue),
+      )
+    }
+
+
+    // Format typed input while preserving native paste,
+    // undo and redo behaviour.
+    function formatTypedInput(
+      event,
+      input,
+      formatValue,
+    ) {
+      if (
+        event.inputType === "insertFromPaste"
+        || event.inputType === "insertFromDrop"
+        || event.inputType === "historyUndo"
+        || event.inputType === "historyRedo"
+      ) {
+        return
+      }
+
+      if (
+        event.inputType === "insertText"
+        || event.inputType === "insertCompositionText"
+        || event.inputType === "deleteContentBackward"
+        || event.inputType === "deleteContentForward"
+      ) {
+        input.value =
+          formatValue(input.value)
+      }
+    }
+
+
+    // Add formatting and copy behaviour to the IBAN.
+    if (ibanInput) {
+      // Format a value restored from session data.
+      ibanInput.value =
+        formatIBAN(ibanInput.value)
+
+      // Format characters entered by the customer.
+      ibanInput.addEventListener(
+        "input",
+        function (event) {
+          formatTypedInput(
+            event,
+            this,
+            formatIBAN,
+          )
+        },
+      )
+
+      // Format pasted content after leaving the field.
+      ibanInput.addEventListener(
+        "blur",
+        function () {
+          this.value =
+            formatIBAN(this.value)
+        },
+      )
+
+      // Copy the IBAN without spaces.
+      ibanInput.addEventListener(
+        "copy",
+        function (event) {
+          copyWithoutSeparators(
+            event,
+            this,
+            normaliseIBAN,
+          )
+        },
+      )
+    }
+
+
+    // Add formatting and copy behaviour to the sort code.
+    if (sortCodeInput) {
+      // Format a value restored from session data.
+      sortCodeInput.value =
+        formatSortCode(
+          sortCodeInput.value,
+        )
+
+      // Format digits entered by the customer.
+      sortCodeInput.addEventListener(
+        "input",
+        function (event) {
+          formatTypedInput(
+            event,
+            this,
+            formatSortCode,
+          )
+        },
+      )
+
+      // Format pasted content after leaving the field.
+      sortCodeInput.addEventListener(
+        "blur",
+        function () {
+          this.value =
+            formatSortCode(this.value)
+        },
+      )
+
+      // Copy the sort code without hyphens.
+      sortCodeInput.addEventListener(
+        "copy",
+        function (event) {
+          copyWithoutSeparators(
+            event,
+            this,
+            normaliseSortCode,
+          )
+        },
+      )
+    }
+  </script>
+
+{% endblock %}

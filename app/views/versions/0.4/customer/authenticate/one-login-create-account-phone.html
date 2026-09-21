@@ -1,0 +1,96 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName = "Enter your mobile phone number" %}
+
+{% block pageTitle %}
+  {{ pageName }} - GOV.UK One Login
+{% endblock %}
+
+{% block header %}
+  <header>
+    {{ govukHeader() }}
+  </header>
+{% endblock %}
+
+{% block containerStart %}
+
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service - your <a class="govuk-link govuk-link--no-visited-state" href="#">feedback</a> will help us to improve it.'
+  }) }}
+
+  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
+
+{#
+{{ govukLanguageNavigation({
+  items: [
+    {
+      text: "English",
+      lang: "en",
+      href: "#",
+      current: true
+    },
+    {
+      text: "Cymraeg",
+      lang: "cy",
+      href: "#"
+    }
+  ]
+}) }}
+
+<nav class="govuk-language-navigation" aria-label="Language">
+  <ul class="govuk-language-navigation__list">
+    <li class="govuk-language-navigation__list-item">
+      <span class="govuk-language-navigation__text"
+        aria-current="true" lang="en">English</span>
+    </li>
+    <li class="govuk-language-navigation__list-item">
+      <a class="govuk-language-navigation__link" href="#" rel="alternate" lang="cy" hreflang="cy">Cymraeg      </a>
+    </li>
+  </ul>
+</nav>
+#}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form class="form" method="post">
+
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        <p class="govuk-body">We will send a 6 digit security code to the number you give us.</p>
+
+        <p class="govuk-body">You must use a UK mobile phone number.</p>
+
+        {{ govukInput({
+          id: "phone",
+          name: "phone",
+          label: {
+            text: "UK mobile phone number",
+            isPageHeading: false
+          }
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "I do not have a UK mobile phone number",
+          html: '
+          <p class="govuk-body">
+            You need to <a href="one-login-create-account-get-codes" class="govuk-link govuk-link--no-visited-state">choose another way to get security codes</a>
+          </p>'
+        }) }}
+
+        <button type="submit" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button" style="background-color:#9bc0ad;opacity:1;box-shadow:0 2px 0 #5e9078;" >
+          Continue
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
