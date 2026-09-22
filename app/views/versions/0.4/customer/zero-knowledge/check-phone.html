@@ -3,8 +3,8 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "components/app-phone-input/macro.njk" import appPhoneInput %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Check your phone" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "Enter your security code" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -24,7 +24,7 @@
 
             <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-            <p class="govuk-body">We’ve sent you a text message with a security code.</p>
+            <p class="govuk-body">We’ve sent a text message with a security code to your phone.</p>
 
             {{ govukInput({
             label: {

@@ -4,8 +4,8 @@
 {% from "components/app-liveness-checker/macro.njk" import appLivenessChecker %}
 
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Get ready to move your head" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "Take a photo of yourself" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -19,43 +19,42 @@
 
 {% block content %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+      <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-            <div class="govuk-warning-text" id="permissionsWarning">
-                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                <strong class="govuk-warning-text__text">
-                    <span class="govuk-visually-hidden">Warning</span>
-                    We need to use your camera. Choose Allow to continue.
-                </strong>
-            </div>
+      <div class="govuk-warning-text" id="permissionsWarning">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span> We need to use your camera. Choose Allow to continue.
+        </strong>
+      </div>
 
-{% call appLivenessChecker({
-  id: "liveness-check",
-  name: "livenessImage",
-  displayUntilCameraReady: displayUntilCameraReady,
-  form: {
-    id: "livenessForm",
-    action: "contact-email",
-    method: "post"
-  }
-}) %}
+      {% call appLivenessChecker({
+        id: "liveness-check",
+        name: "livenessImage",
+        displayUntilCameraReady: displayUntilCameraReady,
+        form: {
+          id: "livenessForm",
+          action: "contact-email",
+          method: "post"
+        }
+      }) %}
 
-            <input type="hidden" name="proofOfLifeVerifiedOnline" value="Yes">
+        <input type="hidden" name="proofOfLifeVerifiedOnline" value="Yes">
 
+        {{ govukButton({
+          text: "Take photo and continue"
+        }) }}
 
-  {{ govukButton({
-    text: "Take photo and continue"
-  }) }}
+        <p><a class="govuk-link" href="unable-to-verify-identity">Having trouble?</a></p>
 
-{% endcall %}
+      {% endcall %}
 
-                <p><a class="govuk-link" href="unable-to-verify-identity">Not able to verify your identity?</a></p>
+      </form>
 
-            </form>
-        </div>
     </div>
+  </div>
 
 {% endblock %}

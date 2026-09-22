@@ -5,8 +5,8 @@
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "components/app-document-scanner/macro.njk" import appDocumentScanner %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Scan the front of your ID document" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "Scan the front of your ID" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -52,7 +52,6 @@
                 method="post"
                 class="form app-document-scanning app-document-scanning--front">
 
-
             {% call appDocumentScanner({
                 id: "identity-document-front",
                 name: "scannedDocumentFront",
@@ -64,11 +63,12 @@
                 scannerClasses: "app-document-scanner--front"
             }) %}
 
-            {{ govukButton({
-                id: "captureButton",
-                text: "Take photo and continue",
-                classes: "app-document-scanning__button"
-            }) }}
+              {{ govukButton({
+                  id: "captureButton",
+                  text: "Take photo and continue",
+                  classes: "app-document-scanning__button"
+              }) }}
+
             {% endcall %}
 
             </form>

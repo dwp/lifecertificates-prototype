@@ -2,7 +2,7 @@
 
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
 {% set pageName = "What is your email address?" %}
 
 {% block pageTitle %}
@@ -35,7 +35,6 @@
 
                     value: data["emailAddress"]
                 }) }}
-
 
                 {{ govukButton({
                     text: "Continue"

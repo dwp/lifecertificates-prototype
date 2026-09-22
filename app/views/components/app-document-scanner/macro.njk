@@ -31,11 +31,9 @@
   {% endif %}
 
   {% if params.hintText %}
-
     {% set hintText = params.hintText %}
   {% else %}
-    {% set hintText = 'Position the ' ~ side ~ ' of your photocard inside the frame.' %}
-
+    {% set hintText = 'Position the ' ~ side ~ ' of your ID inside the frame.' %}
   {% endif %}
 
   <div class="app-document-scanner-wrapper {{ wrapperClasses }}"
@@ -111,10 +109,10 @@
       </div>
       <p class="govuk-body app-document-scanner__hint">{{ hintText }}</p>
       <p class="govuk-visually-hidden app-document-scanner__status"
-         aria-live="polite">Position the document inside the frame.</p>
-      <input type="hidden" name="{{ fieldName }}" class="app-document-scanner__input" 
+         aria-live="polite">Position your ID inside the frame.</p>
+      <input type="hidden" name="{{ fieldName }}" class="app-document-scanner__input"
         {% if not formOptions and formId %}
-           form="{{ formId }}" 
+           form="{{ formId }}"
         {% endif %}
         >
 

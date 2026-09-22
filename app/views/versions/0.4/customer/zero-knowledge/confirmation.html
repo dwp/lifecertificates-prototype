@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Life certificate sent" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "We've received your information" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -14,28 +14,18 @@
 
       {{ govukPanel({
         titleText: pageName,
-        html: "Your reference number<br><strong>HDJ2123F</strong>"
+        html: "Your reference number is: <br><strong>HDJ2123F</strong><br><br>Please make a note of this."
       }) }}
 
-      <p>
-        We have sent you a confirmation email.
-      </p>
+      <p class="govuk-body">We have sent you a confirmation email.</p>
 
-      <h2 class="govuk-heading-m">
-        What happens next
-      </h2>
+      <h2 class="govuk-heading-m">What happens next</h2>
 
-      <p>
-        We've sent your life certificate to DWP.
-      </p>
+      <p class="govuk-body">You do not need to do anything else right now.</p>
 
-      <p>
-        They will email you to confirm your pension payments will continue, or to ask for more information.
-      </p>
-      <p>
-        <a href="#">What did you think of this service?</a> (takes 30 seconds)
-      </p>
+      <p class="govuk-body">We wil lcontact you if we need more information.</p>
 
+      <p class="govuk-body" <a href="#">What did you think of this service?</a> (takes 30 seconds)</p>
 
     </div>
   </div>

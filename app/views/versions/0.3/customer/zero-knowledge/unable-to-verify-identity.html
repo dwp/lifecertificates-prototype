@@ -2,8 +2,8 @@
 
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Unable to verify your identity?" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "Having trouble taking a picture of yourself?" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -20,27 +20,29 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">{{ pageName }}</h1>
+          <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-            <p>You may still be able to complete your live certificate online. You will need:</p>
+          <p class="govuk-body">You can still confirm your identity.</p>
 
-            <ul class="govuk-list govuk-list--bullet">
-                <li>letter from a doctor who is registered in your country of residence</li>
-                <li>full name of the registered doctor</li>
-                <li>address of their registered practice</li>
-            </ul>
+          <p class="govuk-body">You will need a letter from a doctor who is registered in your country of residence.</p>
 
-            <p>You will still be able to:
-            <ul class="govuk-list govuk-list--bullet">
-                <li>tell us your preferred contact details</li>
-            </ul>
+          <p class="govuk-body">The letter should include:</p>
 
-                <input type="hidden" name="proofOfLifeVerifiedOnline" value="No">
+          <ul class="govuk-list govuk-list--bullet">
+            <li>the doctor's name</li>
+            <li>the address of their registered practice</li>
+          </ul>
 
-                {{ govukButton({
-                "text": "Continue",
-                "href": "medical-verification"
-            }) }}
+          <p class="govuk-body">Ask the doctor to write a short letter confirming your identity, and that you are unable to complete the online identity check.</p>
+
+          <p class="govuk-body">On the next page, your'll be able to tell us about the doctor and send us a copy of the letter.</p>
+
+          <input type="hidden" name="proofOfLifeVerifiedOnline" value="No">
+
+          {{ govukButton({
+            "text": "Continue",
+            "href": "medical-verification"
+          }) }}
 
         </div>
     </div>

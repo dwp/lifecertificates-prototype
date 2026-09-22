@@ -3,7 +3,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "components/app-phone-input/macro.njk" import appPhoneInput %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
 {% set pageName = "Contacting your doctor" %}
 
 {% block pageTitle %}
@@ -30,7 +30,7 @@
                     id: "doctor-email-address",
                     name: "doctorEmailAddress",
                     label: {
-                        text: "What is your doctor's email address? (Optional)",
+                        text: "What is your doctor's email address? (optional)",
                         classes: "govuk-label--m"
                     },
                     hint: {
@@ -50,7 +50,7 @@
                         }
                     },
                     hint: {
-                        text: "Include the country code and phone number. For example, +44 7900900123."
+                        text: "Include the country code. For example, +44 7900 900123."
                     },
                     countryCode: {
                         value: data["doctor-country-code"]

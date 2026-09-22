@@ -4,8 +4,8 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 
-{% set serviceName = "Continue receiving state pension while living abroad (variation 1)" %}
-{% set pageName = "Identity verification by your doctor" %}
+{% set serviceName = "Confirm your identity for UK State Pension (variation 1)" %}
+{% set pageName = "Confirmation letter from your doctor" %}
 
 {% block pageTitle %}
     {{ pageName }} – {{ serviceName }}
@@ -27,117 +27,119 @@
 
             <form class="form" action="medical-contact-info" method="post">
 
+              <p class="govuk-body">Tell us about the doctor who wrote your letter</p>
+
+              {{ govukInput({
+                  label: {
+                      text: "Doctor's full name"
+                  },
+                  id: "doctor-full-name",
+                  name: "doctorFullName",
+                  autocomplete: "name",
+                  spellcheck: false,
+                  value: data['doctorFullName']
+              }) }}
+
+              {% call govukFieldset({
+              legend: {
+                  text: "Doctor's registered practice",
+                  classes: "govuk-fieldset__legend--m",
+                  isPageHeading: true
+              }
+              }) %}
+
                 {{ govukInput({
                     label: {
-                        text: "Doctor's full name"
+                        text: "Practice name"
                     },
-                    id: "doctor-full-name",
-                    name: "doctorFullName",
-                    autocomplete: "name",
-                    spellcheck: false,
-                    value: data['doctorFullName']
+                    id: "doctor-address-practice",
+                    name: "doctorAddressPractice",
+                    value: data['doctorAddressPractice']
                 }) }}
 
-                {% call govukFieldset({
-                legend: {
-                    text: "Registered medical practice",
-                    classes: "govuk-fieldset__legend--m",
-                    isPageHeading: true
-                }
-                }) %}
+                {{ govukInput({
+                    label: {
+                        text: "Address line 1"
+                    },
+                    id: "doctor-address-line-1",
+                    name: "doctorAddressLine1",
+                    autocomplete: "address-line1",
+                    value: data['doctorAddressLine1']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                            text: "Practice name"
-                        },
-                        id: "doctor-address-practice",
-                        name: "doctorAddressPractice",
-                        value: data['doctorAddressPractice']
-                    }) }}
+                {{ govukInput({
+                    label: {
+                    text: "Address line 2 (optional)"
+                    },
+                    id: "doctor-address-line-2",
+                    name: "doctorAddressLine2",
+                    autocomplete: "address-line2",
+                    value: data['doctorAddressLine2']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                            text: "Address line 1"
-                        },
-                        id: "doctor-address-line-1",
-                        name: "doctorAddressLine1",
-                        autocomplete: "address-line1",
-                        value: data['doctorAddressLine1']
-                    }) }}
+                {{ govukInput({
+                    label: {
+                    text: "Town or city"
+                    },
+                    classes: "govuk-!-width-two-thirds",
+                    id: "doctor-address-town",
+                    name: "doctorAddressTown",
+                    autocomplete: "address-city",
+                    value: data['doctorAddressTown']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                        text: "Address line 2 (optional)"
-                        },
-                        id: "doctor-address-line-2",
-                        name: "doctorAddressLine2",
-                        autocomplete: "address-line2",
-                        value: data['doctorAddressLine2']
-                    }) }}
+                {{ govukInput({
+                    label: {
+                    text: "County (optional)"
+                    },
+                    classes: "govuk-!-width-two-thirds",
+                    id: "doctor-address-county",
+                    name: "doctorAddressCounty",
+                    value: data['doctorAddressCounty']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                        text: "Town or city"
-                        },
-                        classes: "govuk-!-width-two-thirds",
-                        id: "doctor-address-town",
-                        name: "doctorAddressTown",
-                        autocomplete: "address-city",
-                        value: data['doctorAddressTown']
-                    }) }}
+                {{ govukInput({
+                    label: {
+                    text: "Postcode"
+                    },
+                    classes: "govuk-input--width-10",
+                    id: "doctor-address-postcode",
+                    name: "doctorAddressPostcode",
+                    autocomplete: "postal-code",
+                    value: data['doctorAddressPostcode']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                        text: "County (optional)"
-                        },
-                        classes: "govuk-!-width-two-thirds",
-                        id: "doctor-address-county",
-                        name: "doctorAddressCounty",
-                        value: data['doctorAddressCounty']
-                    }) }}
+                {{ govukInput({
+                    label: {
+                    text: "Country"
+                    },
+                    classes: "govuk-!-width-two-thirds",
+                    id: "doctor-address-country",
+                    name: "doctorAddressCountry",
+                    autocomplete: "country",
+                    value: data['doctorAddressCountry']
+                }) }}
 
-                    {{ govukInput({
-                        label: {
-                        text: "Postcode"
-                        },
-                        classes: "govuk-input--width-10",
-                        id: "doctor-address-postcode",
-                        name: "doctorAddressPostcode",
-                        autocomplete: "postal-code",
-                        value: data['doctorAddressPostcode']
-                    }) }}
+              {% endcall %}
 
-                    {{ govukInput({
-                        label: {
-                        text: "Country"
-                        },
-                        classes: "govuk-!-width-two-thirds",
-                        id: "doctor-address-country",
-                        name: "doctorAddressCountry",
-                        autocomplete: "country",
-                        value: data['doctorAddressCountry']
-                    }) }}
-
-                {% endcall %}
-
-                {{ govukFileUpload({
+              {{ govukFileUpload({
                 id: "doctor-letter",
                 name: "doctorLetter",
                 label: {
-                    text: "Upload the letter from the doctor",
+                    text: "Send us a copy of the letter",
                     classes: "govuk-label--m"
                 },
                 hint: {
-                    text: "The letter must include confirmation that the customer is unable to complete the actions required to verify their identity"
+                    text: "The letter must confirm your identity and that you are unable to complete the online identity check."
                 },
                 javascript: true
-                }) }}
+              }) }}
 
-                <input type="hidden" name="medicalExemption" id="doctor-exemption" value="Yes">
+              <input type="hidden" name="medicalExemption" id="doctor-exemption" value="Yes">
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+              {{ govukButton({
+                  text: "Continue"
+              }) }}
 
             </form>
         </div>
