@@ -16,12 +16,12 @@
 
       <p class="govuk-body">Check that your details are correct before sending them to DWP.</p>
 
-      <h2 class="govuk-heading-m">Identity document</h2>
+      <h2 class="govuk-heading-m">Details from your ID</h2>
 
       {% set identityDocument = customer.identityDocument %}
       {% set extractedDetails = identityDocument.extractedDetails %}
 
-      {{ govukSummaryList({
+{#     {{ govukSummaryList({
         rows: [
         {
           key: { text: "Document" },
@@ -30,15 +30,15 @@
             items: [
               {
                 href: "document-front-scan",
-                text: "Change",
-                visuallyHiddenText: "or rescan ID document"
+                text: "Change ID",
+                visuallyHiddenText: "document"
               }
             ]
           }
         }
         ]
       }) }}
-
+#}
       {% set extractedAddressHtml %}
         {{ extractedDetails.address.line1 }}<br>
         {% if extractedDetails.address.line2 %}
@@ -54,7 +54,15 @@
 
       {{ govukSummaryList({
         card: {
-          title: { text: "From your " + identityDocument.type | lower }
+          title: { text: "Document: " + identityDocument.type | lower },
+          actions: {
+            items: [
+              {
+                href: "document-front-scan",
+                text: "Use a different ID"
+              }
+            ]
+          }
         },
         classes: "govuk-summary-list--no-border",
         rows: [
