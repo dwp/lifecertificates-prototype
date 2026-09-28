@@ -18,54 +18,50 @@
 
 {% block content %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <form class="form" action="check-answers" method="post">
+      <form class="form" action="check-answers" method="post">
 
-<!--                <span class="govuk-caption-l">About your doctor</span> -->
-                <h1 class="govuk-heading-l">{{ pageName }}</h1>
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
-                {{ govukInput({
-                    id: "doctor-email-address",
-                    name: "doctorEmailAddress",
-                    label: {
-                        text: "What is your doctor's email address? (optional)",
-                        classes: "govuk-label--m"
-                    },
-                    hint: {
-                        text: "For example, name@domain.com"
-                    },
+        {{ govukInput({
+          id: "doctor-email-address",
+          name: "doctorEmailAddress",
+          label: {
+            text: "What is your doctor's email address? (optional)",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "For example, name@domain.com"
+          },
 
-                    value: data["doctorEmailAddress"]
-                }) }}
+          value: data["doctorEmailAddress"]
+        }) }}
 
-                {{ appPhoneInput({
-                    id: "doctor-phone",
-                    namePrefix: "doctor",
-                    fieldset: {
-                        legend: {
-                        text: "What is your doctor's phone number?",
-                        classes: "govuk-fieldset__legend--m"
-                        }
-                    },
-                    hint: {
-                        text: "Include the country code. For example, +44 7900 900123."
-                    },
-                    countryCode: {
-                        value: data["doctor-country-code"]
-                    },
-                    nationalNumber: {
-                        value: data["doctor-national-number"]
-                    }
-                }) }}
 
-                {{ govukButton({
-                    text: "Continue"
-                }) }}
+        {{ govukInput({
+          label: {
+            text: "What is your doctor's phone number",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "Include the country code. For example, +44 7900 900123."
+          },
+          id: "doctor-phone-number",
+          name: "doctorPhoneNumber",
+          type: "tel",
+          autocomplete: "tel",
+          classes: "govuk-input--width-20"
+        }) }}
 
-            </form>
-        </div>
+        {{ govukButton({
+            text: "Continue"
+        }) }}
+
+      </form>
     </div>
+  </div>
 
 {% endblock %}

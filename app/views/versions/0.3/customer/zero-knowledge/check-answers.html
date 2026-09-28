@@ -107,8 +107,8 @@
 
       {% set doctorEmailAddress = data["doctorEmailAddress"] or customer.doctor.emailAddress %}
       {% set doctorPhoneNumber %}
-        {% if data["doctor-country-code"] and data["doctor-national-number"] %}
-          +{{ data["doctor-country-code"] }} {{ data["doctor-national-number"] }}
+        {% if data["doctorPhoneNumber"] %}
+          {{ data["doctorPhoneNumber"] }}
         {% else %}
           {{ customer.doctor.phoneNumber }}
         {% endif %}
@@ -204,8 +204,8 @@
       {% set customerEmailAddress = data["emailAddress"] or customer.contactDetails.emailAddress %}
 
       {% set customerPhoneNumber %}
-        {% if data["mobile-national-number"] %}
-          +{{ data["mobile-country-code"] }} {{ data["mobile-national-number"] }}
+        {% if data["phoneNumber"] %}
+          {{ data["phoneNumber"] }}
         {% else %}
           +{{ customer.contactDetails.phone.countryCode }}
           {{ customer.contactDetails.phone.nationalNumber }}
