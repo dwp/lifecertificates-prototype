@@ -9,47 +9,24 @@
 {% block pageTitle %}
   {{ pageName }} – {{ serviceName }}
 {% endblock %}
-
 {% block containerStart %}
-
-  {{ govukBackLink({"text": "Back", "href": "javascript:window.history.back()"}) }}
-
+  {{ govukBackLink({
+    "text": "Back",
+    "href": "javascript:window.history.back()"
+  }) }}
 {% endblock %}
-
 {% block content %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
       <h1 class="govuk-heading-l">{{ pageName }}</h1>
 
       <p class="govuk-body">We'll only use this to contact you about UK State Pension</p>
 
-
       <form class="form" action="check-phone" method="post">
-
-{#
-        {{ appPhoneInput({
-          id: "mobile",
-          namePrefix: "mobile",
-          fieldset: {
-            legend: {
-            text: pageName,
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--l"
-            }
-          },
-          hint: {
-            text: "Include the country code. For example, +44 7900 900123."
-          },
-          countryCode: {
-            value: data["mobile-country-code"]
-          },
-          nationalNumber: {
-            value: data["mobile-national-number"]
-          }
-        }) }}
-#}
+        {# {{ appPhoneInput({ id: "mobile", namePrefix: "mobile", fieldset: { legend: { text: pageName, isPageHeading:
+        false, classes: "govuk-fieldset__legend--l" } }, hint: { text: "Include the country code. For example, +44 7900
+        900123." }, countryCode: { value: data["mobile-country-code"] }, nationalNumber: { value:
+        data["mobile-national-number"] } }) }} #}
         {{ govukInput({
           label: {
             text: "Mobile number",
@@ -64,14 +41,10 @@
           autocomplete: "tel",
           classes: "govuk-input--width-20"
         }) }}
-
         {{ govukButton({
           text: "Continue"
         }) }}
-
       </form>
-
     </div>
   </div>
-
 {% endblock %}

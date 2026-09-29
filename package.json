@@ -9,5 +9,9 @@
     "@govuk-prototype-kit/common-templates": "3.0.1",
     "govuk-frontend": "6.5.1",
     "govuk-prototype-kit": "13.20.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9",
+    "prettier-plugin-nunjucks": "^0.2.1"
   }
 }
